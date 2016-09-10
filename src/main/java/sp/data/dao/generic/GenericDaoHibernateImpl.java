@@ -50,7 +50,7 @@ public abstract class GenericDaoHibernateImpl <E, I extends Serializable> implem
 		CriteriaBuilder criteriaBuilder = currentSession().getCriteriaBuilder();
 		CriteriaQuery<E> criteriaQuery = criteriaBuilder.createQuery(daoType);
 		Root<E> root = criteriaQuery.from(daoType);
-		criteriaQuery.select(root).orderBy(criteriaBuilder.asc(root.get("name")));
+		criteriaQuery.select(root);
 		TypedQuery<E> typedQuery = currentSession().createQuery(criteriaQuery);
 		return typedQuery.getResultList();
 		

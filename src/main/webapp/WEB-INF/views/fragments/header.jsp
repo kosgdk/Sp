@@ -18,7 +18,8 @@
           	
           			<ul class="dropdown-menu" role="menu">
             			<li><a href='<spring:url value="/createsp"/>'>Создать новое СП</a></li>
-            			<li><a href='<spring:url value="/addposition"></spring:url>'>Добавить позицию</a></li>
+            			<li><a href='<spring:url value="/addposition"/>'>Добавить позицию</a></li>
+						<li><a href='<spring:url value="/createclient"/>'>Добавить клиента</a></li>
           			</ul>
           			
         		</li>

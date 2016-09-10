@@ -20,20 +20,13 @@
 		<property name="suffix" value=".jsp"/>
 	</bean>
 	
-	<bean id="conversion-service" class="org.springframework.context.support.ConversionServiceFactoryBean">
-		<property name="converters">
-			<list>
-				<bean class="sp.data.converters.StringToDateConverter" />
-			</list>
-		</property>
-	</bean>
-	
 	<bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
 		<property name="converters">
-			<list>
+			<set>
 				<bean class="sp.data.converters.StringToDateConverter" />
-			</list>
+				<bean class="sp.data.converters.IdToRefererConverter" />
+			</set>
 		</property>
 	</bean>
-	
+
 </beans>

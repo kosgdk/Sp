@@ -16,27 +16,39 @@ public abstract class GenericServiceImpl <E, I extends Serializable> implements 
  
     public GenericServiceImpl() {
     }
-	
+
+
+	@Override
 	public E getById(I id){
 		return genericDao.getById(id);
 	}
 
+	@Override
+	public List<E> searchByName(String name) {
+		return genericDao.searchByName(name);
+	}
+
+	@Override
 	public List<E> getAll(){
 		return genericDao.getAll();
 	}
 
+	@Override
 	public void save(E entity){
 		genericDao.save(entity);
 	}
 
+	@Override
 	public void update(E entity){
 		genericDao.update(entity);
 	}
 
+	@Override
 	public void delete(E entity){
 		genericDao.delete(entity);
 	}
 
+	@Override
 	public void deleteById(I id){
 		genericDao.deleteById(id);
 	}

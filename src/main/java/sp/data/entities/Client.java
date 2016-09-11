@@ -1,5 +1,7 @@
 package sp.data.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -23,8 +25,9 @@ public class Client {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="id")
 	private int id;
-	
-	@OneToMany(mappedBy="client", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+
+	@JsonIgnore
+	@OneToMany(mappedBy="client", cascade=CascadeType.ALL, fetch=FetchType.EAGER)
 	private List<Order> orders;
 	
 	@Column(name="name")
@@ -39,7 +42,7 @@ public class Client {
 	@Column(name="note")
 	private String note;
 	
-	@ManyToOne(cascade=CascadeType.PERSIST, fetch=FetchType.LAZY)
+	@ManyToOne(cascade=CascadeType.PERSIST, fetch=FetchType.EAGER)
 	@JoinColumn(name="referer", referencedColumnName="id", nullable=false)
 	private Referer referer;
 	

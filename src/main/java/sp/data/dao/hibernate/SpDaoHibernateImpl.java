@@ -17,13 +17,13 @@ import sp.data.dao.interfaces.SpDao;
 import sp.data.entities.Sp;
 
 @Repository("SpDaoHibernateImpl")
-@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
+@Transactional(propagation=Propagation.REQUIRED)
 public class SpDaoHibernateImpl extends GenericDaoHibernateImpl<Sp, Integer> implements SpDao{
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public int getLastNumber() {
-		Query query = currentSession().createQuery("SELECT max(number) FROM Sp");
+		Query query = currentSession().createNativeQuery("SELECT max(number) FROM Sp");
 		List<Integer> numbers = query.getResultList();
 		return numbers.get(numbers.size()-1);
 	}

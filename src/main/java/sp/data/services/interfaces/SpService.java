@@ -4,11 +4,11 @@ import sp.data.entities.Sp;
 
 public interface SpService {
 	
-	public int getLastNumber();
+	int getLastNumber();
 	
-	public Sp getLastSp();
+	Sp getLastSp();
 	
-	public Sp getByNumber(int number);
+	Sp getByNumber(int number);
 	
 	
 }

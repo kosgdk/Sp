@@ -14,11 +14,11 @@
 </head>
 <body>
 	
-	<jsp:include page="../views/fragments/header.jsp"></jsp:include>			
+	<jsp:include page="../views/fragments/header.jsp"/>
 
 	<div class="container">
 	
-	Текущий сбор: <a href="<spring:url value="/sp/${sp.getNumber()}"></spring:url>" >СП-${sp.getNumber()}</a>
+	Текущий сбор: <a href="<spring:url value="/sp/${sp.number}"/>" >СП-${sp.number}</a>
 	
 	
 	

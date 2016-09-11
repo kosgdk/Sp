@@ -9,7 +9,7 @@ import sp.data.dao.interfaces.OrderDao;
 import sp.data.entities.Order;
 
 @Repository("OrderDaoHibernateImpl")
-@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
+@Transactional(propagation=Propagation.REQUIRED)
 public class OrderDaoHibernateImpl extends GenericDaoHibernateImpl<Order, Integer> implements OrderDao{
 
 	//TODO: Add specific methods for Referer

@@ -1,133 +1,61 @@
 package sp.controllers;
 
-
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import sp.data.dao.interfaces.ProductDao;
-import sp.data.dao.interfaces.SpStatusDao;
 import sp.data.entities.*;
 import sp.data.services.ClientServiceImpl;
-import sp.data.services.ProductServiceImpl;
 import sp.data.services.RefererServiceImpl;
-import sp.data.services.SpServiceImpl;
-import sp.data.services.interfaces.ProductService;
-import sp.data.services.interfaces.RefererService;
+
+import java.util.List;
 
 @Controller
-public class HomeController {
-	
-	@Autowired
-	ProductServiceImpl productService;
-	
-	@Autowired
-	SpServiceImpl spService;
-	
-	@Autowired
-	SpStatusDao spStatusDao;
-	
+public class ClientController {
+
 	@Autowired
 	RefererServiceImpl refererService;
 
 	@Autowired
 	ClientServiceImpl clientService;
-	
-	
-	// Index
-	@RequestMapping("/")
-	public String goHome(Model model){
-		model.addAttribute("sp", spService.getLastSp());
-		return "index";
-	}
-	
-	// Переход на страницу создания СП
-	@RequestMapping("/createsp")
-	public String createSp(Model model){
-		int nextSpNumber = spService.getLastNumber() + 1;
-		model.addAttribute("nextSpNumber", nextSpNumber);
-		return "createsp";
-	}
-	
-	// Обработчик создания СП
-	@RequestMapping(value="/savesp")
-	public String sp(@ModelAttribute Sp sp, Model model){
-		sp.setDateToPay(sp.calculateDateToPay(sp.getDateEnd()));
-		sp.setStatus(spStatusDao.getById(1));
-		spService.save(sp);
-		model.addAttribute("sp", sp);
-		return "forward:/sp/" + sp.getNumber();
-	}
-	
-	// Переход на страницу СП
-	@RequestMapping(value="/sp/{spNumber}")
-	public String sp(Model model, @PathVariable int spNumber){
-		model.addAttribute("sp", spService.getByNumber(spNumber));
-		return "sp";
-	}
-	
-	
-	
+
+	Client client1 = new Client();
 
 
+	// РџРµСЂРµС…РѕРґ РЅР° СЃС‚СЂР°РЅРёС†Сѓ РєР»РёРµРЅС‚Р°
+	@RequestMapping("/client/{clientId}")
+	public String clientPage(@PathVariable("clientId") int id, Model model){
+		System.out.println("asdasdasd");
+		Client client = clientService.getById(id);
+		System.out.println("Referer = " + client.getReferer().getName());
 
-	// Переход на страницу добавления клиента
+		List<Referer> referers = refererService.getAll();
+		model.addAttribute("client", client);
+		model.addAttribute("referers", referers);
+		return "client";
+	}
+
+	// РџРµСЂРµС…РѕРґ РЅР° СЃС‚СЂР°РЅРёС†Сѓ РґРѕР±Р°РІР»РµРЅРёСЏ РєР»РёРµРЅС‚Р°
 	@RequestMapping("/createclient")
-	public String clientPage(Model model){
+	public String saveClientPage(Model model){
 		List<Referer> referers = refererService.getAll();
 		model.addAttribute("referers", referers);
 		return "createclient";
 	}
 
-	// Обработка запроса на создание клиента
+	// РћР±СЂР°Р±РѕС‚РєР° Р·Р°РїСЂРѕСЃР° РЅР° СЃРѕР·РґР°РЅРёРµ РєР»РёРµРЅС‚Р°
 	@RequestMapping(value="/createclient", method = RequestMethod.POST)
-	public String clientPage(@ModelAttribute Client client, Model model /*, @RequestParam("refererId") int refererId*/){
-		System.out.println("test");
-//		System.out.println(refererId);
-//		Referer referer = refererService.getById(refererId);
-//		client.setReferer(referer);
+	public String saveClient(@ModelAttribute Client client, Model model){
 		clientService.save(client);
-		return "redirect:/createclient";
+		return "redirect:/client/" + client.getId();
 	}
 
-
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	@RequestMapping("/addposition")
-	public String addPosition(){
-		return "addposition";
+	// РћР±СЂР°Р±РѕС‚РєР° Р·Р°РїСЂРѕСЃР° РЅР° РѕР±РЅРѕРІР»РµРЅРёРµ РєР»РёРµРЅС‚Р°
+	@RequestMapping(value="/updateclient", method = RequestMethod.POST)
+	public String updateClient(@ModelAttribute Client client, Model model){
+		System.out.println(client.toString());
+		clientService.update(client);
+		return "redirect:/client/" + client.getId();
 	}
 
-	@RequestMapping(value="/addposition", params={"query"})
-	public String searchPosition(@RequestParam("query") String query, Model model){
-		List<Product> products = productService.searchByName(query);
-		model.addAttribute("query", query);
-		model.addAttribute("products", products);
-		System.out.println(query);
-		return "selectproduct";
-	}
-
-	@RequestMapping(value="/addposition", params={"productid"})
-	public String searchPosition(@RequestParam("productid") Integer id, Model model){
-		System.out.println(id);
-		OrderPosition orderPosition = new OrderPosition();
-		orderPosition.setProduct(productService.getById(id));
-		model.addAttribute("orderPosition", orderPosition);
-		return "addposition";
-	}
-
-	
 }

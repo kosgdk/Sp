@@ -10,10 +10,8 @@ import sp.data.entities.Client;
 
 
 @Repository("ClientDaoHibernateImpl")
-@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
+@Transactional(propagation=Propagation.REQUIRED)
 public class ClientDaoHibernateImpl extends GenericDaoHibernateImpl<Client, Integer> implements ClientDao{
-
-	//TODO: Add specific methods for Client
 
 
 }

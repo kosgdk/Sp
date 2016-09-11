@@ -6,16 +6,18 @@ import java.util.List;
 
 public interface GenericService <E, I extends Serializable> {
 
-	public E getById(I id);
+	E getById(I id);
 
-	public List<E> getAll();
+	List<E> searchByName(String name);
 
-	public void save(E entity);
+	List<E> getAll();
 
-	public void update(E entity);
+	void save(E entity);
 
-	public void delete(E entity);
+	void update(E entity);
 
-	public void deleteById(I id);
+	void delete(E entity);
+
+	void deleteById(I id);
 	
 }

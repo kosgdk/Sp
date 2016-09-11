@@ -9,7 +9,7 @@ import sp.data.dao.interfaces.SpStatusDao;
 import sp.data.entities.SpStatus;
 
 @Repository
-@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
+@Transactional(propagation=Propagation.REQUIRED)
 public class SpStatusDaoHibernateImpl extends GenericDaoHibernateImpl<SpStatus, Integer> implements SpStatusDao{
 
 	//TODO: Add specific methods for SpStatus

@@ -2,11 +2,13 @@ package sp.data.dao.generic;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.hibernate.Session;
@@ -17,19 +19,13 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository("GenericDao")
-@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
+@Transactional(propagation=Propagation.REQUIRED)
 public abstract class GenericDaoHibernateImpl <E, I extends Serializable> implements GenericDao<E, I> {
 	
 	@Autowired
 	private SessionFactory sessionFactory;
 
-	protected Class<E> daoType;
-	
-	/*
-    public GenericDaoHibernateImpl(Class<E> daoType) {
-        this.daoType = daoType;
-    }
-    */
+	private Class<E> daoType;
 	
     @SuppressWarnings("unchecked")
 	public GenericDaoHibernateImpl() {
@@ -39,10 +35,34 @@ public abstract class GenericDaoHibernateImpl <E, I extends Serializable> implem
     protected Session currentSession(){
     	return sessionFactory.getCurrentSession();
     }
-	
+
+
 	@Override
 	public E getById(I id) {
-		return (E) currentSession().get(daoType, id);
+		return currentSession().get(daoType, id);
+	}
+
+	@Override
+	public List<E> searchByName(String name) {
+
+		String[] words = name.split(" ");
+
+		CriteriaBuilder criteriaBuilder = currentSession().getCriteriaBuilder();
+		CriteriaQuery<E> criteriaQuery = criteriaBuilder.createQuery(daoType);
+		Root<E> root = criteriaQuery.from(daoType);
+		criteriaQuery.select(root);
+
+		List<Predicate> predicates = new ArrayList<>();
+
+		for (String word : words) {
+			System.out.println(word);
+			predicates.add(criteriaBuilder.like(root.get("name"), "%"+word+"%"));
+		}
+
+		criteriaQuery.where(predicates.toArray(new Predicate[]{}));
+
+		TypedQuery<E> typedQuery = currentSession().createQuery(criteriaQuery);
+		return typedQuery.getResultList();
 	}
 
 	@Override

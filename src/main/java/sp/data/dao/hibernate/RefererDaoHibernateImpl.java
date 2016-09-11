@@ -9,7 +9,7 @@ import sp.data.dao.interfaces.RefererDao;
 import sp.data.entities.Referer;
 
 @Repository("RefererDaoHibernateImpl")
-@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
+@Transactional(propagation=Propagation.REQUIRED)
 public class RefererDaoHibernateImpl extends GenericDaoHibernateImpl<Referer, Integer> implements RefererDao{
 
 	//TODO: Add specific methods for

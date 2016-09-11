@@ -1,4 +1,4 @@
-﻿<%@ page language="java" contentType="text/html; charset=utf-8"
+<%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
@@ -16,7 +16,7 @@
 </head>
 <body>
 	
-	<jsp:include page="../views/fragments/header.jsp"></jsp:include>			
+	<jsp:include page="../views/fragments/header.jsp"/>
 
 	<div class="container">
 		
@@ -38,12 +38,12 @@
 	</form>
 	
 	
-	<C:if test="&{orderPosition != null}">
+	<c:if test="&{orderPosition != null}">
 	
 	
-	${orderPosition.getProduct().getName()}
+	${orderPosition.product.name}
 	
-	</C:if>
+	</c:if>
 	
 		
 	</div>

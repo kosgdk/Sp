@@ -61,15 +61,15 @@
                     <c:forEach var="referer" items="${referers}" varStatus="counter">
                         <div class="radio">
                             <label>
-                                <input type="radio" name="referer" id="referer" value="${referer.getId()}"
+                                <input type="radio" name="referer" id="referer" value="${referer.id}"
 
-                                <c:if test="${referer.getId() == 1}">
+                                <c:if test="${referer.id == 1}">
                                        checked
                                 </c:if>
 
                                 >
 
-                                    ${referer.getName()}
+                                    ${referer.name}
                             </label>
                         </div>
                     </c:forEach>

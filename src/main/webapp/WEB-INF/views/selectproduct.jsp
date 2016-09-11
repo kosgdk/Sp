@@ -1,4 +1,4 @@
-﻿<%@ page language="java" contentType="text/html; charset=utf-8"
+<%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -16,7 +16,7 @@
 </head>
 <body>
 	
-	<jsp:include page="../views/fragments/header.jsp"></jsp:include>			
+	<jsp:include page="../views/fragments/header.jsp"/>
 
 	<div class="container">
 		
@@ -31,7 +31,7 @@
 		
 		<c:forEach var="product" items="${products}" varStatus="counter">
 		
-            <a href='<spring:url value="/addposition?productid=${product.getId()}"></spring:url>'>${product.getName()}</a>
+            <a href='<spring:url value="/addposition?productid=${product.id}"/>'>${product.name}</a>
             <br>
 
 		</c:forEach>

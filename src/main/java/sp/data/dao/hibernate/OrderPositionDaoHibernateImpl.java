@@ -9,7 +9,7 @@ import sp.data.dao.interfaces.OrderPositionDao;
 import sp.data.entities.OrderPosition;
 
 @Repository("OrderPositionDaoHibernateImpl")
-@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
+@Transactional(propagation=Propagation.REQUIRED)
 public class OrderPositionDaoHibernateImpl extends GenericDaoHibernateImpl<OrderPosition, Integer> implements OrderPositionDao{
 
 	//TODO: Add specific methods

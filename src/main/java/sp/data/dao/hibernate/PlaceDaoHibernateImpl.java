@@ -10,7 +10,7 @@ import sp.data.entities.Place;
 
 
 @Repository("PlaceDaoHibernateImpl")
-@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
+@Transactional(propagation=Propagation.REQUIRED)
 public class PlaceDaoHibernateImpl extends GenericDaoHibernateImpl<Place, Integer> implements PlaceDao{
 
 	//TODO: Add specific methods for Place

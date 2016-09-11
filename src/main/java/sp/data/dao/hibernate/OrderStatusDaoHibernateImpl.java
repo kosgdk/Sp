@@ -10,7 +10,7 @@ import sp.data.entities.OrderStatus;
 
 
 @Repository("OrderStatusDaoHibernateImpl")
-@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
+@Transactional(propagation=Propagation.REQUIRED)
 public class OrderStatusDaoHibernateImpl extends GenericDaoHibernateImpl<OrderStatus, Integer> implements OrderStatusDao{
 
 	//TODO: Add specific methods for OrderStatus

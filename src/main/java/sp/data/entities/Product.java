@@ -23,12 +23,15 @@ public class Product {
 	@Column(name="name")
 	private String name;
 	
-	@Column(name="price")
-	private BigDecimal price;
-	
 	@Column(name="link")
 	private String link;
-	
+
+	@Column(name="weight")
+	private int weight = 0;
+
+	@Column(name="price")
+	private BigDecimal price;
+
 	@Column(name="photo")
 	private byte[] photo;
 	
@@ -96,6 +99,14 @@ public class Product {
 		this.link = link;
 	}
 
+	public int getWeight() {
+		return weight;
+	}
+
+	public void setWeight(int weight) {
+		this.weight = weight;
+	}
+
 	public int getVkId() {
 		return vkId;
 	}
@@ -131,7 +142,7 @@ public class Product {
 	
 	@Override
 	public String toString() {
-		return "Product [id=" + id + ", name=" + name + ", price=" + price + ", photo=" + Arrays.toString(photo)
+		return "Product [id=" + id + ", name=" + name + ", price=" + price + ", weight=" + weight + ", photo=" + Arrays.toString(photo)
 				+ ", link=" + link + ", vkId=" + vkId + ", imageLink=" + imageLink + ", deleted=" + deleted
 				+ ", vkPhotoId=" + vkPhotoId + "]";
 	}

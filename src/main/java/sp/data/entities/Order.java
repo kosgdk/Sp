@@ -1,69 +1,75 @@
 package sp.data.entities;
 
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.Cache;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.*;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 
 
 @Entity
-@Table(name="orders")
+@Table(name = "orders")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Order {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
 	private int id;
 	
-	@OneToMany(/*mappedBy="order",*/ cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinColumn(name="order_id")
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<OrderPosition> orderPositions;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="client")
+	@NotNull(message = "{order.client.noSuchClient}")
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "client")
+	@Fetch(FetchMode.JOIN)
 	private Client client;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="sp")
+	@NotNull
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "sp")
 	private Sp sp;
 	
+	@NotNull(message = "{order.dateOrdered.invalid}")
+	@Past(message = "{order.dateOrdered.shouldBePast}")
 	@Temporal(TemporalType.DATE)
 	@Column(name = "date_ordered")
 	private Date dateOrdered;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="status", referencedColumnName="id")
+	@NotNull
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "status", referencedColumnName = "id")
 	private OrderStatus orderStatus;
 	
-	@Column(name="prepaid")
+	@Column(name = "prepaid")
 	private BigDecimal prepaid;
 	
-	@Column(name="weight")
+	@Column(name = "weight")
 	private int weight;
 	
-	@Column(name="delivery_price")
+	@Column(name = "delivery_price")
 	private BigDecimal deliveryPrice;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="place", referencedColumnName="id")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "place", referencedColumnName = "id")
+	//@Fetch(FetchMode.JOIN)
 	private Place place;
 	
 	@Temporal(TemporalType.DATE)
 	@Column(name = "date_completed")
 	private Date datecompleted;
+
+	@Transient
+	private BigDecimal summaryPrice;
 	
 	
 	public Order() {
@@ -77,12 +83,36 @@ public class Order {
 		this.orderStatus = orderStatus;
 	}
 
+
+	public BigDecimal getSummaryPrice(){
+		BigDecimal summaryPrice = new BigDecimal(0);
+		if (orderPositions != null){
+			for (OrderPosition orderPosition : orderPositions) {
+				summaryPrice = summaryPrice.add(orderPosition.getPriceOrdered());
+			}
+		}
+		this.summaryPrice = summaryPrice;
+		return this.summaryPrice;
+	}
+
+
+
+	// Getters and setters
+
 	public int getId() {
 		return id;
 	}
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public List<OrderPosition> getOrderPositions() {
+		return orderPositions;
+	}
+
+	public void setOrderPositions(List<OrderPosition> orderPositions) {
+		this.orderPositions = orderPositions;
 	}
 
 	public Client getClient() {
@@ -156,6 +186,8 @@ public class Order {
 	public void setDatecompleted(Date datecompleted) {
 		this.datecompleted = datecompleted;
 	}
+
+
 
 	@Override
 	public String toString() {

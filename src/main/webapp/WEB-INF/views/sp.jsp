@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=utf-8"
+﻿<%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
@@ -6,127 +6,140 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
-<title>СП-${sp.number}</title>
 
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-	<link href="<c:url value="/resources/core/autocomplete.css" />" rel="stylesheet">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-	<script src="<c:url value="/resources/core/jquery.1.10.2.min.js" />"></script>
-	<script src="<c:url value="/resources/core/jquery.autocomplete.min.js" />"></script>
+    <jsp:include page="../views/fragments/styles.jsp"/>
+
+    <link href="<c:url value="/resources/css/autocomplete.css" />" rel="stylesheet">
+    <script src="<c:url value="/resources/js/jquery.autocomplete.min.js" />"></script>
+
+    <title>СП-${sp.number}</title>
 
 </head>
 <body>
 
 	<jsp:include page="../views/fragments/header.jsp"/>
+
 	<div class="container">
-		
-		
-	<h1>Страница текущего СП-${sp.number}</h1>
+
+	<h2>СП-${sp.number}</h2>
 	<br/><br/>
 
-		<form class="form-horizontal" action='<spring:url value="/addorder"/>'>
-			<fieldset>
-				<legend>Добавить заказ</legend>
 
-				<div class="form-group">
-					<label for="client-search" class="col-lg-2 control-label">Клиент</label>
-					<div class="col-lg-10">
-						<input type="text" class="form-control" id="client-search" name="clientId">
-					</div>
-				</div>
+        <!-- Форма добавления нового заказа -->
 
-				<div class="form-group">
-					<label for="product-search" class="col-lg-2 control-label">Товар</label>
-					<div class="col-lg-10">
-						<input type="text" class="form-control" id="product-search" name="productId">
-					</div>
-				</div>
+        <spring:url value="/sp/${sp.id}" var="formUrl" />
 
-				<div class="form-group">
-					<label for="quantity" class="col-lg-2 control-label">Количество</label>
-					<div class="col-lg-10">
-						<input type="number" class="form-control" id="quantity" name="quantity" min="1" value="1">
-					</div>
-				</div>
+		<form:form action="${formUrl}" method="POST" modelAttribute="order" cssClass="form-horizontal">
+            <fieldset>
+                <legend>Добавить заказ</legend>
 
-				<div class="form-group">
-					<div class="col-lg-10 col-lg-offset-2">
-						<button type="submit" class="btn btn-primary">Добавить</button>
-					</div>
-				</div>
-			</fieldset>
-		</form>
+                <input type="hidden" name="action" value="addOrder">
+
+                <spring:bind path="client">
+                    <div class="form-group <c:if test='${status.errors.hasFieldErrors("client")}'>has-error</c:if>">
+                        <label for="client-search" class="col-lg-2 control-label">Клиент</label>
+                        <div class="col-lg-3">
+                            <form:input path="client" cssClass="form-control" id="client-search" autofocus="autofocus" minlength="3" value="${newClientName}"/>
+                            <span class="help-block">
+                                <form:errors path="client"/>
+                                <a href='<spring:url value="/create_client?sp=${sp.id}"/>'>Создать нового клиента</a>
+                            </span>
+
+                        </div>
+                    </div>
+                </spring:bind>
 
 
 
+                <input type="hidden" name="sp" value="${sp.id}">
+                <input type="hidden" name="orderStatus" value="1">
+
+                <div class="form-group">
+                    <div class="col-lg-10 col-lg-offset-2">
+                        <button type="submit" class="btn btn-primary" id="addOrderButton">Создать</button>
+                    </div>
+                </div>
+
+            </fieldset>
+        </form:form>
 
 
-	
-	<c:if test="${orders!=null}">
-		<c:forEach var="order" items="${orders}" varStatus="counter">
-		
-            ${order.getClient().getName()}
+	<!-- Отображение заказов -->
+	<c:if test="${sp.orders!=null}">
+
+        <h3>Заказы</h3>
+        <br/>
+		<c:forEach var="order" items="${sp.orders}" varStatus="counter">
+
+            <b>${counter.count}. ${order.client.name}</b> - ${order.summaryPrice} р.
             <br/>
+
+
+            <c:forEach var="orderPosition" items="${order.orderPositions}" varStatus="counter2">
+                - ${orderPosition.product.name}; ${orderPosition.priceOrdered} р.<br/>
+            </c:forEach>
+
 
 		</c:forEach>
 	</c:if>
-	
-		
+
+
 	</div>
 
 
+    <!-- Автозаполнение текущей даты -->
+    <script type="text/javascript">
+        document.getElementById('datePicker').valueAsDate = new Date();
+    </script>
 
-	<!-- Client autocomplete -->
-	<script>
-		$(document).ready(function() {
-
-			$('#client-search').autocomplete({
-				serviceUrl: '${pageContext.request.contextPath}/getClients',
-				paramName: "query",
-				delimiter: ",",
-				transformResult: function(response) {
-
-					return {
-						suggestions: $.map($.parseJSON(response), function(item) {
-
-							return { value: item.name, data: item.id };
-						})
-
-					};
-
-				}
-
-			});
-
+	<!-- Client autocomplete script -->
+    <script type="text/javascript">
+		$(document).ready(function () {
+                $('#client-search').autocomplete({
+                    serviceUrl: '${pageContext.request.contextPath}/getClients',
+                    paramName: "query",
+                    delimiter: ",",
+                    minChars: "3",
+                    transformResult: function(response) {
+                        return {
+                            suggestions: $.map($.parseJSON(response), function(item) {
+                                return { value: item.name, data: item.id };
+                            })
+                        };
+                    }
+                });
 		});
+
 	</script>
 
-	<!-- Product autocomplete -->
-	<script>
-		$(document).ready(function() {
 
-			$('#product-search').autocomplete({
-				serviceUrl: '${pageContext.request.contextPath}/getProducts',
-				paramName: "query",
-				delimiter: ",",
-				transformResult: function(response) {
+    <!-- Стиль для скрытия формы
+    <style>
+        .newClient{display: none}
+    </style>
+    -->
 
-					return {
-						suggestions: $.map($.parseJSON(response), function(item) {
+    <!-- Скрипт отображения формы нового клиента
+    <script type="text/javascript">
+        function showHide() {
+            var checkbox = document.getElementById("newClientCheckbox");
+            var hiddenInputs = document.getElementsByClassName("newClient");
+            var label = document.getElementById("clientNameLabel");
+            var button = document.getElementById("addOrderButton");
 
-							return { value: item.name, data: item.id };
-						})
-
-					};
-
-				}
-
-			});
-
-		});
-	</script>
+            if (checkbox.checked) {
+                hiddenInputs[0].style.display = "block";
+                label.innerHTML = "Клиент (ник)";
+                button.innerHTML = "Создать клиента и добавить заказ";
+            }
+            else {
+                hiddenInputs[0].style.display = "none";
+                label.innerHTML = "Клиент";
+                button.innerHTML = "Добавить";
+                }
+        }
+    </script>
+    -->
 
 </body>
 </html> 

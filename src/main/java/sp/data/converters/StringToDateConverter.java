@@ -10,18 +10,16 @@ public class StringToDateConverter implements Converter<String, Date> {
 
 	@Override
 	public Date convert(String source) {
-		
-		System.out.println("String date = " + source);
-		
+
 		Date date = null;
 	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
 	    try {
 			date = sdf.parse(source);
-			System.out.println("Date date = " + date);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+            e.printStackTrace();
 		}
+
 		return date;
 	}
 

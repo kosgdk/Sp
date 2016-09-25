@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import sp.data.dao.generic.GenericDao;
 
-@Service
+@Service("GenericServiceImpl")
 public abstract class GenericServiceImpl <E, I extends Serializable> implements GenericService<E, I> {
 	
 	@Autowired
@@ -26,6 +26,11 @@ public abstract class GenericServiceImpl <E, I extends Serializable> implements 
 	@Override
 	public List<E> searchByName(String name) {
 		return genericDao.searchByName(name);
+	}
+
+	@Override
+	public E getByName(String name) {
+		return genericDao.getByName(name);
 	}
 
 	@Override

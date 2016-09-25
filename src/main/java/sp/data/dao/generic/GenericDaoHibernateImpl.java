@@ -26,7 +26,7 @@ public abstract class GenericDaoHibernateImpl <E, I extends Serializable> implem
 	private SessionFactory sessionFactory;
 
 	private Class<E> daoType;
-	
+
     @SuppressWarnings("unchecked")
 	public GenericDaoHibernateImpl() {
     	daoType = (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
@@ -44,7 +44,6 @@ public abstract class GenericDaoHibernateImpl <E, I extends Serializable> implem
 
 	@Override
 	public List<E> searchByName(String name) {
-
 		String[] words = name.split(" ");
 
 		CriteriaBuilder criteriaBuilder = currentSession().getCriteriaBuilder();
@@ -66,6 +65,21 @@ public abstract class GenericDaoHibernateImpl <E, I extends Serializable> implem
 	}
 
 	@Override
+	public E getByName(String name) {
+		CriteriaBuilder criteriaBuilder = currentSession().getCriteriaBuilder();
+		CriteriaQuery<E> criteriaQuery = criteriaBuilder.createQuery(daoType);
+		Root<E> root = criteriaQuery.from(daoType);
+		criteriaQuery.select(root);
+
+		criteriaQuery.where(criteriaBuilder.equal(root.get("name"), name));
+
+		TypedQuery<E> typedQuery = currentSession().createQuery(criteriaQuery);
+		List<E> entities = typedQuery.getResultList();
+
+		return entities.isEmpty() ? null : entities.get(0);
+	}
+
+	@Override
 	public List<E> getAll() {
 		CriteriaBuilder criteriaBuilder = currentSession().getCriteriaBuilder();
 		CriteriaQuery<E> criteriaQuery = criteriaBuilder.createQuery(daoType);
@@ -73,7 +87,6 @@ public abstract class GenericDaoHibernateImpl <E, I extends Serializable> implem
 		criteriaQuery.select(root);
 		TypedQuery<E> typedQuery = currentSession().createQuery(criteriaQuery);
 		return typedQuery.getResultList();
-		
 	}
 
 	@Override
@@ -95,6 +108,5 @@ public abstract class GenericDaoHibernateImpl <E, I extends Serializable> implem
 	public void deleteById(I id) {
 		currentSession().delete(getById(id));
 	}
-	
 
 }

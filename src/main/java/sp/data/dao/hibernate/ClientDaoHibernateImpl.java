@@ -13,7 +13,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 
 
-@Repository("ClientDao")
+@Repository("ClientDaoHibernateImpl")
 @Transactional(propagation=Propagation.REQUIRED)
 public class ClientDaoHibernateImpl extends GenericDaoHibernateImpl<Client, Integer> implements ClientDao{
 

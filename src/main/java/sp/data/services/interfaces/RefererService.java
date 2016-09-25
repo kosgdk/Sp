@@ -1,6 +1,9 @@
 package sp.data.services.interfaces;
 
-public interface RefererService {
+import sp.data.entities.Referer;
+import sp.data.services.generic.GenericService;
+
+public interface RefererService extends GenericService<Referer, Integer> {
 	
 	
 }

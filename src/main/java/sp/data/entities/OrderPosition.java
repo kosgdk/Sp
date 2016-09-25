@@ -1,19 +1,19 @@
 package sp.data.entities;
 
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.Cache;
+
 import java.math.BigDecimal;
 
-import javax.persistence.Column;
+import javax.persistence.*;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 
 @Entity
 @Table(name="order_position")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class OrderPosition {
 
 	@Id
@@ -21,11 +21,12 @@ public class OrderPosition {
 	@Column(name="id")
 	private int id;
 	
-	@ManyToOne()
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="order_id")
 	private Order order;
 	
-	@ManyToOne()
+	@ManyToOne(cascade=CascadeType.PERSIST, fetch = FetchType.EAGER)
+	@Fetch(FetchMode.JOIN)
 	@JoinColumn(name="product_id")
 	private Product product;
 	

@@ -16,7 +16,7 @@ import sp.data.services.RefererServiceImpl;
 import sp.data.services.SpServiceImpl;
 
 @Controller
-public class HomeController {
+public class IndexController {
 	
 	@Autowired
 	ProductServiceImpl productService;
@@ -36,7 +36,7 @@ public class HomeController {
 	
 	// Index
 	@RequestMapping("/")
-	public String goHome(Model model){
+	public String index(Model model){
 		model.addAttribute("sp", spService.getLastSp());
 		return "index";
 	}
@@ -57,13 +57,6 @@ public class HomeController {
 		spService.save(sp);
 		model.addAttribute("sp", sp);
 		return "forward:/sp/" + sp.getNumber();
-	}
-	
-	// Переход на страницу СП
-	@RequestMapping(value="/sp/{spNumber}")
-	public String sp(Model model, @PathVariable int spNumber){
-		model.addAttribute("sp", spService.getByNumber(spNumber));
-		return "sp";
 	}
 	
 	@RequestMapping("/addposition")

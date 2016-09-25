@@ -1,5 +1,8 @@
 package sp.data.entities;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import java.math.BigDecimal;
 import java.util.Arrays;
 
@@ -13,6 +16,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="products")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Product {
 
 	@Id

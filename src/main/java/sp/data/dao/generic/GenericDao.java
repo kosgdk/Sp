@@ -9,6 +9,8 @@ public interface GenericDao <E, I extends Serializable> {
 
 	List<E> searchByName(String name);
 
+	E getByName(String name);
+
 	List<E> getAll();
 
 	void save(E entity);

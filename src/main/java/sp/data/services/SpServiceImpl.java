@@ -25,10 +25,12 @@ public class SpServiceImpl extends GenericServiceImpl<Sp, Integer> implements Sp
 	}
 
 	@Override
-	public Sp getByNumber(int number) {
-		return spDao.getByNumber(number);
+	public Sp getByIdLazy(int id) {
+		return spDao.getByIdLazy(id);
 	}
-	
-	
 
+	@Override
+	public Sp getByIdWithAllChildren(int id) {
+		return spDao.getByIdWithAllChildren(id);
+	}
 }

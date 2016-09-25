@@ -23,7 +23,6 @@
 			<set>
 				<bean class="sp.data.converters.StringToDateConverter" />
 				<bean class="sp.data.converters.IdToRefererConverter" />
-				<bean class="sp.data.converters.StringToLongPhoneConverter" />
 				<bean class="sp.data.converters.NameToClientConverter" />
 				<bean class="sp.data.converters.IdToOrderStatusConverter" />
 				<bean class="sp.data.converters.IdToSpConverter" />

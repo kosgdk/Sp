@@ -1,90 +1,175 @@
-<%@ page language="java" contentType="text/html; charset=utf-8"
-    pageEncoding="utf-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
-<title>Профиль клиента ${client.name}</title>
 
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <jsp:include page="../views/fragments/styles.jsp"/>
+    <script src="<c:url value="/resources/js/jquery.inputmask.bundle.js" />"></script>
+
+    <title>
+        <c:if test='${action=="create"}'>
+            Создать нового клиента
+        </c:if>
+        <c:if test='${action=="profile"}'>
+            ${client.name} - профиль клиента
+        </c:if>
+    </title>
+
+
 
 </head>
 <body>
-	
-	<jsp:include page="../views/fragments/header.jsp" />
+    <jsp:include page="../views/fragments/header.jsp" />
+    <div class="container">
 
-	<div class="container">
-		
-	
-	<form action='<spring:url value="/updateclient" />' method="POST" class="form-horizontal">
-		<fieldset>
-			<legend>Профиль клиента <b>${client.name}</b></legend>
 
-			<input type="hidden" class="form-control" id="id" name="id" value="${client.id}">
+        <c:if test='${action=="create"}'>
+            <spring:url value="/create_client" var="formUrl" />
+        </c:if>
+        <c:if test='${action=="profile"}'>
+            <spring:url value="/client/${client.id}" var="formUrl" />
+        </c:if>
 
-				<div class="form-group">
-					<label for="name" class="col-lg-2 control-label">Ник*</label>
-					<div class="col-lg-10">
-						<input type="text" class="form-control" id="name" name="name" value="${client.name}">
-					</div>
-				</div>
-				
-				<div class="form-group">
-					<label for="realName" class="col-lg-2 control-label">Имя</label>
-					<div class="col-lg-10">
-						<input type="text" class="form-control" id="realName" name="realName" value="${client.realName}">
-					</div>
-				</div>
-				
-				<div class="form-group">
-					<label for="phone" class="col-lg-2 control-label">Телефон</label>
-					<div class="col-lg-10">
-						<input type="tel" class="form-control" id="phone" name="phone" placeholder="79781234567 - 11 цифр" value="${client.phone}">
-					</div>
-				</div>
 
-			<div class="form-group">
-				<label for="note" class="col-lg-2 control-label">Комментарий</label>
-				<div class="col-lg-10">
-					<textarea class="form-control" rows="3" id="note" name="note">${client.note}</textarea>
-				</div>
-			</div>
+        <form:form action="${formUrl}" method="POST" modelAttribute="client" cssClass="form-horizontal">
+            <fieldset>
 
-				<div class="form-group">
-					<label class="col-lg-2 control-label">Откуда</label>
-					<div class="col-lg-10">
-					
-						<c:forEach var="referer" items="${referers}" varStatus="counter">
-							<div class="radio">
-								<label>
-									<input type="radio" name="referer" id="referer" value="${referer.id}"
-											<c:if test="${client.referer.id == referer.id}">
-												checked
-											</c:if>
-									/>
-									${referer.name}
-								</label>
-							</div>
-						</c:forEach>
-						
-					</div>
-				</div>
+                <legend>
+                    <c:if test='${action=="create"}'>
+                        Создать нового клиента
+                    </c:if>
+                    <c:if test='${action=="profile"}'>
+                        Профиль клиента <b>${client.name}</b>
+                    </c:if>
+                </legend>
 
-				<div class="form-group">
-					<div class="col-lg-10 col-lg-offset-2">
-						<button type="submit" class="btn btn-primary">Обновить</button>
-						<button type="reset" class="btn btn-default">Отмена</button>
-					</div>
-				</div>
-			</fieldset>
-		</form>
-	
-		
-	</div>
+                <spring:bind path="name">
+                    <div class="form-group <c:if test='${status.errors.hasFieldErrors("name")}'>has-error</c:if>">
+                        <label for="client-name" class="col-lg-2 control-label">Ник*</label>
+                        <div class="col-lg-3">
+                            <form:input path="name" cssClass="form-control" id="client-name" autofocus="autofocus" minlength="3" maxlength="50"/>
+                            <span class="help-block">
+                                <form:errors path="name"/>
+                            </span>
+                        </div>
+                    </div>
+                </spring:bind>
+
+                <spring:bind path="realName">
+                    <div class="form-group <c:if test='${status.errors.hasFieldErrors("realName")}'>has-error</c:if>">
+                        <label for="client-real-name" class="col-lg-2 control-label">Имя</label>
+                        <div class="col-lg-3">
+                            <form:input path="realName" cssClass="form-control" id="client-real-name" minlength="2" maxlength="50"/>
+                            <span class="help-block">
+                                <form:errors path="realName"/>
+                            </span>
+                        </div>
+                    </div>
+                </spring:bind>
+
+                <spring:bind path="phone">
+                    <div class="form-group <c:if test='${status.errors.hasFieldErrors("phone")}'>has-error</c:if>">
+                        <label for="client-phone" class="col-lg-2 control-label">Телефон</label>
+                        <div class="col-lg-3">
+                            <form:input path="phone" cssClass="form-control" id="client-phone" minlength="11" placeholder="+7(978)123-45-67"/>
+                            <span class="help-block">
+                                <form:errors path="phone"/>
+                            </span>
+                        </div>
+                    </div>
+                </spring:bind>
+
+                <spring:bind path="note">
+                    <div class="form-group <c:if test='${status.errors.hasFieldErrors("note")}'>has-error</c:if>">
+                        <label for="client-note" class="col-lg-2 control-label">Примечание</label>
+                        <div class="col-lg-5">
+                            <form:textarea path="note" cssClass="form-control" id="client-note" rows="3"/>
+                            <span class="help-block">
+                                <form:errors path="note"/>
+                            </span>
+                        </div>
+                    </div>
+                </spring:bind>
+
+                <spring:bind path="referer">
+                    <div class="form-group <c:if test='${status.errors.hasFieldErrors("referer")}'>has-error</c:if>">
+                        <label class="col-lg-2 control-label">Откуда*</label>
+                        <div class="col-lg-10">
+                            <c:forEach var="referer" items="${referers}" varStatus="counter">
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="referer" id="referer" value="${referer.id}"
+                                        <c:if test="${referer.id == 1}"> checked</c:if>
+                                        />
+                                        ${referer.name}
+                                    </label>
+                                </div>
+                            </c:forEach>
+                            <span class="help-block">
+                                <form:errors path="referer"/>
+                            </span>
+                        </div>
+                    </div>
+                </spring:bind>
+
+                <input type="hidden" name="spId" value="${spId}" />
+
+                <div class="form-group">
+                    <div class="col-lg-10 col-lg-offset-2">
+                        <c:if test='${action=="profile"}'>
+                            <button type="reset" class="btn btn-default">Отмена</button>
+                        </c:if>
+                        <button type="submit" class="btn btn-primary" id="addOrderButton">
+                            <c:if test='${action=="create"}'>
+                                Создать
+                            </c:if>
+                            <c:if test='${action=="profile"}'>
+                                Сохранить
+                            </c:if>
+                        </button>
+                    </div>
+                </div>
+
+            </fieldset>
+        </form:form>
+
+        <!-- Отображение заказов -->
+        <c:if test='${action=="profile"}'>
+
+
+            <h3 id="navbar">Заказы:</h3>
+            <c:forEach var="order" items="${client.orders}">
+                <b>СП-${order.sp.id}</b> (${order.summaryPrice} р.):<br/>
+                <c:forEach var="orderPosition" items="${order.orderPositions}">
+                    - ${orderPosition.product.name} - ${orderPosition.priceOrdered} р.<br/>
+                </c:forEach>
+                <br/>
+            </c:forEach>
+
+
+        </c:if>
+
+
+
+
+
+
+    </div>
+
+    <!-- Phone mask script -->
+    <script type="text/javascript">
+        $(window).load(function () {
+            var phones = [{"mask": "+#(###)###-##-##"}];
+            $('#client-phone').inputmask({
+                mask: phones,
+                greedy: false,
+                definitions: {'#': {validator: "[0-9]", cardinality: 1}}
+            });
+        });
+    </script>
+
 </body>
-</html> 
+</html>

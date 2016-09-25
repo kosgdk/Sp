@@ -1,34 +1,32 @@
 package sp.data.entities;
 
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.Cache;
+
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
+import javax.persistence.*;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 @Entity
 @Table(name="sp")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Sp {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(generator = "SpIdGenerator")
+	@GenericGenerator(name = "SpIdGenerator", strategy = "sp.data.idgenerators.SpIdGenerator")
 	@Column(name = "id")
 	private int id;
 
 	@OneToMany(mappedBy = "sp", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private List<Order> orders;
+	@OrderBy(value = "id")
+	private Set<Order> orders;
 
 	@Column(name = "number")
 	private int number;
@@ -100,11 +98,11 @@ public class Sp {
 		this.id = id;
 	}
 
-	public List<Order> getOrders() {
+	public Set<Order> getOrders() {
 		return orders;
 	}
 
-	public void setOrders(List<Order> orders) {
+	public void setOrders(Set<Order> orders) {
 		this.orders = orders;
 	}
 

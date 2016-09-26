@@ -65,10 +65,10 @@ public class SpDaoHibernateImpl extends GenericDaoHibernateImpl<Sp, Integer> imp
 						"left join fetch s.orders o " +
 						"left join fetch o.client " +
 						"left join fetch o.orderPositions op " +
-						"left join fetch op.product where s.id = ?";
+						"left join fetch op.product where s.id = :id";
 
 		TypedQuery<Sp> query = currentSession().createQuery(hql, Sp.class);
-		query.setParameter(0, id);
+		query.setParameter("id", id);
 
 		try {
 			return  query.getSingleResult();

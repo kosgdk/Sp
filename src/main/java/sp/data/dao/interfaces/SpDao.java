@@ -8,7 +8,9 @@ public interface SpDao extends GenericDao<Sp, Integer>{
 	int getLastNumber();
 	
 	Sp getLastSp();
-	
-	Sp getByNumber(int number);
+
+	Sp getByIdLazy(int number);
+
+	Sp getByIdWithAllChildren(int number);
 
 }

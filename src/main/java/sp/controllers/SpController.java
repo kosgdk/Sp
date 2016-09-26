@@ -58,8 +58,6 @@ public class SpController {
 			return "404";
 		}
 
-		System.out.println(sp.getOrders().size());
-
 		model.addAttribute("sp", sp);
 
 		if (newClientName != null){
@@ -71,12 +69,10 @@ public class SpController {
 
 
 	// Создание заказа
-	@RequestMapping(value="/sp/{spId}", params = {"action=addOrder"})
+	@RequestMapping(value="/sp/*", params = {"action=addOrder"})
 	public String addOrder(@Valid @ModelAttribute Order order,
 						   Errors errors,
 						   Model model) {
-
-		System.out.println("Inside addOrder() method");
 
 		if (errors.hasErrors()){
 			Sp sp = spService.getByIdWithAllChildren(order.getSp().getId());
@@ -89,13 +85,6 @@ public class SpController {
 	}
 
 
-	// Autocomplete выбора продукта
-	@RequestMapping(value = "/getProducts", method = RequestMethod.GET)
-	@ResponseBody
-	public List<Product> getProducts(@RequestParam("query") String productName) {
-		return productService.searchByName(productName);
-	}
-
 	// Autocomplete выбора клиента
 	@RequestMapping(value = "/getClients", method = RequestMethod.GET)
 	@ResponseBody
@@ -105,10 +94,11 @@ public class SpController {
 		return clients;
 	}
 
+
 	// Создание заказа от нового клиента
 	@RequestMapping(value = "/addorder", params = {"newClient"})
-	public String addOrderFromNewClient(@ModelAttribute Client client, @RequestParam("spId") int spId, Model model) {
-		System.out.println("Inside addOrderFromNewClient() method");
+	public String addOrderFromNewClient(@ModelAttribute Client client, @RequestParam("spId") int spId) {
+
 		clientService.save(client);
 		Sp sp = spService.getById(spId);
 
@@ -123,77 +113,5 @@ public class SpController {
 		return "redirect:/sp/" + sp.getNumber();
 	}
 
-
-	/*
-	// Создание заказа
-	@RequestMapping(value = "/addorder")
-	public String addOrder(@RequestParam("spId") int spId, @RequestParam("name") String clientName, Model model) {
-		System.out.println("Inside addOrder() method");
-		Sp sp = spService.getById(spId);
-
-		Order order = new Order();
-		order.setClient(clientService.getByName(clientName));
-		order.setSp(sp);
-		order.setOrderStatus(orderStatusService.getById(1));
-		order.setDateOrdered(new Date());
-
-		orderService.save(order);
-
-		return "redirect:/sp/" + sp.getNumber();
-	}
-	*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-	// Autocomplete
-	/*
-	@RequestMapping(value = "/addorder", params = {"newClient"})
-	public String addOrder(Model model, @RequestParam("spId") Integer spId,
-						   				@RequestParam("name") String name,
-					  				    @RequestParam(value = "newClient", defaultValue = "off") String newClient,
-									    @RequestParam("realName") String realName,
-									    @RequestParam("phone") String phone,
-									    @RequestParam("note") String note,
-						   				@RequestParam("referer") Integer refererId) {
-		Client client;
-
-		if (newClient == "on"){
-			client = new Client();
-			client.setName(name);
-			client.setRealName(realName);
-			client.setPhone(Long.parseLong(phone));
-			client.setNote(note);
-			client.setReferer(refererService.getById(refererId));
-
-		} else {
-			client = clientService.getByName(name);
-		}
-
-		Sp sp = spService.getByNumber(spId);
-		model.addAttribute("sp", sp);
-
-		Order order = new Order();
-		order.setClient(client);
-		order.setSp(sp);
-		order.setOrderStatus(orderStatusService.getById(1));
-		order.setDateOrdered(new Date());
-
-		orderService.save(order);
-
-		System.out.println("inside addOrder() method");
-
-		return "redirect:/sp/" + sp.getNumber();
-	}
-	*/
 
 }

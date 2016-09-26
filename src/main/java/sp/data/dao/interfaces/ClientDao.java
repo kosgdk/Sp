@@ -6,5 +6,6 @@ import sp.data.entities.Client;
 
 public interface ClientDao extends GenericDao<Client, Integer>{
 
+    Client getByIdWithAllChildren(int id);
 
 }

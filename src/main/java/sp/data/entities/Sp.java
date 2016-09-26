@@ -3,6 +3,7 @@ package sp.data.entities;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Set;
@@ -32,7 +33,7 @@ public class Sp {
 	private int number;
 	
 	@Column(name = "percent")
-	private int percent = 15;
+	private BigDecimal percent;
 
 	@ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
 	@JoinColumn(name = "status", referencedColumnName = "id")
@@ -114,11 +115,11 @@ public class Sp {
 		this.number = number;
 	}
 
-	public int getPercent() {
+	public BigDecimal getPercent() {
 		return percent;
 	}
 
-	public void setPercent(int percent) {
+	public void setPercent(BigDecimal percent) {
 		this.percent = percent;
 	}
 

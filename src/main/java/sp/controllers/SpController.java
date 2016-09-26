@@ -52,6 +52,14 @@ public class SpController {
 						 Model model) {
 
 		Sp sp = spService.getByIdWithAllChildren(spId);
+
+		if (sp == null){
+			model.addAttribute("message", "СП не найдено.");
+			return "404";
+		}
+
+		System.out.println(sp.getOrders().size());
+
 		model.addAttribute("sp", sp);
 
 		if (newClientName != null){

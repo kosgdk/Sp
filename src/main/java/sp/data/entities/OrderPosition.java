@@ -33,6 +33,9 @@ public class OrderPosition {
 	@Column(name="price_ordered")
 	private BigDecimal priceOrdered;
 
+	@Column(name="price_vendor")
+	private BigDecimal priceVendor;
+
 	@Column(name="price_sp")
 	private BigDecimal priceSp;
 	
@@ -42,7 +45,10 @@ public class OrderPosition {
 	@Column(name="note")
 	private String note;
 	
-	
+	@Transient
+	private BigDecimal income;
+
+
 	public OrderPosition() {
 	}
 	
@@ -50,6 +56,10 @@ public class OrderPosition {
 		this.product = product;
 		this.priceOrdered = product.getPrice();
 		this.quantity = quantity;
+	}
+
+	private void calculateIncome(){
+		income = (priceSp.subtract(priceVendor)).multiply(new BigDecimal(quantity));
 	}
 	
 	public int getId() {
@@ -84,6 +94,14 @@ public class OrderPosition {
 		this.priceOrdered = priceOrdered;
 	}
 
+	public BigDecimal getPriceVendor() {
+		return priceVendor;
+	}
+
+	public void setPriceVendor(BigDecimal priceVendor) {
+		this.priceVendor = priceVendor;
+	}
+
 	public BigDecimal getPriceSp() {
 		return priceSp;
 	}
@@ -108,6 +126,14 @@ public class OrderPosition {
 		this.note = note;
 	}
 
+	public BigDecimal getIncome() {
+		calculateIncome();
+		return income;
+	}
+
+	public void setIncome(BigDecimal income) {
+		this.income = income;
+	}
 
 	@Override
 	public String toString() {

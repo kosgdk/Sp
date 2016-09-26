@@ -85,6 +85,11 @@ public class Order {
 
 
 	public BigDecimal getSummaryPrice(){
+		calculateSUmmaryPrice();
+		return this.summaryPrice;
+	}
+
+	private void calculateSUmmaryPrice(){
 		BigDecimal summaryPrice = new BigDecimal(0);
 		if (orderPositions != null){
 			for (OrderPosition orderPosition : orderPositions) {
@@ -92,9 +97,7 @@ public class Order {
 			}
 		}
 		this.summaryPrice = summaryPrice;
-		return this.summaryPrice;
 	}
-
 
 
 	// Getters and setters

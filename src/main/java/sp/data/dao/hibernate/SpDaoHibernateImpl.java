@@ -2,6 +2,7 @@ package sp.data.dao.hibernate;
 
 import java.util.List;
 
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
@@ -59,20 +60,21 @@ public class SpDaoHibernateImpl extends GenericDaoHibernateImpl<Sp, Integer> imp
 
 	@Override
 	public Sp getByIdWithAllChildren(int id) {
-		CriteriaBuilder cb = currentSession().getCriteriaBuilder();
-		CriteriaQuery<Sp> q = cb.createQuery(Sp.class);
-		Root<Sp> root = q.from(Sp.class);
 
-		Fetch<Sp, Order> spOrdedFetch = root.fetch("orders");
-		spOrdedFetch.fetch("orderPositions", JoinType.LEFT).fetch("product", JoinType.LEFT);
-		spOrdedFetch.fetch("client");
-		root.fetch("status");
+		String hql = "from Sp s " +
+						"left join fetch s.orders o " +
+						"left join fetch o.client " +
+						"left join fetch o.orderPositions op " +
+						"left join fetch op.product where s.id = ?";
 
-		q.select(root);
-		q.where(cb.equal(root.<String>get("id"), id));
+		TypedQuery<Sp> query = currentSession().createQuery(hql, Sp.class);
+		query.setParameter(0, id);
 
-		TypedQuery<Sp> tq = currentSession().createQuery(q);
-
-		return tq.getResultList().get(0);
+		try {
+			return  query.getSingleResult();
+		} catch (NoResultException e){
+			return null;
+		}
 	}
+
 }

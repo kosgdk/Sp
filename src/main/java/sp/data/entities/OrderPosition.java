@@ -32,6 +32,9 @@ public class OrderPosition {
 	
 	@Column(name="price_ordered")
 	private BigDecimal priceOrdered;
+
+	@Column(name="price_sp")
+	private BigDecimal priceSp;
 	
 	@Column(name="quantity")
 	private int quantity;
@@ -43,11 +46,11 @@ public class OrderPosition {
 	public OrderPosition() {
 	}
 	
-	public OrderPosition(Product product) {
+	public OrderPosition(Product product, int quantity) {
 		this.product = product;
 		this.priceOrdered = product.getPrice();
+		this.quantity = quantity;
 	}
-
 	
 	public int getId() {
 		return id;
@@ -81,6 +84,14 @@ public class OrderPosition {
 		this.priceOrdered = priceOrdered;
 	}
 
+	public BigDecimal getPriceSp() {
+		return priceSp;
+	}
+
+	public void setPriceSp(BigDecimal priceSp) {
+		this.priceSp = priceSp;
+	}
+
 	public int getQuantity() {
 		return quantity;
 	}
@@ -96,6 +107,7 @@ public class OrderPosition {
 	public void setNote(String note) {
 		this.note = note;
 	}
+
 
 	@Override
 	public String toString() {

@@ -4,6 +4,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 
 @Entity
@@ -17,13 +18,13 @@ public class Properties {
 	private int id;
 
 	@Column(name="percent_sp")
-	private int percenrSp;
+	private BigDecimal percentSp;
 
 	@Column(name="percent_discount")
-	private int percenrDiscount;
+	private BigDecimal percentDiscount;
 
 	@Column(name="percent_bank_comission")
-	private int percenrBankComission;
+	private BigDecimal percentBankComission;
 
 
 	public Properties() {
@@ -38,27 +39,27 @@ public class Properties {
 		this.id = id;
 	}
 
-	public int getPercenrSp() {
-		return percenrSp;
-	}
+    public BigDecimal getPercentSp() {
+        return percentSp;
+    }
 
-	public void setPercenrSp(int percenrSp) {
-		this.percenrSp = percenrSp;
-	}
+    public void setPercentSp(BigDecimal percentSp) {
+        this.percentSp = percentSp;
+    }
 
-	public int getPercenrDiscount() {
-		return percenrDiscount;
-	}
+    public BigDecimal getPercentDiscount() {
+        return percentDiscount;
+    }
 
-	public void setPercenrDiscount(int percenrDiscount) {
-		this.percenrDiscount = percenrDiscount;
-	}
+    public void setPercentDiscount(BigDecimal percentDiscount) {
+        this.percentDiscount = percentDiscount;
+    }
 
-	public int getPercenrBankComission() {
-		return percenrBankComission;
-	}
+    public BigDecimal getPercentBankComission() {
+        return percentBankComission;
+    }
 
-	public void setPercenrBankComission(int percenrBankComission) {
-		this.percenrBankComission = percenrBankComission;
-	}
+    public void setPercentBankComission(BigDecimal percentBankComission) {
+        this.percentBankComission = percentBankComission;
+    }
 }

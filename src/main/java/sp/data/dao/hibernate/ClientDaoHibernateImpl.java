@@ -24,9 +24,9 @@ public class ClientDaoHibernateImpl extends GenericDaoHibernateImpl<Client, Inte
         CriteriaQuery<Client> q = cb.createQuery(Client.class);
         Root<Client> root = q.from(Client.class);
 
-        Fetch<Client, Order> ClientOrdedFetch = root.fetch("orders");
-        ClientOrdedFetch.fetch("orderPositions", JoinType.LEFT).fetch("product", JoinType.LEFT);
-        ClientOrdedFetch.fetch("sp", JoinType.LEFT);
+        Fetch<Client, Order> ClientOrderFetch = root.fetch("orders");
+        ClientOrderFetch.fetch("orderPositions", JoinType.LEFT).fetch("product", JoinType.LEFT);
+        ClientOrderFetch.fetch("sp", JoinType.LEFT);
 
         q.select(root);
         q.where(cb.equal(root.<String>get("id"), id));

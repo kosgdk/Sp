@@ -46,8 +46,8 @@ public abstract class GenericDaoHibernateImpl <E, I extends Serializable> implem
 	public List<E> searchByName(String name) {
 		String[] words = name.split(" ");
 
-		CriteriaBuilder criteriaBuilder = currentSession().getCriteriaBuilder();
-		CriteriaQuery<E> criteriaQuery = criteriaBuilder.createQuery(daoType);
+		CriteriaBuilder cb = currentSession().getCriteriaBuilder();
+		CriteriaQuery<E> criteriaQuery = cb.createQuery(daoType);
 		Root<E> root = criteriaQuery.from(daoType);
 		criteriaQuery.select(root);
 
@@ -55,7 +55,7 @@ public abstract class GenericDaoHibernateImpl <E, I extends Serializable> implem
 
 		for (String word : words) {
 			System.out.println(word);
-			predicates.add(criteriaBuilder.like(root.get("name"), "%"+word+"%"));
+			predicates.add(cb.like(cb.lower(root.get("name")), "%"+word.toLowerCase()+"%"));
 		}
 
 		criteriaQuery.where(predicates.toArray(new Predicate[]{}));

@@ -47,6 +47,18 @@
                         </div>
                     </spring:bind>
 
+                    <spring:bind path="dateOrdered">
+                        <div class="form-group <c:if test='${status.errors.hasFieldErrors("dateOrdered")}'>has-error</c:if>">
+                            <label for="date-picker" class="col-lg-2 control-label">Дата заказа</label>
+                            <div class="col-lg-2">
+                                <form:input path="dateOrdered" type="date" cssClass="form-control" id="date-picker"/>
+                                <span class="help-block">
+                                    <form:errors path="dateOrdered"/>
+                                </span>
+                            </div>
+                        </div>
+                    </spring:bind>
+
                     <input type="hidden" name="sp" value="${sp.id}">
                     <input type="hidden" name="orderStatus" value="1">
 
@@ -87,7 +99,7 @@
 
     <!-- Автозаполнение текущей даты -->
     <script type="text/javascript">
-        document.getElementById('datePicker').valueAsDate = new Date();
+        document.getElementById('date-picker').valueAsDate = new Date();
     </script>
 
 	<!-- Client autocomplete script -->
@@ -104,7 +116,8 @@
                                 return { value: item.name, data: item.id };
                             })
                         };
-                    }
+                    },
+                    onSelect: function (suggestion) {document.getElementById("client-id").setAttribute("value", suggestion.data)}
                 });
 		});
 

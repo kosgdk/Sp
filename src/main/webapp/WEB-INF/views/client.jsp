@@ -28,9 +28,11 @@
 
         <c:if test='${action=="create"}'>
             <spring:url value="/create_client" var="formUrl" />
+            /create_client
         </c:if>
         <c:if test='${action=="profile"}'>
             <spring:url value="/client/${client.id}" var="formUrl" />
+            /client/${client.id}
         </c:if>
 
 
@@ -45,6 +47,11 @@
                         Профиль клиента <b>${client.name}</b>
                     </c:if>
                 </legend>
+
+                <c:if test='${action=="profile"}'>
+                    <input type="hidden" name="id" value="${client.id}"/>
+                </c:if>
+
 
                 <spring:bind path="name">
                     <div class="form-group <c:if test='${status.errors.hasFieldErrors("name")}'>has-error</c:if>">
@@ -152,12 +159,11 @@
 
         </c:if>
 
-
-
-
-
-
     </div>
+
+
+
+
 
     <!-- Phone mask script -->
     <script type="text/javascript">

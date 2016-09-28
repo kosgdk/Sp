@@ -18,13 +18,10 @@
         </c:if>
     </title>
 
-
-
 </head>
 <body>
     <jsp:include page="../views/fragments/header.jsp" />
     <div class="container">
-
 
         <c:if test='${action=="create"}'>
             <spring:url value="/create_client" var="formUrl" />
@@ -32,9 +29,7 @@
         </c:if>
         <c:if test='${action=="profile"}'>
             <spring:url value="/client/${client.id}" var="formUrl" />
-            /client/${client.id}
         </c:if>
-
 
         <form:form action="${formUrl}" method="POST" modelAttribute="client" cssClass="form-horizontal">
             <fieldset>
@@ -51,7 +46,6 @@
                 <c:if test='${action=="profile"}'>
                     <input type="hidden" name="id" value="${client.id}"/>
                 </c:if>
-
 
                 <spring:bind path="name">
                     <div class="form-group <c:if test='${status.errors.hasFieldErrors("name")}'>has-error</c:if>">
@@ -146,24 +140,20 @@
         <!-- Отображение заказов -->
         <c:if test='${action=="profile"}'>
 
-
             <h3 id="navbar">Заказы:</h3>
             <c:forEach var="order" items="${client.orders}">
                 <b>СП-${order.sp.id}</b> (${order.summaryPrice} р.):<br/>
+
                 <c:forEach var="orderPosition" items="${order.orderPositions}">
                     - ${orderPosition.product.name} - ${orderPosition.priceOrdered} р.<br/>
                 </c:forEach>
                 <br/>
-            </c:forEach>
 
+            </c:forEach>
 
         </c:if>
 
     </div>
-
-
-
-
 
     <!-- Phone mask script -->
     <script type="text/javascript">

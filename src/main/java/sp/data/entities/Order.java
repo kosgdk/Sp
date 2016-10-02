@@ -13,6 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
+import javax.validation.constraints.Size;
 
 
 @Entity
@@ -38,6 +39,10 @@ public class Order {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "sp")
 	private Sp sp;
+
+	@Size(max = 500, message = "{order.note.size}")
+	@Column(name = "note")
+	private String note;
 	
 	@NotNull(message = "{order.dateOrdered.invalid}")
 	@Past(message = "{order.dateOrdered.shouldBePast}")
@@ -83,17 +88,11 @@ public class Order {
 		this.orderStatus = orderStatus;
 	}
 
-
-	public BigDecimal getSummaryPrice(){
-		calculateSUmmaryPrice();
-		return this.summaryPrice;
-	}
-
-	private void calculateSUmmaryPrice(){
+	private void calculateSummaryPrice(){
 		BigDecimal summaryPrice = new BigDecimal(0);
 		if (orderPositions != null){
 			for (OrderPosition orderPosition : orderPositions) {
-				summaryPrice = summaryPrice.add(orderPosition.getPriceOrdered());
+				summaryPrice = summaryPrice.add(orderPosition.getPriceSp());
 			}
 		}
 		this.summaryPrice = summaryPrice;
@@ -132,6 +131,14 @@ public class Order {
 
 	public void setSp(Sp sp) {
 		this.sp = sp;
+	}
+
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
 	}
 
 	public Date getDateOrdered() {
@@ -188,6 +195,11 @@ public class Order {
 
 	public void setDatecompleted(Date datecompleted) {
 		this.datecompleted = datecompleted;
+	}
+
+	public BigDecimal getSummaryPrice(){
+		calculateSummaryPrice();
+		return this.summaryPrice;
 	}
 
 

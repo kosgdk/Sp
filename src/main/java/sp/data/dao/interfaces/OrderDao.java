@@ -5,7 +5,7 @@ import sp.data.dao.generic.GenericDao;
 import sp.data.entities.Order;
 
 public interface OrderDao extends GenericDao<Order, Integer>{
-	
-	//TODO: add some specific methods
+
+    Order getByIdWithAllChildren(int id);
 
 }

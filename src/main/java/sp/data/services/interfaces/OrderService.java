@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface OrderService extends GenericService<Order, Integer> {
 
-
+    Order getByIdWithAllChildren(int id);
 	
 }

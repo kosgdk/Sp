@@ -13,15 +13,6 @@ public class NameToClientConverter implements Converter<String, Client> {
 
 	@Override
 	public Client convert(String name) {
-		System.out.println("Inside NameToClientConverter");
-		Client client = clientService.getByName(name);
-
-		if (client == null){
-			System.out.println("Client is null");
-		} else {
-			System.out.println("Client is OK");
-		}
-
-		return client;
+		return clientService.getByName(name);
 	}
 }

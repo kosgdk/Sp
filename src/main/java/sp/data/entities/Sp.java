@@ -2,6 +2,8 @@ package sp.data.entities;
 
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
+import sp.data.converters.SpStatusEnumConverter;
+import sp.data.entities.enumerators.SpStatus;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
@@ -13,6 +15,9 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name="sp")
@@ -31,12 +36,15 @@ public class Sp {
 
 	@Column(name = "number")
 	private int number;
-	
+
+	@NotNull
+	@DecimalMin(value = "0", message = "{sp.percent.negative}")
+	@DecimalMax(value = "0.15", message = "{sp.percent.max}")
 	@Column(name = "percent")
 	private BigDecimal percent;
 
-	@ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-	@JoinColumn(name = "status", referencedColumnName = "id")
+	@Column(name = "status_enum")
+	@Convert(converter = SpStatusEnumConverter.class)
 	private SpStatus status;
 
 	@Temporal(TemporalType.DATE)
@@ -70,27 +78,15 @@ public class Sp {
 	
 	public Sp() {
 	}
-	
-	
-	
-	public Sp(int number, Date dateStart, Date dateEnd) {
-		super();
-		this.number = number;
-		this.dateStart = dateStart;
-		this.dateEnd = dateEnd;
-		this.dateToPay = calculateDateToPay(dateEnd);
-	}
 
-
-	public Date calculateDateToPay(Date dateEnd){
+	public void calculateDateToPay(Date dateEnd){
 		Calendar cal = Calendar.getInstance();
         cal.setTime(dateEnd);
         cal.add(Calendar.DATE, 3); // default - 3 days
-        return cal.getTime();
+        dateToPay = cal.getTime();
 	}
 	
-	
-	
+
 	public int getId() {
 		return id;
 	}
@@ -145,7 +141,7 @@ public class Sp {
 
 	public void setDateEnd(Date dateEnd) {
 		this.dateEnd = dateEnd;
-		this.dateToPay = calculateDateToPay(dateEnd);
+		calculateDateToPay(dateEnd);
 	}
 
 	public Date getDateToPay() {
@@ -191,10 +187,7 @@ public class Sp {
 
 	@Override
 	public String toString() {
-		return "Sp [id=" + id + ",\n name=" + number + "\n percent=" + percent + "%" + ",\n status=" + status + ",\n dateStart=" + dateStart
-				+ ",\n dateEnd=" + dateEnd + ",\n dateToPay=" + dateToPay + ",\n dateSent=" + dateSent
-				+ ",\n dateToRecieve=" + dateToRecieve + ",\n dateRecieved=" + dateRecieved + ",\n dateToDistribute="
-				+ dateToDistribute + "]";
+		return "СП-" + id;
 	}
 
 	

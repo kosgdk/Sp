@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import sp.data.entities.*;
 import sp.data.services.interfaces.ClientService;
 import sp.data.services.interfaces.RefererService;
+import sp.data.validators.ClientValidator;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -27,6 +28,9 @@ public class ClientController {
 
 	@Autowired
 	Validator validator;
+
+	@Autowired
+	ClientValidator clientValidator;
 
 	@Autowired
 	RefererService refererService;
@@ -61,6 +65,8 @@ public class ClientController {
 							 Model model,
 							 RedirectAttributes redirectAttributes){
 
+		clientValidator.validate(client, errors);
+
 		if (errors.hasErrors()){
 			model.addAttribute("spId", spId);
 			model.addAttribute("action", "create");
@@ -79,7 +85,7 @@ public class ClientController {
 
 
 	// Переход на страницу профиля клиента
-	@RequestMapping("/client/{clientId}")
+	@RequestMapping(value = "/client/{clientId}", method = RequestMethod.GET)
 	public String clientProfilePage(@PathVariable("clientId") Integer clientId,
 								   Model model){
 
@@ -91,7 +97,7 @@ public class ClientController {
 
 
 	// Обработка запроса на обновление клиента
-	@RequestMapping(value="/client/*", method = RequestMethod.POST)
+	@RequestMapping(value="/client/{clientId}", method = RequestMethod.POST)
 	public String updateClient(@Valid @ModelAttribute Client client,
 							   Errors errors,
 							   Model model){

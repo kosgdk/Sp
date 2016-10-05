@@ -13,6 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 
@@ -51,13 +52,16 @@ public class Order {
 	private Date dateOrdered;
 	
 	@NotNull
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.JOIN)
 	@JoinColumn(name = "status", referencedColumnName = "id")
 	private OrderStatus orderStatus;
 	
 	@Column(name = "prepaid")
 	private BigDecimal prepaid;
-	
+
+	@NotNull(message = "{order.weight.isEmpty}")
+	@Pattern(regexp = "\\d+", message="{order.weight.negative}")
 	@Column(name = "weight")
 	private int weight;
 	
@@ -96,6 +100,13 @@ public class Order {
 			}
 		}
 		this.summaryPrice = summaryPrice;
+	}
+
+	private void calculateWeight(){
+		weight = 0;
+		for (OrderPosition orderPosition : orderPositions) {
+			weight +=orderPosition.getProduct().getWeight();
+		}
 	}
 
 
@@ -166,6 +177,7 @@ public class Order {
 	}
 
 	public int getWeight() {
+		calculateWeight();
 		return weight;
 	}
 

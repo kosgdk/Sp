@@ -25,7 +25,6 @@
 
         <c:if test='${action=="create"}'>
             <spring:url value="/create_client" var="formUrl" />
-            /create_client
         </c:if>
         <c:if test='${action=="profile"}'>
             <spring:url value="/client/${client.id}" var="formUrl" />
@@ -137,32 +136,44 @@
             </fieldset>
         </form:form>
 
+
+
         <!-- Отображение заказов -->
         <c:if test='${action=="profile"}'>
-
             <h3 id="navbar">Заказы:</h3>
+
             <c:forEach var="order" items="${client.orders}">
-                <b>СП-${order.sp.id}</b> (${order.summaryPrice} р.):<br/>
+                <div class="panel panel-default" style="width: 1000px">
 
-                <c:forEach var="orderPosition" items="${order.orderPositions}">
-                    - ${orderPosition.product.name} - ${orderPosition.priceOrdered} р.<br/>
-                </c:forEach>
-                <br/>
-
+                    <div class="panel-heading">
+                        <a href='<spring:url value="/sp/${order.sp.id}"/>'>СП-${order.sp.id}</a> - ${order.orderStatus.name}
+                        &nbsp;|&nbsp;
+                        <a href='<spring:url value="/order/${order.id}"/>'><i class="fa fa-pencil-square" aria-hidden="true"></i>&nbsp;Редактировать</a>
+                        &nbsp;|&nbsp;
+                        <a href='<spring:url value="/order/${order.id}"/>'><i class="fa fa-trash" aria-hidden="true"></i>&nbsp;Удалить</a>
+                        <c:if test="${order.note!=null}">
+                            <br/><i>${order.note}</i>
+                        </c:if>
+                    </div>
+                    <div class="panel-body">
+                        <c:forEach var="orderPosition" items="${order.orderPositions}">
+                            - ${orderPosition.product.name} - ${orderPosition.priceOrdered} р.<br/>
+                        </c:forEach>
+                    </div>
+                </div>
             </c:forEach>
 
         </c:if>
+
 
     </div>
 
     <!-- Phone mask script -->
     <script type="text/javascript">
         $(window).load(function () {
-            var phones = [{"mask": "+#(###)###-##-##"}];
             $('#client-phone').inputmask({
-                mask: phones,
-                greedy: false,
-                definitions: {'#': {validator: "[0-9]", cardinality: 1}}
+                mask: {"mask": "+9(999)999-99-99"},
+                greedy: false
             });
         });
     </script>

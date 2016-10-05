@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import sp.data.dao.generic.GenericDaoHibernateImpl;
 import sp.data.dao.interfaces.SpDao;
-import sp.data.entities.Order;
 import sp.data.entities.Sp;
 
 @Repository("SpDaoHibernateImpl")
@@ -33,7 +32,6 @@ public class SpDaoHibernateImpl extends GenericDaoHibernateImpl<Sp, Integer> imp
 		CriteriaBuilder cb = currentSession().getCriteriaBuilder();
 		CriteriaQuery<Sp> q = cb.createQuery(Sp.class);
 		Root<Sp> root = q.from(Sp.class);
-		root.fetch("status");
 
 		q.select(root);	
 		q.orderBy(cb.desc(root.get("id")));	

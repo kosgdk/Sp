@@ -22,7 +22,17 @@
 	<div class="container">
 
         <h2>СП-${sp.number}</h2>
-        <br/><br/>
+
+        <ul class="breadcrumb">
+            <li class="before-status"><i class="fa fa-check" aria-hidden="true"></i>Сбор</li>
+            <li class="before-status"><i class="fa fa-check" aria-hidden="true"></i>Оплата</li>
+            <li><span class="active">Комплектуется</span></li>
+            <li><a href="">Оплачен</a></li>
+            <li>Отправлен</li>
+            <li>Получен</li>
+            <li>Раздаётся</li>
+            <li>Завершён</li>
+        </ul>
 
             <!-- Форма добавления нового заказа -->
             <spring:url value="/sp/${sp.id}" var="formUrl" />
@@ -42,7 +52,6 @@
                                     <form:errors path="client"/>
                                     <a href='<spring:url value="/create_client?sp=${sp.id}"/>'>Создать нового клиента</a>
                                 </span>
-
                             </div>
                         </div>
                     </spring:bind>
@@ -75,17 +84,16 @@
 
         <!-- Отображение заказов -->
         <c:if test="${sp.orders.size()>0}">
-
             <c:forEach var="order" items="${sp.orders}" varStatus="counter">
-
-                <b>${counter.count}. ${order.client.name}</b> - ${order.summaryPrice} р.
-                <br/>
-
+                <b>
+                    <a href='<spring:url value="/order/${order.id}"/>'>${counter.count}</a>
+                    . ${order.client.name}</b> - ${order.summaryPrice} р.<br/>
                 <c:forEach var="orderPosition" items="${order.orderPositions}" varStatus="counter2">
                     - ${orderPosition.product.name}; ${orderPosition.priceOrdered} р.<br/>
+                    <c:if test="${orderPosition.note != null}">
+                        <span class="text-muted"><i>&nbsp;&nbsp;${orderPosition.note}</i></span><br/>
+                    </c:if>
                 </c:forEach>
-
-
             </c:forEach>
         </c:if>
 

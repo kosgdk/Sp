@@ -13,7 +13,6 @@ public class IdToSpConverter implements Converter<String, Sp> {
 
 	@Override
 	public Sp convert(String id) {
-		System.out.println("Inside IdToSpConverter");
 		return spService.getById(Integer.parseInt(id));
 	}
 }

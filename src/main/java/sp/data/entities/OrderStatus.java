@@ -45,9 +45,25 @@ public class OrderStatus {
 	
 	@Override
 	public String toString() {
-		return "OrderStatus [id=" + id + ", name=" + name + "]";
+		return name;
 	}
 
-	
-	
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof OrderStatus)) return false;
+
+		OrderStatus that = (OrderStatus) o;
+
+		if (id != that.id) return false;
+		return name.equals(that.name);
+
+	}
+
+	@Override
+	public int hashCode() {
+		int result = id;
+		result = 31 * result + name.hashCode();
+		return result;
+	}
 }

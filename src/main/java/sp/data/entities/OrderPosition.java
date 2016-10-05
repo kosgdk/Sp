@@ -9,6 +9,9 @@ import javax.persistence.*;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 
 @Entity
@@ -20,28 +23,39 @@ public class OrderPosition {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="id")
 	private int id;
-	
+
+	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="order_id")
 	private Order order;
-	
+
+	@NotNull(message = "{orderPosition.product.isEmpty}")
 	@ManyToOne(cascade=CascadeType.PERSIST, fetch = FetchType.EAGER)
 	@Fetch(FetchMode.JOIN)
 	@JoinColumn(name="product_id")
 	private Product product;
-	
+
+	@NotNull
+	@Min(0)
 	@Column(name="price_ordered")
 	private BigDecimal priceOrdered;
 
+	@NotNull
+	@Min(0)
 	@Column(name="price_vendor")
 	private BigDecimal priceVendor;
 
+	@NotNull(message = "{orderPosition.priceSp.invalid}")
+	@Min(value = 0, message = "{orderPosition.priceSp.invalid}")
 	@Column(name="price_sp")
 	private BigDecimal priceSp;
-	
+
+	@NotNull
+	@Min(1)
 	@Column(name="quantity")
 	private int quantity;
-	
+
+	@Size(max = 300)
 	@Column(name="note")
 	private String note;
 	

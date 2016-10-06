@@ -6,7 +6,7 @@ import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
 @Converter
-public class SpStatusEnumConverter implements AttributeConverter<SpStatus, Integer> {
+public class SpStatusConverter implements AttributeConverter<SpStatus, Integer> {
 
 	@Override
 	public Integer convertToDatabaseColumn(SpStatus status) {

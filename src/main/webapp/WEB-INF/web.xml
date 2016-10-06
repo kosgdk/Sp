@@ -2,8 +2,6 @@
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" version="3.1">
   <display-name>sp</display-name>
 
-
-
 	<filter>
 		<filter-name>encoding-filter</filter-name>
 		<filter-class>
@@ -47,6 +45,13 @@
 		<servlet-name>dispatcher</servlet-name>
 		<url-pattern>/</url-pattern>		
 	</servlet-mapping>
+
+	<jsp-config>
+		<jsp-property-group>
+			<url-pattern>*.jsp</url-pattern>
+			<trim-directive-whitespaces>true</trim-directive-whitespaces>
+		</jsp-property-group>
+	</jsp-config>
 
 
 </web-app>

@@ -2,7 +2,7 @@ package sp.data.entities;
 
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
-import sp.data.converters.SpStatusEnumConverter;
+import sp.data.converters.SpStatusConverter;
 import sp.data.entities.enumerators.SpStatus;
 
 import java.math.BigDecimal;
@@ -43,8 +43,8 @@ public class Sp {
 	@Column(name = "percent")
 	private BigDecimal percent;
 
-	@Column(name = "status_enum")
-	@Convert(converter = SpStatusEnumConverter.class)
+	@Column(name = "status")
+	@Convert(converter = SpStatusConverter.class)
 	private SpStatus status;
 
 	@Temporal(TemporalType.DATE)

@@ -21,7 +21,6 @@ public class OrderDaoHibernateImpl extends GenericDaoHibernateImpl<Order, Intege
         String hql = "from Order o " +
                 "left join fetch o.client " +
                 "left join fetch o.sp " +
-                "left join fetch o.orderStatus " +
                 "left join fetch o.place " +
                 "left join fetch o.orderPositions op " +
                 "left join fetch op.product where o.id = :id";

@@ -9,10 +9,12 @@ import org.springframework.validation.Validator;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import sp.data.entities.*;
+import sp.data.entities.Properties;
+import sp.data.entities.enumerators.OrderStatus;
 import sp.data.services.interfaces.*;
 
 import javax.validation.Valid;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @SessionAttributes(value = {"properties", "orderStatuses"})
@@ -27,8 +29,8 @@ public class OrderController {
 	}
 
 	@ModelAttribute("orderStatuses")
-	public List<OrderStatus> getOrderStatusesForSelect(){
-		return orderStatusService.getAll();
+	public List<OrderStatus> getOrderStatuses(){
+		return Arrays.asList(OrderStatus.values());
 	}
 
 	@Autowired
@@ -42,9 +44,6 @@ public class OrderController {
 
 	@Autowired
 	ProductService productService;
-
-	@Autowired
-	OrderStatusService orderStatusService;
 
 	@Autowired
 	OrderPositionService orderPositionService;
@@ -62,9 +61,10 @@ public class OrderController {
 							@ModelAttribute("orderPosition") OrderPosition orderPosition,
 							Model model){
 
+		System.out.println("inside orderPage()");
+
 		Order order = orderService.getByIdWithAllChildren(orderId);
 		model.addAttribute("order", order);
-
 		return "order";
 	}
 
@@ -76,10 +76,13 @@ public class OrderController {
 		return productService.searchByName(productName);
 	}
 
+
 	// Обработка запроса на добавление позиции
-	@RequestMapping(value = "/order/{orderId}", method = RequestMethod.POST)
+	@RequestMapping(value = "/order/{orderId}", params = {"action=add_position"})
 	public String createOrderPosition(@Valid @ModelAttribute OrderPosition orderPosition,
 									  Errors errors, Model model){
+
+		System.out.println("inside createOrderPosition()");
 
 		if (errors.hasErrors()){
 			Order order = orderService.getById(orderPosition.getOrder().getId());
@@ -90,4 +93,31 @@ public class OrderController {
 		orderPositionService.save(orderPosition);
 		return "redirect:/order/" + orderPosition.getOrder().getId();
 	}
+
+
+	// Обработка запроса на удаление позиции
+	@RequestMapping(value = "/order_position/{orderPositionId}", params = {"action=delete", "from_order"})
+	public String deleteOrderPosition(@PathVariable("orderPositionId") Integer orderPositionId,
+									  @RequestParam("from_order") Integer orderId){
+		System.out.println("inside deleteOrderPosition()");
+		orderPositionService.deleteById(orderPositionId);
+		return "redirect:/order/" + orderId;
+	}
+
+
+	// Обработка запроса на обновление заказа
+	@RequestMapping(value = "/order/{orderId}", params = {"action=update"})
+	public String updateOrder(@Valid @ModelAttribute Order order, Errors errors, @ModelAttribute("orderPosition") OrderPosition orderPosition, Model model){
+
+		System.out.println("inside updateOrder()");
+
+		if (errors.hasErrors()){
+			return "order";
+		}
+
+		orderService.update(order);
+		return "redirect:/order/" + order.getId();
+	}
+
+
 }

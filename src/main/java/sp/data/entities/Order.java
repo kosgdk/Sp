@@ -2,6 +2,8 @@ package sp.data.entities;
 
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
+import sp.data.converters.OrderStatusConverter;
+import sp.data.entities.enumerators.OrderStatus;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -11,10 +13,7 @@ import javax.persistence.*;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 
 @Entity
@@ -52,18 +51,19 @@ public class Order {
 	private Date dateOrdered;
 	
 	@NotNull
-	@ManyToOne(fetch = FetchType.EAGER)
-    @Fetch(FetchMode.JOIN)
-	@JoinColumn(name = "status", referencedColumnName = "id")
-	private OrderStatus orderStatus;
-	
+	@Column(name = "status")
+	@Convert(converter = OrderStatusConverter.class)
+	private OrderStatus status;
+
+	@NotNull(message = "{order.prepaid.isEmpty}")
+	@Min(value = 0, message = "{order.prePaid.negative}")
 	@Column(name = "prepaid")
 	private BigDecimal prepaid;
 
 	@NotNull(message = "{order.weight.isEmpty}")
-	@Pattern(regexp = "\\d+", message="{order.weight.negative}")
+	@Min(value = 0, message = "{order.weight.negative}")
 	@Column(name = "weight")
-	private int weight;
+	private Integer weight;
 	
 	@Column(name = "delivery_price")
 	private BigDecimal deliveryPrice;
@@ -75,37 +75,43 @@ public class Order {
 	
 	@Temporal(TemporalType.DATE)
 	@Column(name = "date_completed")
-	private Date datecompleted;
+	private Date dateCompleted;
 
 	@Transient
 	private BigDecimal summaryPrice;
-	
+
+	@Transient
+	private BigDecimal income;
+
 	
 	public Order() {
 	}
-	
-	public Order(Client client, Sp sp, Date dateOrdered, OrderStatus orderStatus) {
-		super();
-		this.client = client;
-		this.sp = sp;
-		this.dateOrdered = dateOrdered;
-		this.orderStatus = orderStatus;
-	}
+
 
 	private void calculateSummaryPrice(){
-		BigDecimal summaryPrice = new BigDecimal(0);
+		summaryPrice = new BigDecimal(0);
 		if (orderPositions != null){
 			for (OrderPosition orderPosition : orderPositions) {
-				summaryPrice = summaryPrice.add(orderPosition.getPriceSp());
+				summaryPrice = summaryPrice.add(orderPosition.getPriceSpSummary());
 			}
 		}
-		this.summaryPrice = summaryPrice;
 	}
 
 	private void calculateWeight(){
 		weight = 0;
-		for (OrderPosition orderPosition : orderPositions) {
-			weight +=orderPosition.getProduct().getWeight();
+		if (orderPositions != null) {
+			for (OrderPosition orderPosition : orderPositions) {
+				weight += (orderPosition.getProduct().getWeight() * orderPosition.getQuantity());
+			}
+		}
+	}
+
+	private void calculateIncome(){
+		income = new BigDecimal(0);
+		if (orderPositions != null) {
+			for (OrderPosition orderPosition : orderPositions) {
+				income = income.add(orderPosition.getIncome());
+			}
 		}
 	}
 
@@ -160,12 +166,12 @@ public class Order {
 		this.dateOrdered = dateOrdered;
 	}
 
-	public OrderStatus getOrderStatus() {
-		return orderStatus;
+	public OrderStatus getStatus() {
+		return status;
 	}
 
-	public void setOrderStatus(OrderStatus orderStatus) {
-		this.orderStatus = orderStatus;
+	public void setStatus(OrderStatus status) {
+		this.status = status;
 	}
 
 	public BigDecimal getPrepaid() {
@@ -176,12 +182,12 @@ public class Order {
 		this.prepaid = prepaid;
 	}
 
-	public int getWeight() {
+	public Integer getWeight() {
 		calculateWeight();
 		return weight;
 	}
 
-	public void setWeight(int weight) {
+	public void setWeight(Integer weight) {
 		this.weight = weight;
 	}
 
@@ -201,12 +207,12 @@ public class Order {
 		this.place = place;
 	}
 
-	public Date getDatecompleted() {
-		return datecompleted;
+	public Date getDateCompleted() {
+		return dateCompleted;
 	}
 
-	public void setDatecompleted(Date datecompleted) {
-		this.datecompleted = datecompleted;
+	public void setDateCompleted(Date datecompleted) {
+		this.dateCompleted = datecompleted;
 	}
 
 	public BigDecimal getSummaryPrice(){
@@ -214,14 +220,17 @@ public class Order {
 		return this.summaryPrice;
 	}
 
-
+	public BigDecimal getIncome() {
+		calculateIncome();
+		return income;
+	}
 
 	@Override
 	public String toString() {
 		return "Order [id=" + id + ",\n orderPositions=" + orderPositions + ",\n client=" + client + ",\n sp=" + sp
-				+ ",\n dateOrdered=" + dateOrdered + ",\n orderStatus=" + orderStatus + ",\n prepaid=" + prepaid
+				+ ",\n dateOrdered=" + dateOrdered + ",\n status=" + status + ",\n prepaid=" + prepaid
 				+ ",\n weight=" + weight + ",\n deliveryPrice=" + deliveryPrice + ",\n place=" + place
-				+ ",\n datecompleted=" + datecompleted + "]";
+				+ ",\n datecompleted=" + dateCompleted + "]";
 	}
 
 

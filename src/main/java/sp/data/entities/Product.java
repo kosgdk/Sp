@@ -146,9 +146,7 @@ public class Product {
 	
 	@Override
 	public String toString() {
-		return "Product [id=" + id + ", name=" + name + ", price=" + price + ", weight=" + weight + ", photo=" + Arrays.toString(photo)
-				+ ", link=" + link + ", vkId=" + vkId + ", imageLink=" + imageLink + ", deleted=" + deleted
-				+ ", vkPhotoId=" + vkPhotoId + "]";
+		return name;
 	}
 
 }

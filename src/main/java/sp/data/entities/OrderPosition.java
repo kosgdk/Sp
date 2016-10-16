@@ -58,24 +58,40 @@ public class OrderPosition {
 	@Size(max = 300)
 	@Column(name="note")
 	private String note;
+
+	@Transient
+	private BigDecimal priceSpSummary;
 	
 	@Transient
 	private BigDecimal income;
 
+	@Transient
+	private int weight;
+
 
 	public OrderPosition() {
 	}
-	
-	public OrderPosition(Product product, int quantity) {
-		this.product = product;
-		this.priceOrdered = product.getPrice();
-		this.quantity = quantity;
-	}
+
 
 	private void calculateIncome(){
-		income = (priceSp.subtract(priceVendor)).multiply(new BigDecimal(quantity));
+		if(priceSp != null & priceVendor != null ) {
+			income = (priceSp.subtract(priceVendor)).multiply(new BigDecimal(quantity));
+		}
 	}
-	
+
+	private void calculatePriceSpSummary(){
+		if(priceSp != null){
+			priceSpSummary = (priceSp.multiply(new BigDecimal(quantity)));
+		}
+	}
+
+	private void calculateWeight() {
+		if (product != null){
+			weight = product.getWeight() * quantity;
+		}
+	}
+
+
 	public int getId() {
 		return id;
 	}
@@ -147,6 +163,24 @@ public class OrderPosition {
 
 	public void setIncome(BigDecimal income) {
 		this.income = income;
+	}
+
+	public BigDecimal getPriceSpSummary() {
+		calculatePriceSpSummary();
+		return priceSpSummary;
+	}
+
+	public void setPriceSpSummary(BigDecimal priceSpSummary) {
+		this.priceSpSummary = priceSpSummary;
+	}
+
+	public int getWeight() {
+		calculateWeight();
+		return weight;
+	}
+
+	public void setWeight(int weight) {
+		this.weight = weight;
 	}
 
 	@Override

@@ -12,8 +12,15 @@ public enum SpStatus {
 
 	private final int id;
 
+	private String name;
+
 	SpStatus(int id) {
 		this.id = id;
+	}
+
+	public String getName() {
+		name = getById(id).toString();
+		return name;
 	}
 
 	public int getId() {

@@ -40,6 +40,14 @@ public enum SpStatus {
 			default: return null;
 		}
 	}
+
+	public static SpStatus getByName(String name){
+		for (SpStatus status : SpStatus.values()) {
+			if (status.toString().equals(name)) return status;
+		}
+		return null;
+	}
+
 	@Override
 	public String toString(){
 		switch (id) {

@@ -53,24 +53,23 @@ public class Order {
 	@NotNull
 	@Column(name = "status")
 	@Convert(converter = OrderStatusConverter.class)
-	private OrderStatus status;
+	private OrderStatus status = OrderStatus.UNPAID;
 
 	@NotNull(message = "{order.prepaid.isEmpty}")
 	@Min(value = 0, message = "{order.prePaid.negative}")
 	@Column(name = "prepaid")
-	private BigDecimal prepaid;
+	private BigDecimal prepaid = new BigDecimal(0);
 
 	@NotNull(message = "{order.weight.isEmpty}")
 	@Min(value = 0, message = "{order.weight.negative}")
 	@Column(name = "weight")
-	private Integer weight;
+	private Integer weight = 0;
 	
 	@Column(name = "delivery_price")
 	private BigDecimal deliveryPrice;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "place", referencedColumnName = "id")
-	//@Fetch(FetchMode.JOIN)
 	private Place place;
 	
 	@Temporal(TemporalType.DATE)

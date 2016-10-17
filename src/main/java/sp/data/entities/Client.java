@@ -27,6 +27,7 @@ public class Client {
 
 	@JsonIgnore
 	@OneToMany(mappedBy="client", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@OrderBy(value = "id desc")
 	private Set<Order> orders;
 
 	@NotNull(message = "{client.name.isEmpty}")

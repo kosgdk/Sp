@@ -96,7 +96,7 @@ public abstract class GenericDaoHibernateImpl <E, I extends Serializable> implem
 
 	@Override
 	public void update(E entity) {
-		currentSession().saveOrUpdate(entity);
+		currentSession().merge(entity);
 	}
 
 	@Override

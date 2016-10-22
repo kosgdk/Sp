@@ -51,7 +51,6 @@
 			<input type="hidden" name="action" value="update"/>
 			<input type="hidden" name="id" value="${order.id}"/>
 			<input type="hidden" name="client" value="${order.client.name}"/>
-			<input type="hidden" name="sp" value="${order.sp.id}"/>
 			<input type="hidden" name="weight" value="${order.weight}"/>
 			<c:forEach var="orderPositionFromList" items="${order.orderPositions}" varStatus="i">
 			    <input type="hidden" name="orderPositions[${i.count-1}]" value="${orderPositionFromList.id}"/>
@@ -64,6 +63,26 @@
 						<label for="${field}" class="col-lg-2 control-label">Статус</label>
 						<div class="col-lg-2">
 							<form:select path="${field}" items="${orderStatuses}" itemValue="id" itemLabel="name" onchange="enableDisableOrderFields()" id="${field}" cssClass="form-control"/>
+							<span class="help-block nowrap"><form:errors path="${field}"/></span>
+						</div>
+					</div>
+				</spring:bind>
+
+				<c:set var="field" value="sp"/>
+				<spring:bind path="${field}">
+					<div class="form-group">
+						<label for="${field}" class="col-lg-2 control-label">СП</label>
+						<div class="col-lg-2">
+							<form:select path="${field}" id="${field}" itemLabel="id" itemValue="id" cssClass="form-control">
+								<c:forEach var="spId" items="${availableSpIds}">
+									<c:if test="${order.sp.id == spId}">
+										<form:option  value="${order.sp}" label="${order.sp.id}"/>
+									</c:if>
+									<c:if test="${order.sp.id != spId}">
+										<form:option value="${spId}"/>
+									</c:if>
+								</c:forEach>
+							</form:select>
 							<span class="help-block nowrap"><form:errors path="${field}"/></span>
 						</div>
 					</div>

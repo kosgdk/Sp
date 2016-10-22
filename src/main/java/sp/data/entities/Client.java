@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.util.Set;
 
@@ -17,6 +18,7 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name="clients")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@DynamicUpdate
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NONE)
 public class Client {
 
@@ -131,8 +133,37 @@ public class Client {
 
 	@Override
 	public String toString() {
-		return getName();
+		return name;
 	}
-	
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Client)) return false;
+
+		Client client = (Client) o;
+
+		if (id != client.id) return false;
+		//if (orders != null ? !orders.equals(client.orders) : client.orders != null) return false;
+		if (name != null ? !name.equals(client.name) : client.name != null) return false;
+		if (realName != null ? !realName.equals(client.realName) : client.realName != null) return false;
+		if (phone != null ? !phone.equals(client.phone) : client.phone != null) return false;
+		if (note != null ? !note.equals(client.note) : client.note != null) return false;
+		//if (referer != null ? referer.getId() != client.getId() : client.referer != null) return false;
+
+		return true;
+
+	}
+
+	@Override
+	public int hashCode() {
+		int result = id;
+		//result = 31 * result + (orders != null ? orders.hashCode() : 0);
+		result = 31 * result + (name != null ? name.hashCode() : 0);
+		result = 31 * result + (realName != null ? realName.hashCode() : 0);
+		result = 31 * result + (phone != null ? phone.hashCode() : 0);
+		result = 31 * result + (note != null ? note.hashCode() : 0);
+		result = 31 * result + (referer != null ? referer.hashCode() : 0);
+		return result;
+	}
 }

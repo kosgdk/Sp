@@ -2,6 +2,7 @@ package sp.data.entities;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -9,6 +10,7 @@ import java.math.BigDecimal;
 
 @Entity
 @Table(name="properties")
+@DynamicUpdate
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Properties {
 
@@ -23,8 +25,8 @@ public class Properties {
 	@Column(name="percent_discount")
 	private BigDecimal percentDiscount;
 
-	@Column(name="percent_bank_comission")
-	private BigDecimal percentBankComission;
+	@Column(name="percent_bank_commission")
+	private BigDecimal percentBankCommission;
 
 
 	public Properties() {
@@ -55,11 +57,11 @@ public class Properties {
         this.percentDiscount = percentDiscount;
     }
 
-    public BigDecimal getPercentBankComission() {
-        return percentBankComission;
+    public BigDecimal getPercentBankCommission() {
+        return percentBankCommission;
     }
 
-    public void setPercentBankComission(BigDecimal percentBankComission) {
-        this.percentBankComission = percentBankComission;
+    public void setPercentBankCommission(BigDecimal percentBankComission) {
+        this.percentBankCommission = percentBankComission;
     }
 }

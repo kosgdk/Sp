@@ -15,12 +15,11 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
-import javax.validation.constraints.DecimalMax;
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 
 @Entity
 @Table(name="sp")
+@DynamicUpdate
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Sp {
 
@@ -34,6 +33,8 @@ public class Sp {
 	@OrderBy(value = "id")
 	private Set<Order> orders;
 
+	@NotNull
+	@Min(value = 1, message = "{sp.number.min}")
 	@Column(name = "number")
 	private int number;
 
@@ -43,33 +44,39 @@ public class Sp {
 	@Column(name = "percent")
 	private BigDecimal percent;
 
+	@NotNull(message = "{sp.status.isEmpty}")
 	@Column(name = "status")
 	@Convert(converter = SpStatusConverter.class)
 	private SpStatus status;
 
+	@NotNull(message = "{sp.dateStart.isEmpty}")
 	@Temporal(TemporalType.DATE)
 	@Column(name = "date_start")
 	private Date dateStart;
 
+	@NotNull(message = "{sp.dateEnd.isEmpty}")
 	@Temporal(TemporalType.DATE)
 	@Column(name = "date_end")
 	private Date dateEnd;
 
+	@NotNull(message = "{sp.dateToPay.isEmpty}")
 	@Temporal(TemporalType.DATE)
 	@Column(name = "date_to_pay")
 	private Date dateToPay;
 
+	@Past(message = "{sp.dateSent.shouldBePast}")
 	@Temporal(TemporalType.DATE)
 	@Column(name = "date_sent")
 	private Date dateSent;
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "date_to_recieve")
-	private Date dateToRecieve;
+	@Column(name = "date_to_receive")
+	private Date dateToReceive;
 
+	@Past(message = "{sp.dateReceived.shouldBePast}")
 	@Temporal(TemporalType.DATE)
-	@Column(name = "date_recieved")
-	private Date dateRecieved;
+	@Column(name = "date_received")
+	private Date dateReceived;
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "date_to_distribute")
@@ -79,13 +86,13 @@ public class Sp {
 	public Sp() {
 	}
 
-	public void calculateDateToPay(Date dateEnd){
+	private void calculateDateToPay(Date dateEnd){
 		Calendar cal = Calendar.getInstance();
         cal.setTime(dateEnd);
         cal.add(Calendar.DATE, 3); // default - 3 days
         dateToPay = cal.getTime();
 	}
-	
+
 
 	public int getId() {
 		return id;
@@ -160,20 +167,20 @@ public class Sp {
 		this.dateSent = dateSent;
 	}
 
-	public Date getDateToRecieve() {
-		return dateToRecieve;
+	public Date getDateToReceive() {
+		return dateToReceive;
 	}
 
-	public void setDateToRecieve(Date dateToRecieve) {
-		this.dateToRecieve = dateToRecieve;
+	public void setDateToReceive(Date dateToRecieve) {
+		this.dateToReceive = dateToRecieve;
 	}
 
-	public Date getDateRecieved() {
-		return dateRecieved;
+	public Date getDateReceived() {
+		return dateReceived;
 	}
 
-	public void setDateRecieved(Date dateRecieved) {
-		this.dateRecieved = dateRecieved;
+	public void setDateReceived(Date dateRecieved) {
+		this.dateReceived = dateRecieved;
 	}
 
 	public Date getDateToDistribute() {
@@ -187,7 +194,7 @@ public class Sp {
 
 	@Override
 	public String toString() {
-		return "СП-" + id;
+		return String.valueOf(id);
 	}
 
 	

@@ -16,6 +16,7 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Table(name="order_position")
+@DynamicUpdate
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class OrderPosition {
 
@@ -25,7 +26,7 @@ public class OrderPosition {
 	private int id;
 
 	@NotNull
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinColumn(name="order_id")
 	private Order order;
 
@@ -189,6 +190,41 @@ public class OrderPosition {
 				+ ",\n quantity=" + quantity + ",\n note=" + note + "]";
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof OrderPosition)) return false;
 
-	
+		OrderPosition that = (OrderPosition) o;
+
+		if (id != that.id) return false;
+		if (quantity != that.quantity) return false;
+		if (weight != that.weight) return false;
+		if (order != null ? !order.equals(that.order) : that.order != null) return false;
+		if (product != null ? !product.equals(that.product) : that.product != null) return false;
+		if (priceOrdered != null ? !priceOrdered.equals(that.priceOrdered) : that.priceOrdered != null) return false;
+		if (priceVendor != null ? !priceVendor.equals(that.priceVendor) : that.priceVendor != null) return false;
+		if (priceSp != null ? !priceSp.equals(that.priceSp) : that.priceSp != null) return false;
+		if (note != null ? !note.equals(that.note) : that.note != null) return false;
+		if (priceSpSummary != null ? !priceSpSummary.equals(that.priceSpSummary) : that.priceSpSummary != null)
+			return false;
+		return income != null ? income.equals(that.income) : that.income == null;
+
+	}
+
+	@Override
+	public int hashCode() {
+		int result = id;
+		result = 31 * result + (order != null ? order.hashCode() : 0);
+		result = 31 * result + (product != null ? product.hashCode() : 0);
+		result = 31 * result + (priceOrdered != null ? priceOrdered.hashCode() : 0);
+		result = 31 * result + (priceVendor != null ? priceVendor.hashCode() : 0);
+		result = 31 * result + (priceSp != null ? priceSp.hashCode() : 0);
+		result = 31 * result + quantity;
+		result = 31 * result + (note != null ? note.hashCode() : 0);
+		result = 31 * result + (priceSpSummary != null ? priceSpSummary.hashCode() : 0);
+		result = 31 * result + (income != null ? income.hashCode() : 0);
+		result = 31 * result + weight;
+		return result;
+	}
 }

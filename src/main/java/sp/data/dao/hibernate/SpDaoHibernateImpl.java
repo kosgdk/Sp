@@ -1,6 +1,6 @@
 package sp.data.dao.hibernate;
 
-import java.util.List;
+import java.util.*;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import sp.data.dao.generic.GenericDaoHibernateImpl;
 import sp.data.dao.interfaces.SpDao;
 import sp.data.entities.Sp;
+import sp.data.entities.enumerators.SpStatus;
 
 @Repository("SpDaoHibernateImpl")
 @Transactional(propagation=Propagation.REQUIRED)
@@ -73,6 +74,18 @@ public class SpDaoHibernateImpl extends GenericDaoHibernateImpl<Sp, Integer> imp
 		} catch (NoResultException e){
 			return null;
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public SortedSet<Integer> getIdsByStatus(SpStatus... statuses) {
+		String hql = "select id from Sp where status in (:statuses) order by id desc";
+		Query query = currentSession().createQuery(hql);
+		query.setParameter("statuses", Arrays.asList(statuses));
+		SortedSet<Integer> result = new TreeSet<>(Collections.reverseOrder());
+		result.addAll(query.getResultList());
+
+		return result;
 	}
 
 }

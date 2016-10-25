@@ -23,21 +23,23 @@
     <jsp:include page="../views/fragments/header.jsp" />
     <div class="container">
 
+
+        <!-- Форма клиента -->
         <c:if test='${action=="create"}'>
             <spring:url value="/create_client" var="formUrl" />
         </c:if>
         <c:if test='${action=="profile"}'>
             <spring:url value="/client/${client.id}" var="formUrl" />
         </c:if>
-
         <form:form action="${formUrl}" method="POST" modelAttribute="client" cssClass="form-horizontal">
-            <fieldset>
 
                 <legend>
                     <c:if test='${action=="create"}'>
+                        <c:set var="autofocus" value="autofocus"/>
                         Создать нового клиента
                     </c:if>
                     <c:if test='${action=="profile"}'>
+                        <c:set var="autofocus" value=""/>
                         Профиль клиента <b>${client.name}</b>
                     </c:if>
                 </legend>
@@ -50,7 +52,7 @@
                     <div class="form-group <c:if test='${status.errors.hasFieldErrors("name")}'>has-error</c:if>">
                         <label for="client-name" class="col-lg-2 control-label">Ник*</label>
                         <div class="col-lg-3">
-                            <form:input path="name" cssClass="form-control" id="client-name" autofocus="autofocus" minlength="3" maxlength="50"/>
+                            <form:input path="name" cssClass="form-control" id="client-name" autofocus="${autofocus}" minlength="3" maxlength="50"/>
                             <span class="help-block">
                                 <form:errors path="name"/>
                             </span>
@@ -94,23 +96,23 @@
                     </div>
                 </spring:bind>
 
-                <spring:bind path="referer">
-                    <div class="form-group <c:if test='${status.errors.hasFieldErrors("referer")}'>has-error</c:if>">
+                <c:set var="field" value="clientReferrer"/>
+                <spring:bind path="${field}">
+                    <div class="form-group <c:if test='${status.errors.hasFieldErrors(field)}'>has-error</c:if>">
                         <label class="col-lg-2 control-label">Откуда*</label>
                         <div class="col-lg-10">
-                            <c:forEach var="referer" items="${referers}" varStatus="counter">
+                            <c:forEach var="clientReferrerFromList" items="${clientReferrers}" varStatus="counter">
                                 <div class="radio">
                                     <label>
-                                        <input type="radio" name="referer" id="referer" value="${referer.id}"
-                                        <c:if test="${referer.id == 1}"> checked</c:if>
-                                        />
-                                        ${referer.name}
+                                        <c:set var="checked" value=""/>
+                                        <c:if test="${client.clientReferrer == null && clientReferrerFromList.id == 1}"><c:set var="checked" value="checked"/></c:if>
+                                        <c:if test="${clientReferrerFromList.id == client.clientReferrer.id}"><c:set var="checked" value="checked"/></c:if>
+                                        <input type="radio" name="${field}" id="${field}" value="${clientReferrerFromList.id}" ${checked}/>
+                                        ${clientReferrerFromList.name}
                                     </label>
                                 </div>
                             </c:forEach>
-                            <span class="help-block">
-                                <form:errors path="referer"/>
-                            </span>
+                            <span class="help-block"><form:errors path="${field}"/></span>
                         </div>
                     </div>
                 </spring:bind>
@@ -136,29 +138,52 @@
             </fieldset>
         </form:form>
 
-
-
         <!-- Отображение заказов -->
         <c:if test='${action=="profile"}'>
-            <h3 id="navbar">Заказы:</h3>
+            <h4 style="margin-bottom: 20px">Заказы:</h4>
 
             <c:forEach var="order" items="${client.orders}">
-                <div class="panel panel-default" style="width: 1000px">
 
-                    <div class="panel-heading">
-                        <a href='<spring:url value="/sp/${order.sp.id}"/>'>СП-${order.sp.id}</a> - ${order.orderStatus.name}
-                        &nbsp;|&nbsp;
-                        <a href='<spring:url value="/order/${order.id}"/>'><i class="fa fa-pencil-square" aria-hidden="true"></i>&nbsp;Редактировать</a>
-                        &nbsp;|&nbsp;
-                        <a href='<spring:url value="/order/${order.id}"/>'><i class="fa fa-trash" aria-hidden="true"></i>&nbsp;Удалить</a>
+                <!-- Панель заказа -->
+                <div class="panel panel-default" style="width: 800px">
+
+                    <!-- Заголовок панели заказа -->
+                    <div class="panel-heading min-vpadding">
+                        <c:if test='${order.status == "UNPAID"}'><c:set var="labelType" value="label-default"/></c:if>
+                        <c:if test='${order.status == "PAID"}'><c:set var="labelType" value="label-info"/></c:if>
+                        <c:if test='${order.status == "PACKING"}'><c:set var="labelType" value="label-info"/></c:if>
+                        <c:if test='${order.status == "SENT"}'><c:set var="labelType" value="label-warning"/></c:if>
+                        <c:if test='${order.status == "ARRIVED"}'><c:set var="labelType" value="label-primary"/></c:if>
+                        <c:if test='${order.status == "COMPLETED"}'><c:set var="labelType" value="label-success"/></c:if>
+
+                        <span class="label size-normal ${labelType}">${order.status.toString()}</span>&nbsp;|
+                        <a href='<spring:url value="/sp/${order.sp.id}"/>'>СП-${order.sp.id}</a>&nbsp;|
+                        Сумма:&nbsp;${order.summaryPrice} р.&nbsp;|
+                        Прибыль:&nbsp;${order.income} р.&nbsp;|
+                        <a href='<spring:url value="/order/${order.id}"/>'><i class="fa fa-pencil-square" aria-hidden="true"></i>&nbsp;Редактировать</a>&nbsp;|
+                        <a href='<spring:url value="/order/${order.id}"/>'><i class="fa fa-trash" aria-hidden="true" style="color:red"></i>&nbsp;Удалить</a>
                         <c:if test="${order.note!=null}">
-                            <br/><i>${order.note}</i>
+                            <br/>Комментарий: <i>${order.note}</i>
                         </c:if>
                     </div>
+
+                    <!-- Содержание панели заказа -->
                     <div class="panel-body">
-                        <c:forEach var="orderPosition" items="${order.orderPositions}">
-                            - ${orderPosition.product.name} - ${orderPosition.priceOrdered} р.<br/>
-                        </c:forEach>
+                        <table class="table table-ultra-condensed table-hover">
+                            <c:forEach var="orderPosition" items="${order.orderPositions}" varStatus="orderPositionCounter">
+                                <tr class="no-vmargin">
+                                    <td style="width: 20px">${orderPositionCounter.count}.</td>
+                                    <td>
+                                        ${orderPosition.product.name}
+                                        <c:if test='${orderPosition.note != ""}'>
+                                            <br/><i>${orderPosition.note}</i>
+                                        </c:if>
+                                    </td>
+                                    <td class="text-right" style="width: 60px">${orderPosition.quantity} шт</td>
+                                    <td class="text-right" style="width: 85px">${orderPosition.priceSpSummary} р.</td>
+                                </tr>
+                            </c:forEach>
+                        </table>
                     </div>
                 </div>
             </c:forEach>

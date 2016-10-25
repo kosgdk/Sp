@@ -37,7 +37,7 @@ public class Order {
 	private Client client;
 	
 	@NotNull
-	@ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "sp")
 	private Sp sp;
 
@@ -248,65 +248,59 @@ public class Order {
 		return total;
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof Order)) return false;
-
-		Order order = (Order) o;
-
-		if (id != order.id) return false;
-		if (orderPositions != null ? !orderPositions.equals(order.orderPositions) : order.orderPositions != null)
-			return false;
-		if (client != null ? !client.equals(order.client) : order.client != null) return false;
-		if (sp != null ? !sp.equals(order.sp) : order.sp != null) return false;
-		if (note != null ? !note.equals(order.note) : order.note != null) return false;
-		if (dateOrdered != null ? !dateOrdered.equals(order.dateOrdered) : order.dateOrdered != null) return false;
-		if (status != order.status) return false;
-		if (prepaid != null ? !prepaid.equals(order.prepaid) : order.prepaid != null) return false;
-		if (weight != null ? !weight.equals(order.weight) : order.weight != null) return false;
-		if (deliveryPrice != null ? !deliveryPrice.equals(order.deliveryPrice) : order.deliveryPrice != null)
-			return false;
-		if (place != null ? !place.equals(order.place) : order.place != null) return false;
-		if (dateCompleted != null ? !dateCompleted.equals(order.dateCompleted) : order.dateCompleted != null)
-			return false;
-		if (summaryPrice != null ? !summaryPrice.equals(order.summaryPrice) : order.summaryPrice != null) return false;
-		if (income != null ? !income.equals(order.income) : order.income != null) return false;
-		if (debt != null ? !debt.equals(order.debt) : order.debt != null) return false;
-		return total != null ? total.equals(order.total) : order.total == null;
-
-	}
-
-	@Override
-	public int hashCode() {
-		int result = id;
-		result = 31 * result + (orderPositions != null ? orderPositions.hashCode() : 0);
-		result = 31 * result + (client != null ? client.hashCode() : 0);
-		result = 31 * result + (sp != null ? sp.hashCode() : 0);
-		result = 31 * result + (note != null ? note.hashCode() : 0);
-		result = 31 * result + (dateOrdered != null ? dateOrdered.hashCode() : 0);
-		result = 31 * result + (status != null ? status.hashCode() : 0);
-		result = 31 * result + (prepaid != null ? prepaid.hashCode() : 0);
-		result = 31 * result + (weight != null ? weight.hashCode() : 0);
-		result = 31 * result + (deliveryPrice != null ? deliveryPrice.hashCode() : 0);
-		result = 31 * result + (place != null ? place.hashCode() : 0);
-		result = 31 * result + (dateCompleted != null ? dateCompleted.hashCode() : 0);
-		result = 31 * result + (summaryPrice != null ? summaryPrice.hashCode() : 0);
-		result = 31 * result + (income != null ? income.hashCode() : 0);
-		result = 31 * result + (debt != null ? debt.hashCode() : 0);
-		result = 31 * result + (total != null ? total.hashCode() : 0);
-		return result;
-	}
 
 	@Override
 	public String toString() {
-		return "Order [id=" + id + ",\n orderPositions=" + orderPositions + ",\n client=" + client + ",\n sp=" + sp
-				+ ",\n dateOrdered=" + dateOrdered + ",\n status=" + status + ",\n prepaid=" + prepaid
-				+ ",\n weight=" + weight + ",\n deliveryPrice=" + deliveryPrice + ",\n place=" + place
-				+ ",\n datecompleted=" + dateCompleted + "]";
+		return "Order (id=" + id + ") of " + client.getName() + " in SP " + sp.getId();
 	}
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Order)) return false;
 
-	
-	
+        Order order = (Order) o;
+
+        if (id != order.id) return false;
+        if (orderPositions != null ? !orderPositions.equals(order.orderPositions) : order.orderPositions != null)
+            return false;
+        if (client != null ? !client.equals(order.client) : order.client != null) return false;
+        if (sp != null ? !sp.equals(order.sp) : order.sp != null) return false;
+        if (note != null ? !note.equals(order.note) : order.note != null) return false;
+        if (dateOrdered != null ? !dateOrdered.equals(order.dateOrdered) : order.dateOrdered != null) return false;
+        if (status != order.status) return false;
+        if (prepaid != null ? !prepaid.equals(order.prepaid) : order.prepaid != null) return false;
+        if (weight != null ? !weight.equals(order.weight) : order.weight != null) return false;
+        if (deliveryPrice != null ? !deliveryPrice.equals(order.deliveryPrice) : order.deliveryPrice != null)
+            return false;
+        if (place != null ? !place.equals(order.place) : order.place != null) return false;
+        if (dateCompleted != null ? !dateCompleted.equals(order.dateCompleted) : order.dateCompleted != null)
+            return false;
+        if (summaryPrice != null ? !summaryPrice.equals(order.summaryPrice) : order.summaryPrice != null) return false;
+        if (income != null ? !income.equals(order.income) : order.income != null) return false;
+        if (debt != null ? !debt.equals(order.debt) : order.debt != null) return false;
+        return total != null ? total.equals(order.total) : order.total == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + (orderPositions != null ? orderPositions.hashCode() : 0);
+        result = 31 * result + (client != null ? client.hashCode() : 0);
+        result = 31 * result + (sp != null ? sp.hashCode() : 0);
+        result = 31 * result + (note != null ? note.hashCode() : 0);
+        result = 31 * result + (dateOrdered != null ? dateOrdered.hashCode() : 0);
+        result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result + (prepaid != null ? prepaid.hashCode() : 0);
+        result = 31 * result + (weight != null ? weight.hashCode() : 0);
+        result = 31 * result + (deliveryPrice != null ? deliveryPrice.hashCode() : 0);
+        result = 31 * result + (place != null ? place.hashCode() : 0);
+        result = 31 * result + (dateCompleted != null ? dateCompleted.hashCode() : 0);
+        result = 31 * result + (summaryPrice != null ? summaryPrice.hashCode() : 0);
+        result = 31 * result + (income != null ? income.hashCode() : 0);
+        result = 31 * result + (debt != null ? debt.hashCode() : 0);
+        result = 31 * result + (total != null ? total.hashCode() : 0);
+        return result;
+    }
 }

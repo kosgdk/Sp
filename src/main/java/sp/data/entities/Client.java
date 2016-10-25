@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicUpdate;
+import sp.data.converters.ClientReferrerConverter;
+import sp.data.entities.enumerators.ClientReferrer;
 
 import java.util.Set;
 
@@ -50,86 +52,70 @@ public class Client {
 	@Column(name="note")
 	private String note;
 
-	@NotNull(message = "{client.referer.isEmpty}")
-	@JsonIgnore
-	@ManyToOne(cascade=CascadeType.PERSIST, fetch=FetchType.LAZY)
-	@JoinColumn(name="referer", referencedColumnName="id", nullable=false)
-	private Referer referer;
+	@NotNull(message = "{client.clientReferrer.isEmpty}")
+	@Column(name = "referrer")
+	@Convert(converter = ClientReferrerConverter.class)
+	private ClientReferrer clientReferrer;
 	
 	
-	public Client() {
-	}
+	public Client() {}
 
 
 	public int getId() {
 		return id;
 	}
 
-
 	public void setId(int id) {
 		this.id = id;
 	}
-
 
 	public Set<Order> getOrders() {
 		return orders;
 	}
 
-
 	public void setOrders(Set<Order> orders) {
 		this.orders = orders;
 	}
-
 
 	public String getName() {
 		return name;
 	}
 
-
 	public void setName(String name) {
 		this.name = name;
 	}
-
 
 	public String getRealName() {
 		return realName;
 	}
 
-
 	public void setRealName(String realName) {
 		this.realName = realName;
 	}
-
 
 	public String getPhone() {
 		return phone;
 	}
 
-
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-
 
 	public String getNote() {
 		return note;
 	}
 
-
 	public void setNote(String note) {
 		this.note = note;
 	}
 
-
-	public Referer getReferer() {
-		return referer;
+	public ClientReferrer getClientReferrer() {
+		return clientReferrer;
 	}
 
-
-	public void setReferer(Referer referer) {
-		this.referer = referer;
+	public void setClientReferrer(ClientReferrer referrer) {
+		this.clientReferrer = referrer;
 	}
-
 
 	@Override
 	public String toString() {
@@ -149,9 +135,7 @@ public class Client {
 		if (realName != null ? !realName.equals(client.realName) : client.realName != null) return false;
 		if (phone != null ? !phone.equals(client.phone) : client.phone != null) return false;
 		if (note != null ? !note.equals(client.note) : client.note != null) return false;
-		//if (referer != null ? referer.getId() != client.getId() : client.referer != null) return false;
-
-		return true;
+		return clientReferrer == client.clientReferrer;
 
 	}
 
@@ -163,7 +147,7 @@ public class Client {
 		result = 31 * result + (realName != null ? realName.hashCode() : 0);
 		result = 31 * result + (phone != null ? phone.hashCode() : 0);
 		result = 31 * result + (note != null ? note.hashCode() : 0);
-		result = 31 * result + (referer != null ? referer.hashCode() : 0);
+		result = 31 * result + (clientReferrer != null ? clientReferrer.hashCode() : 0);
 		return result;
 	}
 }

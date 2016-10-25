@@ -3,7 +3,9 @@ package sp.data.entities;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
 import sp.data.converters.OrderStatusConverter;
+import sp.data.converters.PlaceConverter;
 import sp.data.entities.enumerators.OrderStatus;
+import sp.data.entities.enumerators.Place;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -68,9 +70,9 @@ public class Order {
 	
 	@Column(name = "delivery_price")
 	private BigDecimal deliveryPrice = new BigDecimal(0);
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "place", referencedColumnName = "id")
+
+	@Column(name = "place")
+	@Convert(converter = PlaceConverter.class)
 	private Place place;
 	
 	@Temporal(TemporalType.DATE)

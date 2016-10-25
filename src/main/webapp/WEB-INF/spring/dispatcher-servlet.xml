@@ -21,14 +21,16 @@
 	<bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
 		<property name="converters">
 			<set>
-				<bean class="sp.data.converters.StringToDateConverter" />
-				<bean class="sp.data.converters.IdToRefererConverter" />
-				<bean class="sp.data.converters.NameToClientConverter" />
-				<bean class="sp.data.converters.StringToOrderStatusConverter" />
 				<bean class="sp.data.converters.IdToSpConverter" />
 				<bean class="sp.data.converters.IdToOrderConverter" />
-				<bean class="sp.data.converters.NameToProductConverter" />
 				<bean class="sp.data.converters.IdToOrderPositionConverter" />
+				<bean class="sp.data.converters.NameToClientConverter" />
+				<bean class="sp.data.converters.NameToProductConverter" />
+				<bean class="sp.data.converters.StringToDateConverter" />
+				<bean class="sp.data.converters.StringToSpStatusConverter" />
+				<bean class="sp.data.converters.StringToOrderStatusConverter" />
+				<bean class="sp.data.converters.StringToClientReferrerConverter" />
+				<bean class="sp.data.converters.StringToPlaceConverter" />
 			</set>
 		</property>
 	</bean>

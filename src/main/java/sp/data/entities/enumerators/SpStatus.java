@@ -6,7 +6,7 @@ public enum SpStatus {
 	PACKING(3),
 	PAID(4),
 	SENT(5),
-	RECEIVED(6),
+	ARRIVED(6),
 	DISTRIBUTING(7),
 	COMPLETED(8);
 
@@ -34,7 +34,7 @@ public enum SpStatus {
 			case 3: return PACKING;
 			case 4: return PAID;
 			case 5: return SENT;
-			case 6: return RECEIVED;
+			case 6: return ARRIVED;
 			case 7: return DISTRIBUTING;
 			case 8: return COMPLETED;
 			default: return null;
@@ -53,10 +53,10 @@ public enum SpStatus {
 		switch (id) {
 			case 1: return "Сбор";
 			case 2: return "Оплата";
-			case 3: return "Комплектуется";
+			case 3: return "На комплектации";
 			case 4: return "Оплачен";
 			case 5: return "Отправлен";
-			case 6: return "Получен";
+			case 6: return "Прибыл";
 			case 7: return "Раздаётся";
 			case 8: return "Завершён";
 			default: return "NULL";

@@ -8,7 +8,7 @@ public enum OrderStatus {
 	PAID(2),
 	PACKING(3),
 	SENT(4),
-	RECEIVED(5),
+	ARRIVED(5),
 	COMPLETED(6);
 
 	private final int id;
@@ -34,7 +34,7 @@ public enum OrderStatus {
 			case 2: return PAID;
 			case 3: return PACKING;
 			case 4: return SENT;
-			case 5: return RECEIVED;
+			case 5: return ARRIVED;
 			case 6: return COMPLETED;
 			default: return null;
 		}
@@ -62,7 +62,7 @@ public enum OrderStatus {
 			case 2: return "Оплачен";
 			case 3: return "Комплектуется";
 			case 4: return "Отправлен";
-			case 5: return "Получен";
+			case 5: return "Прибыл";
 			case 6: return "Завершён";
 			default: return "NULL";
 		}

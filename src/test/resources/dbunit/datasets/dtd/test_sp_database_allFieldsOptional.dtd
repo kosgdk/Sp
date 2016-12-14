@@ -1,0 +1,81 @@
+<!ELEMENT dataset (
+    clients*|
+    order_position*|
+    orders*|
+    products*|
+    properties*|
+    sp*)*>
+
+<!ELEMENT clients EMPTY>
+<!ATTLIST clients
+    id CDATA #IMPLIED
+    name CDATA #IMPLIED
+    real_name CDATA #IMPLIED
+    phone CDATA #IMPLIED
+    note CDATA #IMPLIED
+    referrer CDATA #IMPLIED
+>
+
+<!ELEMENT order_position EMPTY>
+<!ATTLIST order_position
+    id CDATA #IMPLIED
+    order_id CDATA #IMPLIED
+    product_id CDATA #IMPLIED
+    price_ordered CDATA #IMPLIED
+    price_sp CDATA #IMPLIED
+    price_vendor CDATA #IMPLIED
+    quantity CDATA #IMPLIED
+    note CDATA #IMPLIED
+>
+
+<!ELEMENT orders EMPTY>
+<!ATTLIST orders
+    id CDATA #IMPLIED
+    client CDATA #IMPLIED
+    sp CDATA #IMPLIED
+    weight CDATA #IMPLIED
+    status CDATA #IMPLIED
+    prepaid CDATA #IMPLIED
+    note CDATA #IMPLIED
+    date_ordered CDATA #IMPLIED
+    date_completed CDATA #IMPLIED
+    delivery_price CDATA #IMPLIED
+    place CDATA #IMPLIED
+>
+
+<!ELEMENT products EMPTY>
+<!ATTLIST products
+    id CDATA #IMPLIED
+    name CDATA #IMPLIED
+    price CDATA #IMPLIED
+    link CDATA #IMPLIED
+    photo CDATA #IMPLIED
+    vkid CDATA #IMPLIED
+    imagelink CDATA #IMPLIED
+    deleted CDATA #IMPLIED
+    vkphotoid CDATA #IMPLIED
+    weight CDATA #IMPLIED
+>
+
+<!ELEMENT properties EMPTY>
+<!ATTLIST properties
+    id CDATA #IMPLIED
+    percent_sp CDATA #IMPLIED
+    percent_discount CDATA #IMPLIED
+    percent_bank_commission CDATA #IMPLIED
+>
+
+<!ELEMENT sp EMPTY>
+<!ATTLIST sp
+    id CDATA #IMPLIED
+    number CDATA #IMPLIED
+    percent CDATA #IMPLIED
+    status CDATA #IMPLIED
+    date_start CDATA #IMPLIED
+    date_end CDATA #IMPLIED
+    date_to_pay CDATA #IMPLIED
+    date_sent CDATA #IMPLIED
+    date_to_receive CDATA #IMPLIED
+    date_received CDATA #IMPLIED
+    date_to_distribute CDATA #IMPLIED
+>

@@ -10,11 +10,11 @@
 	<context:component-scan base-package="sp.data" />
 
 	<!-- data source for our database -->
-	<bean id="testDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://localhost:3306/sp_test?useSSL=false&amp;autoReconnect=true&amp;useJDBCCompliantTimezoneShift=false&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Kiev&amp;characterEncoding=UTF-8&amp;useUnicode=true" />
-		<property name="username" value="root" />
-		<property name="password" value="root" />
+	<bean id="testDataSource" class="org.unitils.database.UnitilsDataSourceFactoryBean">
+		<!--<property name="driverClassName" value="com.mysql.jdbc.Driver" />-->
+		<!--<property name="url" value="jdbc:mysql://localhost:3306/test_sp_database?useSSL=false&amp;autoReconnect=true&amp;useJDBCCompliantTimezoneShift=false&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Kiev&amp;characterEncoding=UTF-8&amp;useUnicode=true" />-->
+		<!--<property name="username" value="root" />-->
+		<!--<property name="password" value="root" />-->
 	</bean>
 
 	<!-- for logging and asserting SQL queries -->
@@ -45,11 +45,11 @@
 				<prop key="hibernate.max_fetch_depth">3</prop>
 				<prop key="hibernate.show_sql">true</prop>
 				<prop key="hibernate.format_sql">false</prop>
-				<prop key="hibernate.cache.use_second_level_cache">false</prop>
-				<!--<prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory</prop>-->
+				<prop key="hibernate.cache.use_second_level_cache">true</prop>
+				<prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory</prop>
 				<prop key="hibernate.enable_lazy_load_no_trans">true</prop>
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
-				<prop key="hibernate.hbm2ddl.auto">create</prop>
+				<prop key="javax.persistence.validation.mode">none</prop>
 			</props>
 		</property>
 	</bean>

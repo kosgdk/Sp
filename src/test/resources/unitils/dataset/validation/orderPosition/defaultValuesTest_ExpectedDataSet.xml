@@ -1,0 +1,4 @@
+<!DOCTYPE dataset SYSTEM "dtd\test_sp_database_allFieldsOptional.dtd">
+    <dataset>
+        <order_position order_id="1" product_id="1" price_ordered="1.00" price_sp="1.00" price_vendor="1.00" quantity="1"/>
+    </dataset>

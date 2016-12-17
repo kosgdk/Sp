@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS `test_sp_database`.`products` (
   `price` DECIMAL(4,0) NOT NULL,
   `link` VARCHAR(300) NOT NULL,
   `photo` MEDIUMBLOB NULL DEFAULT NULL,
-  `vkid` INT(15) NULL DEFAULT NULL,
+  `vkid` INT(11) NULL DEFAULT NULL,
   `imagelink` VARCHAR(300) NULL DEFAULT NULL,
   `deleted` TINYINT(1) NULL DEFAULT '0',
   `vkphotoid` INT(11) NULL DEFAULT NULL,

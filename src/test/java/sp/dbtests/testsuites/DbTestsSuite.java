@@ -6,8 +6,9 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+        DbBasicTestsSuite.class,
         DbIntegrationTestsSuite.class,
-        DbBasicTestsSuite.class
+        DbValidationTestsSuite.class
 })
 public class DbTestsSuite {
 

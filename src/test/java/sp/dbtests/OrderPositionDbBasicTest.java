@@ -1,13 +1,11 @@
 package sp.dbtests;
 
+import com.vladmihalcea.sql.SQLStatementCountValidator;
 import net.sf.ehcache.CacheManager;
-import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.unitils.UnitilsJUnit4TestClassRunner;
+import org.unitils.UnitilsBlockJUnit4ClassRunner;
 import org.unitils.database.DatabaseUnitils;
 import org.unitils.database.annotations.Transactional;
 import org.unitils.database.util.TransactionMode;
@@ -16,7 +14,6 @@ import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 import sp.data.dao.interfaces.OrderPositionDao;
-import sp.data.dao.interfaces.ProductDao;
 import sp.data.entities.OrderPosition;
 
 import java.util.List;
@@ -25,10 +22,10 @@ import static com.vladmihalcea.sql.SQLStatementCountValidator.*;
 import static org.junit.Assert.*;
 
 
+@RunWith(UnitilsBlockJUnit4ClassRunner.class)
 @SpringApplicationContext("applicationContext_ForTests_DisabledBeanValidation.xml")
-@RunWith(UnitilsJUnit4TestClassRunner.class)
 @Transactional(value=TransactionMode.DISABLED)
-@DataSet("unitils/dataset/OrderPositionDbBasicTest/mainDataSet.xml")
+@DataSet("unitils/dataset/basic/orderPosition/mainDataSet.xml")
 public class OrderPositionDbBasicTest {
 
     @SpringBeanByType
@@ -37,7 +34,7 @@ public class OrderPositionDbBasicTest {
 
     @Before
     public void setUp(){
-        reset(); //SQLStatementCountValidator
+        SQLStatementCountValidator.reset();
         CacheManager.getInstance().clearAll(); //Clearing 2nd level cache
         DatabaseUnitils.updateSequences();
     }
@@ -77,7 +74,7 @@ public class OrderPositionDbBasicTest {
     }
 
     @Test
-    @ExpectedDataSet("unitils/dataset/OrderPositionDbBasicTest/save_ShouldWriteToDB_ExpectedDataSet.xml")
+    @ExpectedDataSet("unitils/dataset/basic/orderPosition/save_ShouldWriteToDB_ExpectedDataSet.xml")
     public void save_ShouldWriteToDB(){
         OrderPosition orderPosition = new OrderPosition();
         orderPositionDao.save(orderPosition);
@@ -85,7 +82,7 @@ public class OrderPositionDbBasicTest {
     }
 
     @Test
-    @ExpectedDataSet("unitils/dataset/OrderPositionDbBasicTest/UpdateDB_ExpectedDataSet.xml")
+    @ExpectedDataSet("unitils/dataset/basic/orderPosition/UpdateDB_ExpectedDataSet.xml")
     public void update_ShouldUpdateDB(){
         OrderPosition orderPosition = orderPositionDao.getById(2L);
         orderPosition.setNote("TestNote");
@@ -94,7 +91,7 @@ public class OrderPositionDbBasicTest {
     }
 
     @Test
-    @ExpectedDataSet("unitils/dataset/OrderPositionDbBasicTest/delete_ShouldDeleteFromDB_ExpectedDataSet.xml")
+    @ExpectedDataSet("unitils/dataset/basic/orderPosition/delete_ShouldDeleteFromDB_ExpectedDataSet.xml")
     public void delete_ShouldDeleteFromDB(){
         OrderPosition orderPosition = orderPositionDao.getById(2L);
         orderPositionDao.delete(orderPosition);
@@ -109,7 +106,7 @@ public class OrderPositionDbBasicTest {
     }
 
     @Test
-    @ExpectedDataSet("unitils/dataset/OrderPositionDbBasicTest/delete_ShouldDeleteFromDB_ExpectedDataSet.xml")
+    @ExpectedDataSet("unitils/dataset/basic/orderPosition/delete_ShouldDeleteFromDB_ExpectedDataSet.xml")
     public void deleteById_ShouldDeleteFromDB(){
         orderPositionDao.deleteById(2L);
         assertSelectCount(1);

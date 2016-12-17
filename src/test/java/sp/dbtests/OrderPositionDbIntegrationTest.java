@@ -1,17 +1,17 @@
 package sp.dbtests;
 
+import com.vladmihalcea.sql.SQLStatementCountValidator;
 import net.sf.ehcache.CacheManager;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.unitils.UnitilsJUnit4TestClassRunner;
+import org.unitils.UnitilsBlockJUnit4ClassRunner;
 import org.unitils.database.annotations.Transactional;
 import org.unitils.database.util.TransactionMode;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
-import sp.data.dao.interfaces.OrderDao;
 import sp.data.dao.interfaces.OrderPositionDao;
 import sp.data.dao.interfaces.ProductDao;
 import sp.data.entities.OrderPosition;
@@ -20,10 +20,10 @@ import static org.junit.Assert.*;
 import static com.vladmihalcea.sql.SQLStatementCountValidator.*;
 
 
+@RunWith(UnitilsBlockJUnit4ClassRunner.class)
 @SpringApplicationContext("applicationContext_ForTests_DisabledBeanValidation.xml")
-@RunWith(UnitilsJUnit4TestClassRunner.class)
 @Transactional(value=TransactionMode.DISABLED)
-@DataSet("unitils/dataset/OrderPositionDbIntegrationTest/mainDataSet.xml")
+@DataSet("unitils/dataset/integration/orderPosition/mainDataSet.xml")
 public class OrderPositionDbIntegrationTest {
 
     @SpringBeanByType
@@ -32,12 +32,10 @@ public class OrderPositionDbIntegrationTest {
     @SpringBeanByType
     ProductDao productDao;
 
-    @SpringBeanByType
-    OrderDao orderDao;
 
     @Before
     public void setUp(){
-        reset(); //SQLStatementCountValidator
+        SQLStatementCountValidator.reset();
         CacheManager.getInstance().clearAll(); //Clearing 2nd level cache
     }
 
@@ -60,7 +58,7 @@ public class OrderPositionDbIntegrationTest {
     }
 
     @Test
-    @ExpectedDataSet("unitils/dataset/OrderPositionDbIntegrationTest/update_ShouldNotCascadeUpdateChild_Expected.xml")
+    @ExpectedDataSet("unitils/dataset/integration/orderPosition/update_ShouldNotCascadeUpdateChild_Expected.xml")
     public void update_ShouldNotCascadeUpdateChild(){
         OrderPosition orderPosition = orderPositionDao.getById(1L);
         assertSelectCount(1);
@@ -73,7 +71,7 @@ public class OrderPositionDbIntegrationTest {
     }
 
     @Test
-    @ExpectedDataSet("unitils/dataset/OrderPositionDbIntegrationTest/delete_ShouldNotCascadeDeleteChild.xml")
+    @ExpectedDataSet("unitils/dataset/integration/orderPosition/delete_ShouldNotCascadeDeleteChild.xml")
     public void delete_ShouldNotCascadeDeleteChild(){
         orderPositionDao.deleteById(1L);
         assertSelectCount(1);

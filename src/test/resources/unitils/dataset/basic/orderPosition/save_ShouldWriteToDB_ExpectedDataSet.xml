@@ -1,0 +1,7 @@
+<!DOCTYPE dataset SYSTEM "dtd\test_sp_database_allFieldsOptional.dtd">
+    <dataset>
+        <order_position id="1"/>
+        <order_position id="2"/>
+        <order_position id="3"/>
+        <order_position id="1000"/>
+    </dataset>

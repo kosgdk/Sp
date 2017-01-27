@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+    <dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="/db_test/xsd/dataset.xsd">
+        <clients id="1" name="Name"/>
+        <sp id="1"/>
+        <orders id="1" client="1" sp="1"/>
+        <products id="1"/>
+        <order_position id="1" order_id="1" product_id="1"/>
+    </dataset>

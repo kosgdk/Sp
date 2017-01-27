@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
+    <dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="/db_test/xsd/dataset.xsd">
+    <products name="TestProduct" price="100.00" link="http://example.com" deleted="0" weight="0"/>
+    </dataset>

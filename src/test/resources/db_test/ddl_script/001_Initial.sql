@@ -105,7 +105,7 @@ CREATE TABLE `products` (
   `link` varchar(300) NOT NULL,
   `vkid` int(10) unsigned DEFAULT NULL,
   `imagelink` varchar(300) DEFAULT NULL,
-  `deleted` tinyint(3) unsigned DEFAULT '0',
+  `status` tinyint(3) unsigned DEFAULT '0',
   `vkphotoid` int(10) unsigned DEFAULT NULL,
   `weight` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)

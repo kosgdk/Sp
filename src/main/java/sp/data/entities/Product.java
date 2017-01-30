@@ -3,16 +3,18 @@ package sp.data.entities;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicUpdate;
+import sp.data.converters.ProductStatusConverter;
+import sp.data.converters.SpStatusConverter;
+import sp.data.entities.enumerators.ProductStatus;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Arrays;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 
 @Entity
@@ -24,46 +26,55 @@ public class Product {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="id")
-	private int id;
-		
+	private Long id;
+
+	@NotNull
+	@Size(max = 300)
 	@Column(name="name")
 	private String name;
-	
+
+	@NotNull
+	@Size(max = 300)
 	@Column(name="link")
 	private String link;
 
+	@NotNull
+	@Min(0)
 	@Column(name="weight")
-	private int weight = 0;
+	private Integer weight = 0;
 
+	@NotNull
+	@Min(0)
 	@Column(name="price")
 	private BigDecimal price;
 
-	@Column(name="photo")
-	private byte[] photo;
-	
+	@Min(0)
+	@Size(max = 11)
 	@Column(name="vkid")
-	private int vkId;
-	
+	private Integer vkId;
+
+	@Size(max = 300)
 	@Column(name="imagelink")
 	private String imageLink;
-	
-	@Column(name="deleted")
-	private int deleted;
-	
+
+	@Column(name="status")
+	@Convert(converter = ProductStatusConverter.class)
+	private ProductStatus status;
+
+	@Min(0)
+	@Size(max = 11)
 	@Column(name="vkphotoid")
-	private int vkPhotoId;
+	private Integer vkPhotoId;
 	
 		
-	public Product() {
-	}
+	public Product() {}
 
 
-
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -80,15 +91,7 @@ public class Product {
 	}
 
 	public void setPrice(BigDecimal price) {
-		this.price = price;
-	}
-
-	public byte[] getPhoto() {
-		return photo;
-	}
-
-	public void setPhoto(byte[] photo) {
-		this.photo = photo;
+		this.price = price != null ? price.setScale(2, RoundingMode.HALF_DOWN) : null;
 	}
 
 	public String getLink() {
@@ -99,19 +102,19 @@ public class Product {
 		this.link = link;
 	}
 
-	public int getWeight() {
+	public Integer getWeight() {
 		return weight;
 	}
 
-	public void setWeight(int weight) {
+	public void setWeight(Integer weight) {
 		this.weight = weight;
 	}
 
-	public int getVkId() {
+	public Integer getVkId() {
 		return vkId;
 	}
 
-	public void setVkId(int vkId) {
+	public void setVkId(Integer vkId) {
 		this.vkId = vkId;
 	}
 
@@ -123,28 +126,27 @@ public class Product {
 		this.imageLink = imageLink;
 	}
 
-	public int getDeleted() {
-		return deleted;
+	public ProductStatus getStatus() {
+		return status;
 	}
 
-	public void setDeleted(int deleted) {
-		this.deleted = deleted;
+	public void setStatus(ProductStatus status) {
+		this.status = status;
 	}
 
-	public int getVkPhotoId() {
+	public Integer getVkPhotoId() {
 		return vkPhotoId;
 	}
 
-	public void setVkPhotoId(int vkPhotoId) {
+	public void setVkPhotoId(Integer vkPhotoId) {
 		this.vkPhotoId = vkPhotoId;
 	}
 
-	
+
 	@Override
 	public String toString() {
 		return name;
 	}
-
 
 	@Override
 	public boolean equals(Object o) {
@@ -153,31 +155,28 @@ public class Product {
 
 		Product product = (Product) o;
 
-		if (id != product.id) return false;
-		if (weight != product.weight) return false;
-		if (vkId != product.vkId) return false;
-		if (deleted != product.deleted) return false;
-		if (vkPhotoId != product.vkPhotoId) return false;
-		if (name != null ? !name.equals(product.name) : product.name != null) return false;
-		if (link != null ? !link.equals(product.link) : product.link != null) return false;
-		if (price != null ? !price.equals(product.price) : product.price != null) return false;
-		if (!Arrays.equals(photo, product.photo)) return false;
-		return imageLink != null ? imageLink.equals(product.imageLink) : product.imageLink == null;
-
+		if (id != null ? !id.equals(product.id) : product.id != null) return false;
+		if (!name.equals(product.name)) return false;
+		if (!link.equals(product.link)) return false;
+		if (!weight.equals(product.weight)) return false;
+		if (!price.equals(product.price)) return false;
+		if (vkId != null ? !vkId.equals(product.vkId) : product.vkId != null) return false;
+		if (imageLink != null ? !imageLink.equals(product.imageLink) : product.imageLink != null) return false;
+		if (status != null ? !status.equals(product.status) : product.status != null) return false;
+		return vkPhotoId != null ? vkPhotoId.equals(product.vkPhotoId) : product.vkPhotoId == null;
 	}
 
 	@Override
 	public int hashCode() {
-		int result = id;
-		result = 31 * result + (name != null ? name.hashCode() : 0);
-		result = 31 * result + (link != null ? link.hashCode() : 0);
-		result = 31 * result + weight;
-		result = 31 * result + (price != null ? price.hashCode() : 0);
-		result = 31 * result + Arrays.hashCode(photo);
-		result = 31 * result + vkId;
+		int result = id != null ? id.hashCode() : 0;
+		result = 31 * result + name.hashCode();
+		result = 31 * result + link.hashCode();
+		result = 31 * result + weight.hashCode();
+		result = 31 * result + price.hashCode();
+		result = 31 * result + (vkId != null ? vkId.hashCode() : 0);
 		result = 31 * result + (imageLink != null ? imageLink.hashCode() : 0);
-		result = 31 * result + deleted;
-		result = 31 * result + vkPhotoId;
+		result = 31 * result + (status != null ? status.hashCode() : 0);
+		result = 31 * result + (vkPhotoId != null ? vkPhotoId.hashCode() : 0);
 		return result;
 	}
 }

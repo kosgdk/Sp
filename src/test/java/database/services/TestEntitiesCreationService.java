@@ -2,10 +2,7 @@ package database.services;
 
 import org.apache.commons.lang.StringUtils;
 import sp.data.entities.*;
-import sp.data.entities.enumerators.ClientReferrer;
-import sp.data.entities.enumerators.OrderStatus;
-import sp.data.entities.enumerators.Place;
-import sp.data.entities.enumerators.SpStatus;
+import sp.data.entities.enumerators.*;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -14,9 +11,9 @@ import java.util.Date;
 
 public class TestEntitiesCreationService {
 
-	private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-	private Date createDate(String string){
+	public static Date createDate(String string){
 		try {
 			return sdf.parse(string);
 		} catch (ParseException e) {
@@ -41,7 +38,7 @@ public class TestEntitiesCreationService {
 		product.setLink(StringUtils.rightPad("http://testlink.ru/" + seed, 300, "_"));
 		product.setVkId(123456 + (seed % 10));
 		product.setImageLink(StringUtils.rightPad("http://testlink.ru/image" + seed, 300, "_"));
-		product.setDeleted(0);
+		product.setStatus(ProductStatus.AVAILABLE);
 		product.setVkPhotoId(123456789 + (seed % 10));
 		product.setWeight(70 + seed);
 		return product;

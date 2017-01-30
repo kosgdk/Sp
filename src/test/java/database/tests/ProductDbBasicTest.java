@@ -55,7 +55,7 @@ public class ProductDbBasicTest {
         assertEquals("link", product.getLink(), productFromDb.getLink());
         assertEquals("vkId", product.getVkId(), productFromDb.getVkId());
         assertEquals("imageLink", product.getImageLink(), productFromDb.getImageLink());
-        assertEquals("deleted", product.getDeleted(), productFromDb.getDeleted());
+        assertEquals("status", product.getStatus(), productFromDb.getStatus());
         assertEquals("vkPhotoId", product.getVkPhotoId(), productFromDb.getVkPhotoId());
         assertEquals("weight", product.getWeight(), productFromDb.getWeight());
     }

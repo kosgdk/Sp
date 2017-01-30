@@ -1,4 +1,4 @@
 <?xml version='1.0' encoding='UTF-8'?>
-    <dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="/db_test/xsd/dataset.xsd">
+    <dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../xsd/dataset.xsd">
         <order_position order_id="1" product_id="1" price_ordered="1.00" price_sp="1.00" price_vendor="1.00"/>
     </dataset>

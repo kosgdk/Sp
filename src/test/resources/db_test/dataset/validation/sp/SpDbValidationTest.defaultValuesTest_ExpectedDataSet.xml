@@ -1,4 +1,4 @@
 <?xml version='1.0' encoding='UTF-8'?>
-    <dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="/db_test/xsd/dataset.xsd">
+    <dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../xsd/dataset.xsd">
         <sp number="1" date_start="2017-01-01" date_end="2017-01-01" date_to_pay="2017-01-01" percent="0.15" status="1"/>
     </dataset>

@@ -34,7 +34,7 @@ public class SchemaRebuilder {
 
     @Before
     public void setUp(){
-        executeSqlQuery("DROP TABLE test_sp_database.dbmaintain_scripts");
+        executeSqlQuery("DROP TABLE IF EXISTS test_sp_database.dbmaintain_scripts");
         DatabaseUnitils.updateDatabase();
         XsdGenerationService.generateXsd();
         if (constraintType != null) {

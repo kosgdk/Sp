@@ -49,7 +49,6 @@ public class Product {
 	private BigDecimal price;
 
 	@Min(0)
-	@Size(max = 11)
 	@Column(name="vkid")
 	private Integer vkId;
 
@@ -57,12 +56,12 @@ public class Product {
 	@Column(name="imagelink")
 	private String imageLink;
 
+	@NotNull
 	@Column(name="status")
 	@Convert(converter = ProductStatusConverter.class)
 	private ProductStatus status;
 
 	@Min(0)
-	@Size(max = 11)
 	@Column(name="vkphotoid")
 	private Integer vkPhotoId;
 	
@@ -148,6 +147,7 @@ public class Product {
 		return name;
 	}
 
+	/*
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -179,4 +179,5 @@ public class Product {
 		result = 31 * result + (vkPhotoId != null ? vkPhotoId.hashCode() : 0);
 		return result;
 	}
+	*/
 }

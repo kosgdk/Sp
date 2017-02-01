@@ -4,6 +4,7 @@ import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import javax.persistence.*;
 import javax.persistence.CascadeType;
@@ -23,15 +24,15 @@ public class OrderPosition {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="id")
-	private int id;
+	private Long id;
 
 	@NotNull
-	@ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="order_id")
 	private Order order;
 
 	@NotNull(message = "{orderPosition.product.isEmpty}")
-	@ManyToOne(cascade=CascadeType.PERSIST, fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@Fetch(FetchMode.JOIN)
 	@JoinColumn(name="product_id")
 	private Product product;
@@ -54,9 +55,9 @@ public class OrderPosition {
 	@NotNull
 	@Min(1)
 	@Column(name="quantity")
-	private int quantity;
+	private Integer quantity;
 
-	@Size(max = 300)
+	@Size(max = 500)
 	@Column(name="note")
 	private String note;
 
@@ -93,11 +94,11 @@ public class OrderPosition {
 	}
 
 
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	
@@ -122,7 +123,8 @@ public class OrderPosition {
 	}
 
 	public void setPriceOrdered(BigDecimal priceOrdered) {
-		this.priceOrdered = priceOrdered;
+
+		this.priceOrdered = priceOrdered!=null ? priceOrdered.setScale(2, RoundingMode.HALF_DOWN) : priceOrdered;
 	}
 
 	public BigDecimal getPriceVendor() {
@@ -130,7 +132,7 @@ public class OrderPosition {
 	}
 
 	public void setPriceVendor(BigDecimal priceVendor) {
-		this.priceVendor = priceVendor;
+		this.priceVendor = priceVendor!=null ? priceVendor.setScale(2, RoundingMode.HALF_DOWN) : priceVendor;
 	}
 
 	public BigDecimal getPriceSp() {
@@ -138,14 +140,14 @@ public class OrderPosition {
 	}
 
 	public void setPriceSp(BigDecimal priceSp) {
-		this.priceSp = priceSp;
+		this.priceSp = priceSp!=null ? priceSp.setScale(2, RoundingMode.HALF_DOWN) : priceSp;
 	}
 
-	public int getQuantity() {
+	public Integer getQuantity() {
 		return quantity;
 	}
 
-	public void setQuantity(int quantity) {
+	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
 	}
 
@@ -162,17 +164,9 @@ public class OrderPosition {
 		return income;
 	}
 
-	public void setIncome(BigDecimal income) {
-		this.income = income;
-	}
-
 	public BigDecimal getPriceSpSummary() {
 		calculatePriceSpSummary();
 		return priceSpSummary;
-	}
-
-	public void setPriceSpSummary(BigDecimal priceSpSummary) {
-		this.priceSpSummary = priceSpSummary;
 	}
 
 	public int getWeight() {
@@ -180,51 +174,18 @@ public class OrderPosition {
 		return weight;
 	}
 
-	public void setWeight(int weight) {
-		this.weight = weight;
-	}
-
 	@Override
 	public String toString() {
-		return "OrderPosition [id=" + id + ",\n product=" + product + ",\n priceOrdered=" + priceOrdered
-				+ ",\n quantity=" + quantity + ",\n note=" + note + "]";
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof OrderPosition)) return false;
-
-		OrderPosition that = (OrderPosition) o;
-
-		if (id != that.id) return false;
-		if (quantity != that.quantity) return false;
-		if (weight != that.weight) return false;
-		if (order != null ? !order.equals(that.order) : that.order != null) return false;
-		if (product != null ? !product.equals(that.product) : that.product != null) return false;
-		if (priceOrdered != null ? !priceOrdered.equals(that.priceOrdered) : that.priceOrdered != null) return false;
-		if (priceVendor != null ? !priceVendor.equals(that.priceVendor) : that.priceVendor != null) return false;
-		if (priceSp != null ? !priceSp.equals(that.priceSp) : that.priceSp != null) return false;
-		if (note != null ? !note.equals(that.note) : that.note != null) return false;
-		if (priceSpSummary != null ? !priceSpSummary.equals(that.priceSpSummary) : that.priceSpSummary != null)
-			return false;
-		return income != null ? income.equals(that.income) : that.income == null;
-
-	}
-
-	@Override
-	public int hashCode() {
-		int result = id;
-		result = 31 * result + (order != null ? order.hashCode() : 0);
-		result = 31 * result + (product != null ? product.hashCode() : 0);
-		result = 31 * result + (priceOrdered != null ? priceOrdered.hashCode() : 0);
-		result = 31 * result + (priceVendor != null ? priceVendor.hashCode() : 0);
-		result = 31 * result + (priceSp != null ? priceSp.hashCode() : 0);
-		result = 31 * result + quantity;
-		result = 31 * result + (note != null ? note.hashCode() : 0);
-		result = 31 * result + (priceSpSummary != null ? priceSpSummary.hashCode() : 0);
-		result = 31 * result + (income != null ? income.hashCode() : 0);
-		result = 31 * result + weight;
-		return result;
+		return "OrderPosition{" +
+				"id=" + id +
+				", product=" + product.getName() +
+				", quantity=" + quantity +
+				", priceOrdered=" + priceOrdered +
+				", priceSp=" + priceSp +
+				", priceSpSummary=" + priceSpSummary +
+				", income=" + income +
+				", weight=" + weight +
+				", note='" + note +
+				'}';
 	}
 }

@@ -8,6 +8,7 @@ import sp.data.entities.enumerators.OrderStatus;
 import sp.data.entities.enumerators.Place;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 import java.util.List;
 
@@ -16,7 +17,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.*;
-
 
 @Entity
 @Table(name = "orders")
@@ -27,9 +27,9 @@ public class Order {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
-	private int id;
+	private Long id;
 	
-	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "order", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
 	private List<OrderPosition> orderPositions;
 	
 	@NotNull(message = "{order.client.noSuchClient}")
@@ -60,7 +60,7 @@ public class Order {
 
 	@NotNull(message = "{order.prepaid.isEmpty}")
 	@Min(value = 0, message = "{order.prePaid.negative}")
-	@Column(name = "prepaid")
+	@Column(name = "prepaid", precision=7, scale=2)
 	private BigDecimal prepaid = new BigDecimal(0);
 
 	@NotNull(message = "{order.weight.isEmpty}")
@@ -68,13 +68,14 @@ public class Order {
 	@Column(name = "weight")
 	private Integer weight = 0;
 	
-	@Column(name = "delivery_price")
+	@Column(name = "delivery_price", precision=7, scale=2)
 	private BigDecimal deliveryPrice = new BigDecimal(0);
 
 	@Column(name = "place")
 	@Convert(converter = PlaceConverter.class)
 	private Place place;
-	
+
+	@Past
 	@Temporal(TemporalType.DATE)
 	@Column(name = "date_completed")
 	private Date dateCompleted;
@@ -133,11 +134,11 @@ public class Order {
 
 	// Getters and setters
 
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -194,7 +195,7 @@ public class Order {
 	}
 
 	public void setPrepaid(BigDecimal prepaid) {
-		this.prepaid = prepaid;
+		this.prepaid = prepaid != null ? prepaid.setScale(2, RoundingMode.HALF_DOWN): null;
 	}
 
 	public Integer getWeight() {
@@ -211,7 +212,7 @@ public class Order {
 	}
 
 	public void setDeliveryPrice(BigDecimal deliveryPrice) {
-		this.deliveryPrice = deliveryPrice;
+		this.deliveryPrice = deliveryPrice != null ? deliveryPrice.setScale(2, RoundingMode.HALF_DOWN) : null;
 	}
 
 	public Place getPlace() {
@@ -256,53 +257,55 @@ public class Order {
 		return "Order (id=" + id + ") of " + client.getName() + " in SP " + sp.getId();
 	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Order)) return false;
 
-        Order order = (Order) o;
+	/*
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Order)) return false;
 
-        if (id != order.id) return false;
-        if (orderPositions != null ? !orderPositions.equals(order.orderPositions) : order.orderPositions != null)
-            return false;
-        if (client != null ? !client.equals(order.client) : order.client != null) return false;
-        if (sp != null ? !sp.equals(order.sp) : order.sp != null) return false;
-        if (note != null ? !note.equals(order.note) : order.note != null) return false;
-        if (dateOrdered != null ? !dateOrdered.equals(order.dateOrdered) : order.dateOrdered != null) return false;
-        if (status != order.status) return false;
-        if (prepaid != null ? !prepaid.equals(order.prepaid) : order.prepaid != null) return false;
-        if (weight != null ? !weight.equals(order.weight) : order.weight != null) return false;
-        if (deliveryPrice != null ? !deliveryPrice.equals(order.deliveryPrice) : order.deliveryPrice != null)
-            return false;
-        if (place != null ? !place.equals(order.place) : order.place != null) return false;
-        if (dateCompleted != null ? !dateCompleted.equals(order.dateCompleted) : order.dateCompleted != null)
-            return false;
-        if (summaryPrice != null ? !summaryPrice.equals(order.summaryPrice) : order.summaryPrice != null) return false;
-        if (income != null ? !income.equals(order.income) : order.income != null) return false;
-        if (debt != null ? !debt.equals(order.debt) : order.debt != null) return false;
-        return total != null ? total.equals(order.total) : order.total == null;
+		Order order = (Order) o;
 
-    }
+		if (id != null ? !id.equals(order.id) : order.id != null) return false;
+		if (orderPositions != null){
+			if (order.getOrderPositions() == null) return false;
+			if (order.getOrderPositions() != null && orderPositions.size() != order.getOrderPositions().size()) return false;
+			if (orderPositions.isEmpty() && !order.getOrderPositions().isEmpty()) return false;
+			if (!orderPositions.isEmpty() && order.getOrderPositions().isEmpty()) return false;
+		} else {
+			if (order.getOrderPositions() != null && !order.getOrderPositions().isEmpty())  return false;
+		}
+		if (!client.equals(order.client)) return false;
+		//if (!sp.equals(order.sp)) return false;
+		if (note != null ? !note.equals(order.note) : order.note != null) return false;
+		if (!dateOrdered.equals(order.dateOrdered)) return false;
+		if (status != order.status) return false;
+		if (!prepaid.equals(order.prepaid)) return false;
+		if (!weight.equals(order.weight)) return false;
+		if (deliveryPrice != null ? !deliveryPrice.equals(order.deliveryPrice) : order.deliveryPrice != null)
+			return false;
+		if (place != order.place) return false;
+		return dateCompleted != null ? dateCompleted.equals(order.dateCompleted) : order.dateCompleted == null;
+	}
+	*/
 
-    @Override
-    public int hashCode() {
-        int result = id;
-        result = 31 * result + (orderPositions != null ? orderPositions.hashCode() : 0);
-        result = 31 * result + (client != null ? client.hashCode() : 0);
-        result = 31 * result + (sp != null ? sp.hashCode() : 0);
-        result = 31 * result + (note != null ? note.hashCode() : 0);
-        result = 31 * result + (dateOrdered != null ? dateOrdered.hashCode() : 0);
-        result = 31 * result + (status != null ? status.hashCode() : 0);
-        result = 31 * result + (prepaid != null ? prepaid.hashCode() : 0);
-        result = 31 * result + (weight != null ? weight.hashCode() : 0);
-        result = 31 * result + (deliveryPrice != null ? deliveryPrice.hashCode() : 0);
-        result = 31 * result + (place != null ? place.hashCode() : 0);
-        result = 31 * result + (dateCompleted != null ? dateCompleted.hashCode() : 0);
-        result = 31 * result + (summaryPrice != null ? summaryPrice.hashCode() : 0);
-        result = 31 * result + (income != null ? income.hashCode() : 0);
-        result = 31 * result + (debt != null ? debt.hashCode() : 0);
-        result = 31 * result + (total != null ? total.hashCode() : 0);
-        return result;
-    }
+/*
+	@Override
+	public int hashCode() {
+		System.out.println("inside Order-"+id+" hashCode()");
+		int result = id != null ? id.hashCode() : 0;
+		//result = 31 * result + (orderPositions != null ? orderPositions.hashCode() : 0);
+		//result = 31 * result + (client != null ? client.hashCode() : 0);
+		//result = 31 * result + (sp != null ? sp.hashCode() : 0);
+		result = 31 * result + (note != null ? note.hashCode() : 0);
+		result = 31 * result + (dateOrdered != null ? dateOrdered.hashCode() : 0);
+		result = 31 * result + (status != null ? status.hashCode() : 0);
+		result = 31 * result + (prepaid != null ? prepaid.hashCode() : 0);
+		result = 31 * result + (weight != null ? weight.hashCode() : 0);
+		result = 31 * result + (deliveryPrice != null ? deliveryPrice.hashCode() : 0);
+		result = 31 * result + (place != null ? place.hashCode() : 0);
+		result = 31 * result + (dateCompleted != null ? dateCompleted.hashCode() : 0);
+		return result;
+	}
+	*/
 }

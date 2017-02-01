@@ -6,6 +6,7 @@ import sp.data.converters.SpStatusConverter;
 import sp.data.entities.enumerators.SpStatus;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Set;
@@ -27,20 +28,20 @@ public class Sp {
 	@GeneratedValue(generator = "SpIdGenerator")
 	@GenericGenerator(name = "SpIdGenerator", strategy = "sp.data.idgenerators.SpIdGenerator")
 	@Column(name = "id")
-	private int id;
+	private Long id;
 
-	@OneToMany(mappedBy = "sp", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "sp", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
 	@OrderBy(value = "id")
 	private Set<Order> orders;
 
 	@NotNull
 	@Min(value = 1, message = "{sp.number.min}")
 	@Column(name = "number")
-	private int number;
+	private Long number;
 
 	@NotNull
-	@DecimalMin(value = "0", message = "{sp.percent.negative}")
-	@DecimalMax(value = "0.15", message = "{sp.percent.max}")
+	@DecimalMin(value = "0", message = "{sp.percent.outOfRange}")
+	@DecimalMax(value = "1", message = "{sp.percent.outOfRange}")
 	@Column(name = "percent")
 	private BigDecimal percent;
 
@@ -86,19 +87,27 @@ public class Sp {
 	public Sp() {
 	}
 
+	public Sp(Long number) {
+		this.number = number;
+	}
+
 	private void calculateDateToPay(Date dateEnd){
-		Calendar cal = Calendar.getInstance();
-        cal.setTime(dateEnd);
-        cal.add(Calendar.DATE, 3); // default - 3 days
-        dateToPay = cal.getTime();
+		if (dateEnd!=null) {
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(dateEnd);
+			cal.add(Calendar.DATE, 3); // default - 3 days
+			dateToPay = cal.getTime();
+		}else {
+			dateToPay = null;
+		}
 	}
 
 
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -110,11 +119,11 @@ public class Sp {
 		this.orders = orders;
 	}
 
-	public int getNumber() {
+	public Long getNumber() {
 		return number;
 	}
 
-	public void setNumber(int number) {
+	public void setNumber(Long number) {
 		this.number = number;
 	}
 
@@ -123,7 +132,7 @@ public class Sp {
 	}
 
 	public void setPercent(BigDecimal percent) {
-		this.percent = percent;
+		this.percent = percent!=null ? percent.setScale(2, RoundingMode.HALF_DOWN) : percent;
 	}
 
 	public SpStatus getStatus() {
@@ -192,11 +201,63 @@ public class Sp {
 	}
 
 
+
 	@Override
 	public String toString() {
-		return String.valueOf(id);
+		return "Sp{" +
+				"id=" + id +
+				", number=" + number +
+				", percent=" + percent +
+				", status=" + status +
+				", dateStart=" + dateStart +
+				", dateEnd=" + dateEnd +
+				", dateToPay=" + dateToPay +
+				", dateSent=" + dateSent +
+				", dateToReceive=" + dateToReceive +
+				", dateReceived=" + dateReceived +
+				", dateToDistribute=" + dateToDistribute +
+				'}';
 	}
 
-	
+	/*
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Sp)) return false;
 
+		Sp sp = (Sp) o;
+
+		if (id != null ? !id.equals(sp.id) : sp.id != null) return false;
+		if (orders != null ? orders.size() != sp.orders.size() : sp.orders != null) return false;
+		if (!number.equals(sp.number)) return false;
+		if (!percent.equals(sp.percent)) return false;
+		if (status != sp.status) return false;
+		if (!dateStart.equals(sp.dateStart)) return false;
+		if (!dateEnd.equals(sp.dateEnd)) return false;
+		if (!dateToPay.equals(sp.dateToPay)) return false;
+		if (dateSent != null ? !dateSent.equals(sp.dateSent) : sp.dateSent != null) return false;
+		if (dateToReceive != null ? !dateToReceive.equals(sp.dateToReceive) : sp.dateToReceive != null) return false;
+		if (dateReceived != null ? !dateReceived.equals(sp.dateReceived) : sp.dateReceived != null) return false;
+		return dateToDistribute != null ? dateToDistribute.equals(sp.dateToDistribute) : sp.dateToDistribute == null;
+
+	}
+
+	@Override
+	public int hashCode() {
+		System.out.println("inside Sp.hashCode()");
+		int result = id != null ? id.hashCode() : 0;
+		result = 31 * result + (orders != null ? orders.hashCode() : 0);
+		result = 31 * result + number.hashCode();
+		result = 31 * result + percent.hashCode();
+		result = 31 * result + status.hashCode();
+		result = 31 * result + dateStart.hashCode();
+		result = 31 * result + dateEnd.hashCode();
+		result = 31 * result + dateToPay.hashCode();
+		result = 31 * result + (dateSent != null ? dateSent.hashCode() : 0);
+		result = 31 * result + (dateToReceive != null ? dateToReceive.hashCode() : 0);
+		result = 31 * result + (dateReceived != null ? dateReceived.hashCode() : 0);
+		result = 31 * result + (dateToDistribute != null ? dateToDistribute.hashCode() : 0);
+		return result;
+	}
+	*/
 }

@@ -9,6 +9,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import sp.data.converters.ClientReferrerConverter;
 import sp.data.entities.enumerators.ClientReferrer;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -27,16 +28,16 @@ public class Client {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="id")
-	private int id;
+	private Long id;
 
 	@JsonIgnore
-	@OneToMany(mappedBy="client", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@OneToMany(mappedBy="client", fetch=FetchType.LAZY)
 	@OrderBy(value = "id desc")
 	private Set<Order> orders;
 
 	@NotNull(message = "{client.name.isEmpty}")
 	@Size(min = 3, max = 50, message = "{client.name.length}")
-	@Column(name="name", unique = true)
+	@Column(name="name", unique = true, updatable = false)
 	@JsonProperty
 	private String name;
 
@@ -61,11 +62,11 @@ public class Client {
 	public Client() {}
 
 
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -129,25 +130,12 @@ public class Client {
 
 		Client client = (Client) o;
 
-		if (id != client.id) return false;
-		//if (orders != null ? !orders.equals(client.orders) : client.orders != null) return false;
-		if (name != null ? !name.equals(client.name) : client.name != null) return false;
-		if (realName != null ? !realName.equals(client.realName) : client.realName != null) return false;
-		if (phone != null ? !phone.equals(client.phone) : client.phone != null) return false;
-		if (note != null ? !note.equals(client.note) : client.note != null) return false;
-		return clientReferrer == client.clientReferrer;
+		return name != null ? name.equals(client.name) : client.name == null;
 
 	}
 
 	@Override
 	public int hashCode() {
-		int result = id;
-		//result = 31 * result + (orders != null ? orders.hashCode() : 0);
-		result = 31 * result + (name != null ? name.hashCode() : 0);
-		result = 31 * result + (realName != null ? realName.hashCode() : 0);
-		result = 31 * result + (phone != null ? phone.hashCode() : 0);
-		result = 31 * result + (note != null ? note.hashCode() : 0);
-		result = 31 * result + (clientReferrer != null ? clientReferrer.hashCode() : 0);
-		return result;
+		return name != null ? name.hashCode() : super.hashCode();
 	}
 }

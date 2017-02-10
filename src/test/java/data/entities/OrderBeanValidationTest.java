@@ -16,6 +16,7 @@ import sp.data.entities.Order;
 import sp.data.entities.Sp;
 import sp.data.entities.enumerators.OrderStatus;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 
 import static org.junit.Assert.assertEquals;
@@ -115,8 +116,10 @@ public class OrderBeanValidationTest extends AbstractJUnit4SpringContextTests {
     }
 
     @Test
-    public void prepaidCanNotBeNull() {
-        order.setPrepaid(null);
+    public void prepaidCanNotBeNull() throws NoSuchFieldException, IllegalAccessException {
+        Field field = Order.class.getDeclaredField("prepaid");
+        field.setAccessible(true);
+        field.set(order, null);
         validator.validate(order, errors);
         assertEquals("NotNull", errors.getFieldError("prepaid").getCode());
     }
@@ -154,13 +157,6 @@ public class OrderBeanValidationTest extends AbstractJUnit4SpringContextTests {
         order.setWeight(0);
         validator.validate(order, errors);
         assertNull(errors.getFieldError("weight"));
-    }
-
-    @Test
-    public void deliveryPriceCanBeNull() {
-        order.setDeliveryPrice(null);
-        validator.validate(order, errors);
-        assertNull(errors.getFieldError("deliveryPrice"));
     }
 
     @Test

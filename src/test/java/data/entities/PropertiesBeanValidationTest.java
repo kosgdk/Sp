@@ -11,6 +11,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import sp.data.entities.Properties;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 
 import static org.junit.Assert.assertEquals;
@@ -29,8 +30,10 @@ public class PropertiesBeanValidationTest extends AbstractJUnit4SpringContextTes
 
 
     @Test
-    public void percentSpCanNotBeNull() {
-        properties.setPercentSp(null);
+    public void percentSpCanNotBeNull() throws NoSuchFieldException, IllegalAccessException {
+        Field field = Properties.class.getDeclaredField("percentSp");
+        field.setAccessible(true);
+        field.set(properties, null);
         validator.validate(properties, errors);
         assertEquals("NotNull", errors.getFieldError("percentSp").getCode());
     }
@@ -57,7 +60,10 @@ public class PropertiesBeanValidationTest extends AbstractJUnit4SpringContextTes
     }
 
     @Test
-    public void percentDiscountCanNotBeNull() {
+    public void percentDiscountCanNotBeNull() throws NoSuchFieldException, IllegalAccessException {
+        Field field = Properties.class.getDeclaredField("percentDiscount");
+        field.setAccessible(true);
+        field.set(properties, null);
         properties.setPercentDiscount(null);
         validator.validate(properties, errors);
         assertEquals("NotNull", errors.getFieldError("percentDiscount").getCode());
@@ -85,8 +91,10 @@ public class PropertiesBeanValidationTest extends AbstractJUnit4SpringContextTes
     }
 
     @Test
-    public void percentBankCommissionCanNotBeNull() {
-        properties.setPercentBankCommission(null);
+    public void percentBankCommissionCanNotBeNull() throws NoSuchFieldException, IllegalAccessException {
+        Field field = Properties.class.getDeclaredField("percentBankCommission");
+        field.setAccessible(true);
+        field.set(properties, null);
         validator.validate(properties, errors);
         assertEquals("NotNull", errors.getFieldError("percentBankCommission").getCode());
     }

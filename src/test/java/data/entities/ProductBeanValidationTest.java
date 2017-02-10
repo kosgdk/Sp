@@ -13,6 +13,7 @@ import org.springframework.validation.Validator;
 import sp.data.entities.Product;
 import sp.data.entities.enumerators.ProductStatus;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 
 import static org.junit.Assert.assertEquals;
@@ -92,8 +93,10 @@ public class ProductBeanValidationTest extends AbstractJUnit4SpringContextTests 
     }
 
     @Test
-    public void priceCanNotBeNull() {
-        product.setPrice(null);
+    public void priceCanNotBeNull() throws NoSuchFieldException, IllegalAccessException {
+        Field field = Product.class.getDeclaredField("price");
+        field.setAccessible(true);
+        field.set(product, null);
         validator.validate(product, errors);
         assertEquals("NotNull", errors.getFieldError("price").getCode());
     }

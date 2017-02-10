@@ -44,6 +44,7 @@ public class OrderPositionBeanValidationTest extends AbstractJUnit4SpringContext
 
     @Test
     public void productCanNotBeNull() {
+        orderPosition.setProduct(null);
         validator.validate(orderPosition, errors);
         assertEquals("NotNull", errors.getFieldError("product").getCode());
     }
@@ -57,7 +58,6 @@ public class OrderPositionBeanValidationTest extends AbstractJUnit4SpringContext
 
     @Test
     public void priceOrderedCanNotBeNull() {
-        orderPosition.setPriceOrdered(null);
         validator.validate(orderPosition, errors);
         assertEquals("NotNull", errors.getFieldError("priceOrdered").getCode());
     }
@@ -78,7 +78,6 @@ public class OrderPositionBeanValidationTest extends AbstractJUnit4SpringContext
 
     @Test
     public void priceVendorCanNotBeNull() {
-        orderPosition.setPriceVendor(null);
         validator.validate(orderPosition, errors);
         assertEquals("NotNull", errors.getFieldError("priceVendor").getCode());
     }
@@ -99,7 +98,6 @@ public class OrderPositionBeanValidationTest extends AbstractJUnit4SpringContext
 
     @Test
     public void priceSpCanNotBeNull() {
-        orderPosition.setPriceSp(null);
         validator.validate(orderPosition, errors);
         assertEquals("NotNull", errors.getFieldError("priceSp").getCode());
     }

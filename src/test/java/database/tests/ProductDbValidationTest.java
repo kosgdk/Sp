@@ -20,10 +20,12 @@ import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 import sp.data.dao.interfaces.ProductDao;
+import sp.data.entities.OrderPosition;
 import sp.data.entities.Product;
 import database.services.CauseExceptionMatcher;
 import database.services.TestEntitiesCreationService;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 
 import static org.junit.Assert.*;
@@ -57,9 +59,18 @@ public class ProductDbValidationTest {
     public void allColumnsCanBeWrittenAndRead(){
         Product product = service.createTestProduct(1);
         dao.save(product);
-        Product product2 = dao.getById(product.getId());
+        Product productFromDb = dao.getById(product.getId());
+
         assertSelectCount(1);
-        assertEquals(product, product2);
+        assertEquals("id", product.getId(), productFromDb.getId());
+        assertEquals("name", product.getName(), productFromDb.getName());
+        assertEquals("link", product.getLink(), productFromDb.getLink());
+        assertEquals("weight", product.getWeight(), productFromDb.getWeight());
+        assertEquals("price", product.getPrice(), productFromDb.getPrice());
+        assertEquals("vkId", product.getVkId(), productFromDb.getVkId());
+        assertEquals("imageLink", product.getImageLink(), productFromDb.getImageLink());
+        assertEquals("status", product.getStatus(), productFromDb.getStatus());
+        assertEquals("vkPhotoId", product.getVkPhotoId(), productFromDb.getVkPhotoId());
     }
 
     @Test
@@ -78,11 +89,15 @@ public class ProductDbValidationTest {
     }
 
     @Test
-    public void price_ShouldNotBeNull_OrThrowException() {
+    public void price_ShouldNotBeNull_OrThrowException() throws NoSuchFieldException, IllegalAccessException {
         expectedException.expect(ConstraintViolationException.class);
         expectedException.expectCause(new CauseExceptionMatcher(MySQLIntegrityConstraintViolationException.class,
                                                                 "Column 'price' cannot be null"));
-        product.setPrice(null);
+
+        Field field = Product.class.getDeclaredField("price");
+        field.setAccessible(true);
+        field.set(product, null);
+
         dao.save(product);
     }
 

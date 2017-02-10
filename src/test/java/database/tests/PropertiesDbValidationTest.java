@@ -19,6 +19,9 @@ import sp.data.dao.interfaces.PropertiesDao;
 import sp.data.entities.Properties;
 import database.services.CauseExceptionMatcher;
 import database.services.TestEntitiesCreationService;
+import sp.data.entities.Sp;
+
+import java.lang.reflect.Field;
 
 
 @RunWith(UnitilsBlockJUnit4ClassRunner.class)
@@ -55,23 +58,30 @@ public class PropertiesDbValidationTest {
     public void defaultValuesTest() {}
 
     @Test
-    public void percentSp_ShouldNotBeNull_OrThrowException() {
+    public void percentSp_ShouldNotBeNull_OrThrowException() throws NoSuchFieldException, IllegalAccessException {
         configureExpectedExceptionRule("Column 'percent_sp' cannot be null");
-        properties.setPercentSp(null);
+        Field field = Properties.class.getDeclaredField("percentSp");
+        field.setAccessible(true);
+        field.set(properties, null);
         dao.save(properties);
     }
 
     @Test
-    public void percentDiscount_ShouldNotBeNull_OrThrowException() {
+    public void percentDiscount_ShouldNotBeNull_OrThrowException() throws NoSuchFieldException, IllegalAccessException {
         configureExpectedExceptionRule("Column 'percent_discount' cannot be null");
+        Field field = Properties.class.getDeclaredField("percentDiscount");
+        field.setAccessible(true);
+        field.set(properties, null);
         properties.setPercentDiscount(null);
         dao.save(properties);
     }
 
     @Test
-    public void percentBankCommission_ShouldNotBeNull_OrThrowException() {
+    public void percentBankCommission_ShouldNotBeNull_OrThrowException() throws NoSuchFieldException, IllegalAccessException {
         configureExpectedExceptionRule("Column 'percent_bank_commission' cannot be null");
-        properties.setPercentBankCommission(null);
+        Field field = Properties.class.getDeclaredField("percentBankCommission");
+        field.setAccessible(true);
+        field.set(properties, null);
         dao.save(properties);
     }
 

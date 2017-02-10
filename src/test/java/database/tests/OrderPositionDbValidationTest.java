@@ -23,6 +23,7 @@ import sp.data.entities.OrderPosition;
 import database.services.CauseExceptionMatcher;
 import database.services.TestEntitiesCreationService;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 
 @RunWith(UnitilsBlockJUnit4ClassRunner.class)
@@ -80,29 +81,40 @@ public class OrderPositionDbValidationTest {
     }
 
     @Test
-    public void priceOrdered_ShouldNotBeNull_OrThrowException() {
+    public void priceOrdered_ShouldNotBeNull_OrThrowException() throws NoSuchFieldException, IllegalAccessException {
         expectedException.expect(ConstraintViolationException.class);
         expectedException.expectCause(new CauseExceptionMatcher(MySQLIntegrityConstraintViolationException.class,
                                                                 "Column 'price_ordered' cannot be null"));
-        orderPosition.setPriceOrdered(null);
+
+        Field field = OrderPosition.class.getDeclaredField("priceOrdered");
+        field.setAccessible(true);
+        field.set(orderPosition, null);
+
         dao.save(orderPosition);
     }
 
     @Test
-    public void priceSp_ShouldNotBeNull_OrThrowException() {
+    public void priceSp_ShouldNotBeNull_OrThrowException() throws NoSuchFieldException, IllegalAccessException {
         expectedException.expect(ConstraintViolationException.class);
         expectedException.expectCause(new CauseExceptionMatcher(MySQLIntegrityConstraintViolationException.class,
                                                                 "Column 'price_sp' cannot be null"));
-        orderPosition.setPriceSp(null);
+
+        Field field = OrderPosition.class.getDeclaredField("priceSp");
+        field.setAccessible(true);
+        field.set(orderPosition, null);
+
         dao.save(orderPosition);
     }
 
     @Test
-    public void priceVendor_ShouldNotBeNull_OrThrowException() {
+    public void priceVendor_ShouldNotBeNull_OrThrowException() throws NoSuchFieldException, IllegalAccessException{
         expectedException.expect(ConstraintViolationException.class);
         expectedException.expectCause(new CauseExceptionMatcher(MySQLIntegrityConstraintViolationException.class,
                                                                 "Column 'price_vendor' cannot be null"));
-        orderPosition.setPriceVendor(null);
+        Field field = OrderPosition.class.getDeclaredField("priceVendor");
+        field.setAccessible(true);
+        field.set(orderPosition, null);
+
         dao.save(orderPosition);
     }
 

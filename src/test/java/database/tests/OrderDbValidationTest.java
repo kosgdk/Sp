@@ -22,7 +22,9 @@ import sp.data.dao.interfaces.OrderDao;
 import sp.data.entities.Order;
 import database.services.CauseExceptionMatcher;
 import database.services.TestEntitiesCreationService;
+import sp.data.entities.OrderPosition;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 
 
@@ -90,11 +92,15 @@ public class OrderDbValidationTest {
     }
 
     @Test
-    public void prepaid_ShouldNotBeNull_OrThrowException() {
+    public void prepaid_ShouldNotBeNull_OrThrowException() throws NoSuchFieldException, IllegalAccessException {
         expectedException.expect(ConstraintViolationException.class);
         expectedException.expectCause(new CauseExceptionMatcher(MySQLIntegrityConstraintViolationException.class,
                                                                 "Column 'prepaid' cannot be null"));
-        order.setPrepaid(null);
+
+        Field field = Order.class.getDeclaredField("prepaid");
+        field.setAccessible(true);
+        field.set(order, null);
+
         dao.save(order);
     }
 
@@ -108,11 +114,15 @@ public class OrderDbValidationTest {
     }
 
     @Test
-    public void deliveryPrice_ShouldNotBeNull_OrThrowException() {
+    public void deliveryPrice_ShouldNotBeNull_OrThrowException() throws NoSuchFieldException, IllegalAccessException {
         expectedException.expect(ConstraintViolationException.class);
         expectedException.expectCause(new CauseExceptionMatcher(MySQLIntegrityConstraintViolationException.class,
                                                                 "Column 'delivery_price' cannot be null"));
-        order.setDeliveryPrice(null);
+
+        Field field = Order.class.getDeclaredField("deliveryPrice");
+        field.setAccessible(true);
+        field.set(order, null);
+
         dao.save(order);
     }
 

@@ -15,6 +15,18 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
 
+  <testResources>
+    <testResource>
+      <directory>src/main/webapp/WEB-INF</directory>
+      <includes>
+        <include>*.xml</include>
+      </includes>
+      <excludes>
+        <exclude>web.xml</exclude>
+      </excludes>
+    </testResource>
+  </testResources>
+
 
   <dependencies>
 
@@ -193,6 +205,13 @@
       <groupId>commons-pool</groupId>
       <artifactId>commons-pool</artifactId>
       <version>1.6</version>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>3.1.0</version>
+      <scope>provided</scope>
     </dependency>
 
   </dependencies>

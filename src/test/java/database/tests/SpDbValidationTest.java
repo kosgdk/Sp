@@ -22,6 +22,7 @@ import sp.data.entities.Sp;
 import database.services.CauseExceptionMatcher;
 import database.services.TestEntitiesCreationService;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 
 
@@ -63,7 +64,9 @@ public class SpDbValidationTest {
         expectedException.expect(ConstraintViolationException.class);
         expectedException.expectCause(new CauseExceptionMatcher(MySQLIntegrityConstraintViolationException.class,
                                                                 "Column 'percent' cannot be null"));
-        sp.setPercent(null);
+        Field field = Sp.class.getDeclaredField("percent");
+        field.setAccessible(true);
+        field.set(sp, null);
         try {
             dao.save(sp);
         } catch (DataIntegrityViolationException e){

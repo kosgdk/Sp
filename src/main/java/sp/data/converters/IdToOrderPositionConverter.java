@@ -13,6 +13,6 @@ public class IdToOrderPositionConverter implements Converter<String, OrderPositi
 
 	@Override
 	public OrderPosition convert(String id) {
-		return orderPositionService.getById(Integer.parseInt(id));
+		return orderPositionService.getById(Long.parseLong(id));
 	}
 }

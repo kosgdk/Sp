@@ -1,15 +1,12 @@
 package sp.data.dao.generic;
 
+import javax.persistence.NoResultException;
 import java.io.Serializable;
 import java.util.List;
 
 public interface GenericDao <E, I extends Serializable> {
 
-	E getById(I id);
-
-	List<E> searchByName(String name);
-
-	E getByName(String name);
+	E getById(I id) throws NoResultException;
 
 	List<E> getAll();
 
@@ -19,6 +16,6 @@ public interface GenericDao <E, I extends Serializable> {
 
 	void delete(E entity);
 
-	void deleteById(I id);
-	
+	void deleteById(I id) throws NoResultException;
+
 }

@@ -10,20 +10,21 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import sp.data.entities.*;
+import sp.data.entities.enumerators.ClientReferrer;
 import sp.data.services.interfaces.ClientService;
-import sp.data.services.interfaces.RefererService;
 import sp.data.validators.ClientValidator;
 
 import javax.validation.Valid;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
-@SessionAttributes("referers")
+@SessionAttributes("clientReferrers")
 public class ClientController {
 
-	@ModelAttribute("referers")
-	public List<Referer> getReferers(){
-		return refererService.getAll();
+	@ModelAttribute("clientReferrers")
+	public List<ClientReferrer> getReferrers(){
+		return Arrays.asList(ClientReferrer.values());
 	}
 
 	@Autowired
@@ -31,9 +32,6 @@ public class ClientController {
 
 	@Autowired
 	ClientValidator clientValidator;
-
-	@Autowired
-	RefererService refererService;
 
 	@Autowired
 	ClientService clientService;
@@ -65,9 +63,12 @@ public class ClientController {
 							 Model model,
 							 RedirectAttributes redirectAttributes){
 
+		System.out.println("inside saveClient()");
+
 		clientValidator.validate(client, errors);
 
 		if (errors.hasErrors()){
+			System.out.println(client.getClientReferrer());
 			model.addAttribute("spId", spId);
 			model.addAttribute("action", "create");
 			return "/client";
@@ -86,7 +87,7 @@ public class ClientController {
 
 	// Переход на страницу профиля клиента
 	@RequestMapping(value = "/client/{clientId}", method = RequestMethod.GET)
-	public String clientProfilePage(@PathVariable("clientId") Integer clientId,
+	public String clientProfilePage(@PathVariable("clientId") Long clientId,
 								   Model model){
 
 		Client client = clientService.getByIdWithAllChildren(clientId);

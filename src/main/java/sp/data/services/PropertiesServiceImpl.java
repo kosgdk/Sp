@@ -8,14 +8,23 @@ import sp.data.services.generic.GenericServiceImpl;
 import sp.data.services.interfaces.PropertiesService;
 
 @Service("PropertiesService")
-public class PropertiesServiceImpl extends GenericServiceImpl<Properties, Integer> implements PropertiesService {
+public class PropertiesServiceImpl implements PropertiesService {
 
 	@Autowired
 	PropertiesDao propertiesDao;
 
 	@Override
 	public Properties getProperties() {
-		return propertiesDao.getById(1);
+		return propertiesDao.get();
 	}
 
+	@Override
+	public void save(Properties properties) {
+		propertiesDao.save(properties);
+	}
+
+	@Override
+	public void update(Properties properties) {
+		propertiesDao.update(properties);
+	}
 }

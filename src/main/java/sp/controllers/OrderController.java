@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import sp.data.entities.*;
 import sp.data.entities.Properties;
 import sp.data.entities.enumerators.OrderStatus;
+import sp.data.entities.enumerators.SpStatus;
 import sp.data.services.interfaces.*;
 
 import javax.validation.Valid;
@@ -32,6 +33,9 @@ public class OrderController {
 
 	@Autowired
 	Validator validator;
+
+	@Autowired
+	SpService spService;
 
 	@Autowired
 	OrderService orderService;
@@ -54,7 +58,7 @@ public class OrderController {
 
 	// Переход на страницу заказа
 	@RequestMapping(value = "/order/{orderId}", method = RequestMethod.GET)
-	public String orderPage(@PathVariable("orderId") Integer orderId,
+	public String orderPage(@PathVariable("orderId") Long orderId,
 							Model model){
 
 		System.out.println("inside orderPage()");
@@ -65,11 +69,30 @@ public class OrderController {
 			model.addAttribute("order", orderService.getByIdWithAllChildren(orderId));
 		}
 
+		SortedSet<Long> availableSpIds = spService.getIdsByStatus(SpStatus.COLLECTING, SpStatus.CHECKOUT, SpStatus.PACKING);
+		availableSpIds.add(orderService.getById(orderId).getSp().getId());
+		model.addAttribute("availableSpIds", availableSpIds);
+
 		if(!model.containsAttribute("orderPosition")){
 			model.addAttribute("orderPosition", new OrderPosition());
 		}
 
 		return "order";
+	}
+
+
+	// Обработка запроса на удаление заказа
+	@RequestMapping(value = "/order/{orderId}", params = {"action=delete"})
+	public String deleteOrder(@PathVariable("orderId") Long orderId,
+							  @RequestParam(name = "from", required = false) Long spId){
+
+		System.out.println("inside deleteOrder()");
+		if (spId == null){
+			spId = orderService.getById(orderId).getSp().getId();
+		}
+		orderService.deleteById(orderId);
+
+		return "redirect:/sp/" + spId;
 	}
 
 
@@ -86,6 +109,8 @@ public class OrderController {
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.order", errors);
 			return "redirect:/order/" + order.getId();
 		}
+
+		Order order2 = orderService.getById(order.getId());
 
 		orderService.update(order);
 		return "redirect:/order/" + order.getId();
@@ -120,9 +145,11 @@ public class OrderController {
 
 
 	// Обработка запроса на удаление позиции
-	@RequestMapping(value = "/order/{orderId}", params = {"action=delete_position", "order_position_id"}, method = RequestMethod.GET)
+	@RequestMapping(value = "/order/{orderId}",
+					params = {"action=delete_position", "order_position_id"},
+					method = RequestMethod.GET)
 	public String deleteOrderPosition(@PathVariable("orderId") Integer orderId,
-									  @RequestParam("order_position_id") Integer orderPositionId){
+									  @RequestParam("order_position_id") Long orderPositionId){
 		System.out.println("inside deleteOrderPosition()");
 		orderPositionService.deleteById(orderPositionId);
 		return "redirect:/order/" + orderId;
@@ -131,8 +158,8 @@ public class OrderController {
 
 	// Переход на страницу редактирования позиции
 	@RequestMapping(value = "/order/{orderId}", params = {"action=edit_position", "order_position_id"}, method = RequestMethod.GET)
-	public String editOrderPositionPage(@PathVariable("orderId") Integer orderId,
-							@RequestParam("order_position_id") Integer orderPositionId,
+	public String editOrderPositionPage(@PathVariable("orderId") Long orderId,
+							@RequestParam("order_position_id") Long orderPositionId,
 							@RequestParam("action") String action,
 							Model model){
 

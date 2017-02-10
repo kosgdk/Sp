@@ -6,17 +6,15 @@ import sp.data.services.generic.GenericService;
 
 import java.util.SortedSet;
 
-public interface SpService extends GenericService<Sp, Integer> {
+public interface SpService extends GenericService<Sp, Long> {
 	
-	int getLastNumber();
+	Long getLastNumber();
 	
 	Sp getLastSp();
-	
-	Sp getByIdLazy(int number);
 
-	Sp getByIdWithAllChildren(int number);
+	Sp getByIdWithAllChildren(Long number);
 
-    SortedSet<Integer> getIdsByStatus(SpStatus... statuses);
+    SortedSet<Long> getIdsByStatus(SpStatus... statuses);
 
 	public void setOrdersStatuses(Sp sp);
 	

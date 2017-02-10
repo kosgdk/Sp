@@ -6,7 +6,7 @@ import sp.data.services.generic.GenericServiceImpl;
 import sp.data.services.interfaces.OrderPositionService;
 
 @Service("OrderPositionService")
-public class OrderPositionServiceImpl extends GenericServiceImpl<OrderPosition, Integer> implements OrderPositionService {
+public class OrderPositionServiceImpl extends GenericServiceImpl<OrderPosition, Long> implements OrderPositionService {
 	
 
 }

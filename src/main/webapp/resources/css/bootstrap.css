@@ -1676,6 +1676,11 @@ th {
     text-align: center;
 }
 
+/* kos.gdk */
+tr.border_top > td {
+    border-top: 1px solid lightgrey !important;
+}
+
 .table {
     width: 100%;
     max-width: 100%;
@@ -1712,6 +1717,11 @@ tr.valign-top > td {
 
 .table-condensed > thead > tr > th, .table-condensed > tbody > tr > th, .table-condensed > tfoot > tr > th, .table-condensed > thead > tr > td, .table-condensed > tbody > tr > td, .table-condensed > tfoot > tr > td {
     padding: 5px
+}
+
+/* kos.gdk */
+.table-ultra-condensed > thead > tr > th, .table-ultra-condensed > tbody > tr > th, .table-ultra-condensed > tfoot > tr > th, .table-ultra-condensed > thead > tr > td, .table-ultra-condensed > tbody > tr > td, .table-ultra-condensed > tfoot > tr > td {
+    padding: 2px
 }
 
 .table-bordered {
@@ -4230,6 +4240,10 @@ textarea.input-group-sm > .form-control, textarea.input-group-sm > .input-group-
     border-radius: .25em
 }
 
+.label, .size-normal {
+    font-size: 100%;
+}
+
 a.label:hover, a.label:focus {
     color: #ffffff;
     text-decoration: none;
@@ -4864,6 +4878,10 @@ a.list-group-item-danger.active, button.list-group-item-danger.active, a.list-gr
 
 .panel-body {
     padding: 15px
+}
+
+.panel-body, .min-vpadding {
+    padding: 5px 15px
 }
 
 .panel-heading {

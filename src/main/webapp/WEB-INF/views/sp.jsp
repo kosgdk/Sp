@@ -84,7 +84,7 @@
             <spring:bind path="${field}">
                 <div class="form-group <c:if test='${status.errors.hasFieldErrors(field)}'>has-error</c:if>" id="${field}-formGroup">
                     <label for="${field}" class="col-lg-2 control-label">Дата начала сбора</label>
-                    <div class="col-lg-2">
+                    <div class="col-lg-date">
                         <form:input path="${field}" type="date" id="${field}" cssClass="form-control" value="${dateStart}"/>
                         <span class="help-block nowrap"><form:errors path="${field}"/></span>
                     </div>
@@ -96,7 +96,7 @@
             <spring:bind path="${field}">
                 <div class="form-group <c:if test='${status.errors.hasFieldErrors(field)}'>has-error</c:if>" id="${field}-formGroup">
                     <label for="${field}" class="col-lg-2 control-label">Дата окончания сбора</label>
-                    <div class="col-lg-2">
+                    <div class="col-lg-date">
                         <form:input path="${field}" type="date" id="${field}" cssClass="form-control" value="${dateEnd}"/>
                         <span class="help-block nowrap"><form:errors path="${field}"/></span>
                     </div>
@@ -108,7 +108,7 @@
             <spring:bind path="${field}">
                 <div class="form-group <c:if test='${status.errors.hasFieldErrors(field)}'>has-error</c:if>" id="${field}-formGroup">
                     <label for="${field}" class="col-lg-2 control-label">Дата окончания оплаты</label>
-                    <div class="col-lg-2">
+                    <div class="col-lg-date">
                         <form:input path="${field}" type="date" id="${field}" cssClass="form-control" value="${dateToPay}"/>
                         <span class="help-block nowrap"><form:errors path="${field}"/></span>
                     </div>
@@ -132,12 +132,16 @@
                 <input type="hidden" name="action" value="add_order">
 
                 <spring:bind path="client">
-                    <div class="form-group <c:if test='${status.errors.hasFieldErrors("client")}'>has-error</c:if>">
+                    <c:if test='${status.errors.hasFieldErrors("client")}'>
+                        <c:set var="errorClass" value="has-error"/>
+                        <c:set var="lineBreak" value="<br/>"/>
+                    </c:if>
+                    <div class="form-group ${errorClass}">
                         <label for="client-search" class="col-lg-2 control-label">Клиент</label>
                         <div class="col-lg-3">
                             <form:input path="client" cssClass="form-control" id="client-search" autofocus="autofocus" minlength="3" value="${newClientName}"/>
                             <span class="help-block">
-                                <form:errors path="client"/>
+                                <form:errors path="client"/>${lineBreak}
                                 <a href='<spring:url value="/create_client?sp=${sp.id}"/>'>Создать нового клиента</a>
                             </span>
                         </div>
@@ -147,7 +151,7 @@
                 <spring:bind path="dateOrdered">
                     <div class="form-group <c:if test='${status.errors.hasFieldErrors("dateOrdered")}'>has-error</c:if>">
                         <label for="date-picker" class="col-lg-2 control-label">Дата заказа</label>
-                        <div class="col-lg-2">
+                        <div class="col-lg-date">
                             <form:input path="dateOrdered" type="date" cssClass="form-control" id="date-picker"/>
                             <span class="help-block">
                                 <form:errors path="dateOrdered"/>
@@ -173,15 +177,93 @@
         <!-- Отображение заказов -->
         <c:if test="${sp.orders.size() > 0}">
             <c:forEach var="order" items="${sp.orders}" varStatus="counter">
-                <b>
-                    <a href='<spring:url value="/order/${order.id}"/>'>${counter.count}</a>
-                    . ${order.client.name}</b> - ${order.summaryPrice} р.<br/>
-                <c:forEach var="orderPositionFromList" items="${order.orderPositions}" varStatus="counter2">
-                    - ${orderPositionFromList.product.name}; ${orderPositionFromList.priceOrdered} р.<br/>
-                    <c:if test="${orderPositionFromList.note != null}">
-                        <span class="text-muted"><i>&nbsp;&nbsp;${orderPositionFromList.note}</i></span><br/>
-                    </c:if>
-                </c:forEach>
+                <!-- Панель заказа -->
+                <div class="panel panel-default" style="width: 800px">
+
+                    <!-- Заголовок -->
+                    <div class="panel-heading min-vpadding">
+                        <c:if test='${order.status == "UNPAID"}'>
+                            <c:set var="labelType" value="label-default"/>
+                            <c:set var="orderInfoBlock1_class" value='class="hidden"'/>
+                            <c:set var="orderInfoBlock2_class" value='class="hidden"'/>
+                        </c:if>
+                        <c:if test='${order.status == "PAID"}'>
+                            <c:set var="labelType" value="label-info"/>
+                            <c:set var="orderInfoBlock1_class" value=""/>
+                            <c:set var="orderInfoBlock2_class" value='class="hidden"'/>
+                        </c:if>
+                        <c:if test='${order.status == "PACKING"}'>
+                            <c:set var="labelType" value="label-info"/>
+                            <c:set var="orderInfoBlock1_class" value=""/>
+                            <c:set var="orderInfoBlock2_class" value='class="hidden"'/>
+                        </c:if>
+                        <c:if test='${order.status == "SENT"}'>
+                            <c:set var="labelType" value="label-warning"/>
+                            <c:set var="orderInfoBlock1_class" value=""/>
+                            <c:set var="orderInfoBlock2_class" value='class="hidden"'/>
+                        </c:if>
+                        <c:if test='${order.status == "ARRIVED"}'>
+                            <c:set var="labelType" value="label-primary"/>
+                            <c:set var="orderInfoBlock1_class" value=""/>
+                            <c:set var="orderInfoBlock2_class" value=""/>
+                        </c:if>
+                        <c:if test='${order.status == "COMPLETED"}'>
+                            <c:set var="labelType" value="label-success"/>
+                            <c:set var="orderInfoBlock1_class" value=""/>
+                            <c:set var="orderInfoBlock2_class" value=""/>
+                        </c:if>
+                        <span class="label size-normal ${labelType}">${order.status.toString()}</span>&nbsp;|
+                        <a href='<spring:url value="/client/${order.client.id}"/>'>${order.client.name}</a>&nbsp;|
+                        <a href='<spring:url value="/order/${order.id}"/>'><i class="fa fa-pencil-square" aria-hidden="true"></i>&nbsp;Редактировать</a>&nbsp;|
+                        <a href='<spring:url value="/order/${order.id}?action=delete"/>'><i class="fa fa-trash" aria-hidden="true" style="color:red"></i>&nbsp;Удалить</a>
+                        <span ${orderInfoBlock1_class}>
+                            <br/>
+                            Предоплата:&nbsp;${order.prepaid} р.&nbsp;|
+                            Долг:&nbsp;${order.debt} р.
+                        </span>
+                        <span ${orderInfoBlock2_class}>
+                            |&nbsp;Доставка:&nbsp;${order.deliveryPrice} р.
+                            |&nbsp;К оплате:&nbsp;${order.total} р.
+                        </span>
+
+                        <c:if test="${order.note!=null}">
+                            <br/>Комментарий: <i>${order.note}</i>
+                        </c:if>
+                    </div>
+
+                    <!-- Содержание -->
+                    <div class="panel-body">
+                        <c:if test="${order.orderPositions.size() > 0}">
+                            <table class="table table-ultra-condensed table-hover">
+                                <c:forEach var="orderPosition" items="${order.orderPositions}" varStatus="orderPositionCounter">
+                                    <tr class="no-vmargin">
+                                        <td style="width: 20px">${orderPositionCounter.count}.</td>
+                                        <td>
+                                            ${orderPosition.product.name}
+                                            <c:if test='${orderPosition.note != ""}'>
+                                                <br/><i>${orderPosition.note}</i>
+                                            </c:if>
+                                        </td>
+                                        <td class="text-right" style="width: 60px">${orderPosition.quantity} шт</td>
+                                        <td class="text-right" style="width: 85px">${orderPosition.priceSpSummary} р.</td>
+                                    </tr>
+                                </c:forEach>
+                                <!-- Итоговая строка -->
+                                <tr class="border_top">
+                                    <td colspan="3">
+                                        Прибыль:&nbsp;${order.income} р.&nbsp;|
+                                        Вес:&nbsp;${order.weight} г.
+                                    </td>
+                                    <td class="text-right"><b>${order.summaryPrice} р.</b></td>
+                                </tr>
+                            </table>
+                        </c:if>
+
+                        <c:if test="${order.orderPositions.size() == 0}">
+                            <i>В этом заказе пока нет позиций</i>
+                        </c:if>
+                    </div>
+                </div>
             </c:forEach>
         </c:if>
 

@@ -44,8 +44,8 @@
 				<div class="form-group">
 					<label for="percent" class="col-lg-2 control-label">Комиссия, %</label>
 					<div class="col-lg-10">
-						<input type="number" value="15" class="form-control" id="percent" name="percent" placeholder="0-15"
-							min="0" max="15" step="1">
+						<input type="number" value="0.15" class="form-control" id="percent" name="percent" placeholder="0-0.15"
+							min="0" max="0.15" step="0.01">
 					</div>
 				</div>
     

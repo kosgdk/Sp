@@ -18,14 +18,14 @@ import sp.data.entities.enumerators.SpStatus;
 
 @Repository("SpDaoHibernateImpl")
 @Transactional(propagation=Propagation.REQUIRED)
-public class SpDaoHibernateImpl extends GenericDaoHibernateImpl<Sp, Integer> implements SpDao{
+public class SpDaoHibernateImpl extends GenericDaoHibernateImpl<Sp,Long> implements SpDao{
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public int getLastNumber() {
+	public Long getLastNumber() {
 		Query query = currentSession().createNativeQuery("SELECT max(number) FROM Sp");
 		List<Integer> numbers = query.getResultList();
-		return numbers.get(numbers.size()-1);
+		return new Long(numbers.get(numbers.size()-1));
 	}
 
 	@Override
@@ -43,22 +43,7 @@ public class SpDaoHibernateImpl extends GenericDaoHibernateImpl<Sp, Integer> imp
 	}
 
 	@Override
-	public Sp getByIdLazy(int id) {
-		
-		CriteriaBuilder cb = currentSession().getCriteriaBuilder();
-		CriteriaQuery<Sp> q = cb.createQuery(Sp.class);
-		Root<Sp> root = q.from(Sp.class);
-
-		q.select(root);	
-		q.where(cb.equal(root.<String>get("id"), id));
-		
-		TypedQuery<Sp> tq = currentSession().createQuery(q);
-		
-		return tq.getResultList().get(0);
-	}
-
-	@Override
-	public Sp getByIdWithAllChildren(int id) {
+	public Sp getByIdWithAllChildren(Long id) throws NoResultException{
 
 		String hql = "from Sp s " +
 						"left join fetch s.orders o " +
@@ -69,23 +54,35 @@ public class SpDaoHibernateImpl extends GenericDaoHibernateImpl<Sp, Integer> imp
 		TypedQuery<Sp> query = currentSession().createQuery(hql, Sp.class);
 		query.setParameter("id", id);
 
-		try {
-			return  query.getSingleResult();
-		} catch (NoResultException e){
-			return null;
-		}
+		return  query.getSingleResult();
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public SortedSet<Integer> getIdsByStatus(SpStatus... statuses) {
+	public SortedSet<Long> getIdsByStatus(SpStatus... statuses) {
 		String hql = "select id from Sp where status in (:statuses) order by id desc";
 		Query query = currentSession().createQuery(hql);
 		query.setParameter("statuses", Arrays.asList(statuses));
-		SortedSet<Integer> result = new TreeSet<>(Collections.reverseOrder());
+		SortedSet<Long> result = new TreeSet<>(Collections.reverseOrder());
 		result.addAll(query.getResultList());
 
 		return result;
 	}
 
+	@Override
+	public void delete(Sp sp) {
+//		String hql = "delete from Order where sp=:sp";
+//		Query query = currentSession().createQuery(hql);
+//		query.setParameter("sp", sp);
+//		query.executeUpdate();
+//		sp.getOrders().clear();
+
+		super.delete(sp);
+	}
+
+	@Override
+	public void deleteById(Long id) throws NoResultException {
+		if (id == null) throw new NoResultException();
+		delete(getById(id));
+	}
 }

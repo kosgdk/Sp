@@ -12,13 +12,13 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Service("OrderService")
-public class OrderServiceImpl extends GenericServiceImpl<Order, Integer> implements OrderService {
+public class OrderServiceImpl extends GenericServiceImpl<Order, Long> implements OrderService {
 
     @Autowired
     OrderDao orderDao;
 
     @Override
-    public Order getByIdWithAllChildren(int id) {
+    public Order getByIdWithAllChildren(Long id) {
         return orderDao.getByIdWithAllChildren(id);
     }
 }

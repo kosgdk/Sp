@@ -4,18 +4,17 @@ import sp.data.dao.generic.GenericDao;
 import sp.data.entities.Sp;
 import sp.data.entities.enumerators.SpStatus;
 
+import javax.persistence.NoResultException;
 import java.util.SortedSet;
 
-public interface SpDao extends GenericDao<Sp, Integer>{
+public interface SpDao extends GenericDao<Sp,Long> {
 	
-	int getLastNumber();
+	Long getLastNumber();
 	
 	Sp getLastSp();
 
-	Sp getByIdLazy(int number);
+	Sp getByIdWithAllChildren(Long number) throws NoResultException;
 
-	Sp getByIdWithAllChildren(int number);
-
-	SortedSet<Integer> getIdsByStatus(SpStatus... statuses);
+	SortedSet<Long> getIdsByStatus(SpStatus... statuses);
 
 }

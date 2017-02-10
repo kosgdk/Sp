@@ -16,7 +16,7 @@
 
 	<div class="container">
 	
-	Текущее СП: <a href="<spring:url value="/sp/${sp.number}"/>" >СП-${sp.number}</a> - ${sp.status.name}
+	Текущее СП: <a href="<spring:url value="/sp/${sp.number}"/>" >СП-${sp.number}</a> - ${sp.status.toString()}
 	
 	
 	

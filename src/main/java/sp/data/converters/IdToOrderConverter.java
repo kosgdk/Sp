@@ -13,6 +13,6 @@ public class IdToOrderConverter implements Converter<String, Order> {
 
 	@Override
 	public Order convert(String id) {
-		return orderService.getById(Integer.parseInt(id));
+		return orderService.getById(Long.parseLong(id));
 	}
 }

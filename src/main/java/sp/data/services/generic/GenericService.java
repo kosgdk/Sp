@@ -7,10 +7,6 @@ public interface GenericService <E, I extends Serializable>{
 
 	E getById(I id);
 
-	List<E> searchByName(String name);
-
-	E getByName(String name);
-
 	List<E> getAll();
 
 	void save(E entity);

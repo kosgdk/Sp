@@ -1,23 +1,81 @@
-<!-- data source for our database -->
-	<bean id="dataSource1" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+                <spring:bind path="phone">
+                    <div class="form-group <c:if test='${status.errors.hasFieldErrors("phone")}'>has-error</c:if>">
+                        <label for="client-phone" class="col-lg-2 control-label">Телефон</label>
+                        <div class="col-lg-3">
+                            <form:input path="phone" cssClass="form-control" id="client-phone" minlength="11" placeholder="79781234567 - 11 цифр"/>
+                            <span class="help-block">
+                                <form:errors path="phone"/>
+                            </span>
+                        </div>
+                    </div>
+                </spring:bind>
+
+
+
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+
+	<mvc:annotation-driven/>
+
+	<context:component-scan base-package="sp.data" />
+
+	<!-- data source for our database -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://localhost:3306/sp_database?useSSL=false&amp;autoReconnect=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC" />
+		<property name="url" value="jdbc:mysql://localhost:3306/sp_database?useSSL=false&amp;autoReconnect=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC&amp;useUnicode=true&amp;characterEncoding=utf-8" />
 		<property name="username" value="root" />
 		<property name="password" value="root" />
 	</bean>
-	
-	<bean id="SessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
-		<property name="dataSource" ref="dataSource1" />
-		<property name="annotatedClasses">
-			<list>
-				<value>sp.data.entities.Client</value>
-			</list>
-		</property>
+
+
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="packagesToScan" value="sp.data.entities"/>
 		<property name="hibernateProperties">
 			<props>
+				<prop key="hibernate.enable_lazy_load_no_trans">true</prop>
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
-				<prop key="hibernate.current_session_context_class">thread</prop>
 				<prop key="hibernate.show_sql">true</prop>
 			</props>
 		</property>
-    </bean>
+	</bean>
+
+	<bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+    	<property name="sessionFactory" ref="sessionFactory"/>
+    	<property name="dataSource" ref="dataSource"/>
+	</bean>
+
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+
+</beans>
+
+
+	<!-- Client autocomplete script -->
+    <script type="text/javascript">
+		$(document).ready(function () {
+			$('#client-search').autocomplete({
+				serviceUrl: '${pageContext.request.contextPath}/getClients',
+				paramName: "query",
+				delimiter: ",",
+				transformResult: function(response) {
+					return {
+						suggestions: $.map($.parseJSON(response), function(item) {
+							return { value: item.name, data: item.id };
+						})
+					};
+				}
+			});
+		});
+	</script>

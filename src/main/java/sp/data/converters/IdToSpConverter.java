@@ -2,6 +2,7 @@ package sp.data.converters;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.expression.spel.ast.LongLiteral;
 import sp.data.entities.Sp;
 import sp.data.services.interfaces.SpService;
 
@@ -13,6 +14,6 @@ public class IdToSpConverter implements Converter<String, Sp> {
 
 	@Override
 	public Sp convert(String id) {
-		return spService.getById(Integer.parseInt(id));
+		return spService.getById(Long.parseLong(id));
 	}
 }

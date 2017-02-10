@@ -8,30 +8,26 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import sp.data.dao.interfaces.SpStatusDao;
 import sp.data.entities.*;
+import sp.data.entities.enumerators.SpStatus;
 import sp.data.services.ClientServiceImpl;
 import sp.data.services.ProductServiceImpl;
-import sp.data.services.RefererServiceImpl;
 import sp.data.services.SpServiceImpl;
+import sp.data.services.interfaces.ClientService;
+import sp.data.services.interfaces.ProductService;
+import sp.data.services.interfaces.SpService;
 
 @Controller
 public class IndexController {
 	
 	@Autowired
-	ProductServiceImpl productService;
+	ProductService productService;
 	
 	@Autowired
-	SpServiceImpl spService;
-	
-	@Autowired
-	SpStatusDao spStatusDao;
-	
-	@Autowired
-	RefererServiceImpl refererService;
+	SpService spService;
 
 	@Autowired
-	ClientServiceImpl clientService;
+	ClientService clientService;
 	
 	
 	// Index
@@ -44,7 +40,7 @@ public class IndexController {
 	// Переход на страницу создания СП
 	@RequestMapping("/createsp")
 	public String createSp(Model model){
-		int nextSpNumber = spService.getLastNumber() + 1;
+		Long nextSpNumber = spService.getLastNumber() + 1;
 		model.addAttribute("nextSpNumber", nextSpNumber);
 		return "createsp";
 	}
@@ -52,8 +48,7 @@ public class IndexController {
 	// Обработчик создания СП
 	@RequestMapping(value="/savesp")
 	public String sp(@ModelAttribute Sp sp, Model model){
-		sp.setDateToPay(sp.calculateDateToPay(sp.getDateEnd()));
-		sp.setStatus(spStatusDao.getById(1));
+		sp.setStatus(SpStatus.COLLECTING);
 		spService.save(sp);
 		model.addAttribute("sp", sp);
 		return "forward:/sp/" + sp.getNumber();
@@ -74,7 +69,7 @@ public class IndexController {
 	}
 
 	@RequestMapping(value="/addposition", params={"productid"})
-	public String searchPosition(@RequestParam("productid") Integer id, Model model){
+	public String searchPosition(@RequestParam("productid") Long id, Model model){
 		System.out.println(id);
 		OrderPosition orderPosition = new OrderPosition();
 		orderPosition.setProduct(productService.getById(id));

@@ -5,6 +5,9 @@ import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -14,6 +17,7 @@ import javax.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.GenericTypeResolver;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,60 +27,26 @@ import org.springframework.transaction.annotation.Transactional;
 public abstract class GenericDaoHibernateImpl <E, I extends Serializable> implements GenericDao<E, I> {
 	
 	@Autowired
-	private SessionFactory sessionFactory;
+	protected SessionFactory sessionFactory;
 
-	private Class<E> daoType;
+	protected Class<E> daoType;
 
     @SuppressWarnings("unchecked")
 	public GenericDaoHibernateImpl() {
-    	daoType = (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+		daoType = (Class<E>) GenericTypeResolver.resolveTypeArguments(getClass(), GenericDaoHibernateImpl.class)[0];
     }
     
-    protected Session currentSession(){
+    public Session currentSession(){
     	return sessionFactory.getCurrentSession();
     }
 
 
 	@Override
-	public E getById(I id) {
-		return currentSession().get(daoType, id);
-	}
-
-	@Override
-	public List<E> searchByName(String name) {
-		String[] words = name.split(" ");
-
-		CriteriaBuilder cb = currentSession().getCriteriaBuilder();
-		CriteriaQuery<E> criteriaQuery = cb.createQuery(daoType);
-		Root<E> root = criteriaQuery.from(daoType);
-		criteriaQuery.select(root);
-
-		List<Predicate> predicates = new ArrayList<>();
-
-		for (String word : words) {
-			System.out.println(word);
-			predicates.add(cb.like(cb.lower(root.get("name")), "%"+word.toLowerCase()+"%"));
-		}
-
-		criteriaQuery.where(predicates.toArray(new Predicate[]{}));
-
-		TypedQuery<E> typedQuery = currentSession().createQuery(criteriaQuery);
-		return typedQuery.getResultList();
-	}
-
-	@Override
-	public E getByName(String name) {
-		CriteriaBuilder criteriaBuilder = currentSession().getCriteriaBuilder();
-		CriteriaQuery<E> criteriaQuery = criteriaBuilder.createQuery(daoType);
-		Root<E> root = criteriaQuery.from(daoType);
-		criteriaQuery.select(root);
-
-		criteriaQuery.where(criteriaBuilder.equal(root.get("name"), name));
-
-		TypedQuery<E> typedQuery = currentSession().createQuery(criteriaQuery);
-		List<E> entities = typedQuery.getResultList();
-
-		return entities.isEmpty() ? null : entities.get(0);
+	public E getById(I id) throws NoResultException{
+		if(id == null) throw new NoResultException();
+		E entity = currentSession().get(daoType, id);
+		if (entity == null) throw new NoResultException();
+		return entity;
 	}
 
 	@Override
@@ -91,7 +61,7 @@ public abstract class GenericDaoHibernateImpl <E, I extends Serializable> implem
 
 	@Override
 	public void save(E entity) {
-		currentSession().save(entity);
+		if(entity != null) currentSession().save(entity);
 	}
 
 	@Override
@@ -101,12 +71,13 @@ public abstract class GenericDaoHibernateImpl <E, I extends Serializable> implem
 
 	@Override
 	public void delete(E entity) {
-		currentSession().delete(entity);
+		if(entity != null) currentSession().delete(entity);
 	}
 
 	@Override
-	public void deleteById(I id) {
-		currentSession().delete(getById(id));
+	public void deleteById(I id) throws NoResultException{
+		if (id == null) throw new NoResultException();
+		delete(getById(id));
 	}
 
 }

@@ -505,7 +505,7 @@
         // Параметры СП
         var percentSp;
         var discount;
-        var bankComission;
+        var bankCommission;
 
         // Значения полей формы
         var quantity;
@@ -574,14 +574,14 @@
 
             percentSp = ${properties.percentSp};
             discount = ${properties.percentDiscount};
-            bankComission = ${properties.percentBankComission};
+            bankCommission = ${properties.percentBankCommission};
 
             quantity = quantityField.value;
             weight = suggestion.data[1];
 
             if(productField.value != '${orderPosition.product.name}'){
                 priceOrdered = suggestion.data[0];
-                priceVendor = priceOrdered*(1-discount+bankComission);
+                priceVendor = priceOrdered*(1-discount+bankCommission);
                 priceSp = priceOrdered * (1 + percentSp);
                 priceSpSummary = calculatePriceSpSummary();
             } else {

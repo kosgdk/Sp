@@ -7,7 +7,6 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 
 @Entity
@@ -25,19 +24,19 @@ public class Properties {
     @DecimalMin(value = "0", message = "{properties.percent.outOfRange}")
     @DecimalMax(value = "1", message = "{properties.percent.outOfRange}")
 	@Column(name="percent_sp")
-	private BigDecimal percentSp;
+	private BigDecimal percentSp = new BigDecimal(0.15).setScale(2, BigDecimal.ROUND_HALF_DOWN);
 
     @NotNull
     @DecimalMin(value = "0", message = "{properties.percent.outOfRange}")
     @DecimalMax(value = "1", message = "{properties.percent.outOfRange}")
 	@Column(name="percent_discount")
-	private BigDecimal percentDiscount;
+	private BigDecimal percentDiscount = new BigDecimal(0.03).setScale(2, BigDecimal.ROUND_HALF_DOWN);
 
     @NotNull
     @DecimalMin(value = "0", message = "{properties.percent.outOfRange}")
     @DecimalMax(value = "1", message = "{properties.percent.outOfRange}")
 	@Column(name="percent_bank_commission")
-	private BigDecimal percentBankCommission;
+	private BigDecimal percentBankCommission = new BigDecimal(0.01).setScale(2, BigDecimal.ROUND_HALF_DOWN);
 
 
 	public Properties() {
@@ -57,7 +56,7 @@ public class Properties {
     }
 
     public void setPercentSp(BigDecimal percentSp) {
-        this.percentSp = percentSp != null ? percentSp.setScale(2, RoundingMode.HALF_DOWN) : null;
+        if (percentSp != null) this.percentSp = percentSp.setScale(2, BigDecimal.ROUND_HALF_DOWN);
     }
 
     public BigDecimal getPercentDiscount() {
@@ -65,7 +64,7 @@ public class Properties {
     }
 
     public void setPercentDiscount(BigDecimal percentDiscount) {
-        this.percentDiscount = percentDiscount != null ? percentDiscount.setScale(2, RoundingMode.HALF_DOWN) : null;
+        if (percentDiscount != null) this.percentDiscount = percentDiscount.setScale(2, BigDecimal.ROUND_HALF_DOWN);
     }
 
     public BigDecimal getPercentBankCommission() {
@@ -73,6 +72,6 @@ public class Properties {
     }
 
     public void setPercentBankCommission(BigDecimal percentBankComission) {
-        this.percentBankCommission = percentBankComission != null ? percentBankComission.setScale(2, RoundingMode.HALF_DOWN) : null;
+        if (percentBankComission != null) this.percentBankCommission = percentBankComission.setScale(2, BigDecimal.ROUND_HALF_DOWN);
     }
 }

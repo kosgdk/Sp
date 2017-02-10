@@ -6,7 +6,6 @@ import sp.data.converters.SpStatusConverter;
 import sp.data.entities.enumerators.SpStatus;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Set;
@@ -132,7 +131,7 @@ public class Sp {
 	}
 
 	public void setPercent(BigDecimal percent) {
-		this.percent = percent!=null ? percent.setScale(2, RoundingMode.HALF_DOWN) : percent;
+		if (percent != null) this.percent = percent.setScale(2, BigDecimal.ROUND_HALF_DOWN);
 	}
 
 	public SpStatus getStatus() {
@@ -201,7 +200,6 @@ public class Sp {
 	}
 
 
-
 	@Override
 	public String toString() {
 		return "Sp{" +
@@ -219,45 +217,4 @@ public class Sp {
 				'}';
 	}
 
-	/*
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof Sp)) return false;
-
-		Sp sp = (Sp) o;
-
-		if (id != null ? !id.equals(sp.id) : sp.id != null) return false;
-		if (orders != null ? orders.size() != sp.orders.size() : sp.orders != null) return false;
-		if (!number.equals(sp.number)) return false;
-		if (!percent.equals(sp.percent)) return false;
-		if (status != sp.status) return false;
-		if (!dateStart.equals(sp.dateStart)) return false;
-		if (!dateEnd.equals(sp.dateEnd)) return false;
-		if (!dateToPay.equals(sp.dateToPay)) return false;
-		if (dateSent != null ? !dateSent.equals(sp.dateSent) : sp.dateSent != null) return false;
-		if (dateToReceive != null ? !dateToReceive.equals(sp.dateToReceive) : sp.dateToReceive != null) return false;
-		if (dateReceived != null ? !dateReceived.equals(sp.dateReceived) : sp.dateReceived != null) return false;
-		return dateToDistribute != null ? dateToDistribute.equals(sp.dateToDistribute) : sp.dateToDistribute == null;
-
-	}
-
-	@Override
-	public int hashCode() {
-		System.out.println("inside Sp.hashCode()");
-		int result = id != null ? id.hashCode() : 0;
-		result = 31 * result + (orders != null ? orders.hashCode() : 0);
-		result = 31 * result + number.hashCode();
-		result = 31 * result + percent.hashCode();
-		result = 31 * result + status.hashCode();
-		result = 31 * result + dateStart.hashCode();
-		result = 31 * result + dateEnd.hashCode();
-		result = 31 * result + dateToPay.hashCode();
-		result = 31 * result + (dateSent != null ? dateSent.hashCode() : 0);
-		result = 31 * result + (dateToReceive != null ? dateToReceive.hashCode() : 0);
-		result = 31 * result + (dateReceived != null ? dateReceived.hashCode() : 0);
-		result = 31 * result + (dateToDistribute != null ? dateToDistribute.hashCode() : 0);
-		return result;
-	}
-	*/
 }

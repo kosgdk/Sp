@@ -55,20 +55,20 @@ public class OrderPosition {
 	@NotNull
 	@Min(1)
 	@Column(name="quantity")
-	private Integer quantity;
+	private Integer quantity = 1;
 
 	@Size(max = 500)
 	@Column(name="note")
 	private String note;
 
 	@Transient
-	private BigDecimal priceSpSummary;
+	private BigDecimal priceSpSummary = new BigDecimal(0);
 	
 	@Transient
-	private BigDecimal income;
+	private BigDecimal income = new BigDecimal(0);
 
 	@Transient
-	private int weight;
+	private int weight = 0;
 
 
 	public OrderPosition() {
@@ -123,8 +123,7 @@ public class OrderPosition {
 	}
 
 	public void setPriceOrdered(BigDecimal priceOrdered) {
-
-		this.priceOrdered = priceOrdered!=null ? priceOrdered.setScale(2, RoundingMode.HALF_DOWN) : priceOrdered;
+		if(priceOrdered != null) this.priceOrdered = priceOrdered.setScale(2, RoundingMode.HALF_DOWN);
 	}
 
 	public BigDecimal getPriceVendor() {
@@ -132,7 +131,7 @@ public class OrderPosition {
 	}
 
 	public void setPriceVendor(BigDecimal priceVendor) {
-		this.priceVendor = priceVendor!=null ? priceVendor.setScale(2, RoundingMode.HALF_DOWN) : priceVendor;
+		if(priceVendor != null) this.priceVendor = priceVendor.setScale(2, RoundingMode.HALF_DOWN);
 	}
 
 	public BigDecimal getPriceSp() {
@@ -140,7 +139,7 @@ public class OrderPosition {
 	}
 
 	public void setPriceSp(BigDecimal priceSp) {
-		this.priceSp = priceSp!=null ? priceSp.setScale(2, RoundingMode.HALF_DOWN) : priceSp;
+		if(priceSp != null) this.priceSp = priceSp.setScale(2, RoundingMode.HALF_DOWN);
 	}
 
 	public Integer getQuantity() {

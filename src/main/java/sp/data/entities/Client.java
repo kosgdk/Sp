@@ -9,7 +9,6 @@ import org.hibernate.annotations.DynamicUpdate;
 import sp.data.converters.ClientReferrerConverter;
 import sp.data.entities.enumerators.ClientReferrer;
 
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.*;

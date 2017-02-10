@@ -100,7 +100,7 @@ public class Order {
 		summaryPrice = new BigDecimal(0);
 		if (orderPositions != null){
 			for (OrderPosition orderPosition : orderPositions) {
-				summaryPrice = summaryPrice.add(orderPosition.getPriceSpSummary());
+				summaryPrice = orderPosition!=null ? summaryPrice.add(orderPosition.getPriceSpSummary()) : summaryPrice;
 			}
 		}
 	}
@@ -109,7 +109,7 @@ public class Order {
 		weight = 0;
 		if (orderPositions != null) {
 			for (OrderPosition orderPosition : orderPositions) {
-				weight += (orderPosition.getProduct().getWeight() * orderPosition.getQuantity());
+				weight += orderPosition != null ? orderPosition.getWeight() : 0;
 			}
 		}
 	}
@@ -118,7 +118,7 @@ public class Order {
 		income = new BigDecimal(0);
 		if (orderPositions != null) {
 			for (OrderPosition orderPosition : orderPositions) {
-				income = income.add(orderPosition.getIncome());
+				income = orderPosition != null ? income.add(orderPosition.getIncome()) : income;
 			}
 		}
 	}
@@ -195,7 +195,7 @@ public class Order {
 	}
 
 	public void setPrepaid(BigDecimal prepaid) {
-		this.prepaid = prepaid != null ? prepaid.setScale(2, RoundingMode.HALF_DOWN): null;
+		if(prepaid != null) this.prepaid = prepaid.setScale(2, RoundingMode.HALF_DOWN);
 	}
 
 	public Integer getWeight() {
@@ -212,7 +212,7 @@ public class Order {
 	}
 
 	public void setDeliveryPrice(BigDecimal deliveryPrice) {
-		this.deliveryPrice = deliveryPrice != null ? deliveryPrice.setScale(2, RoundingMode.HALF_DOWN) : null;
+		if (deliveryPrice != null) this.deliveryPrice = deliveryPrice.setScale(2, RoundingMode.HALF_DOWN);
 	}
 
 	public Place getPlace() {
@@ -227,8 +227,8 @@ public class Order {
 		return dateCompleted;
 	}
 
-	public void setDateCompleted(Date datecompleted) {
-		this.dateCompleted = datecompleted;
+	public void setDateCompleted(Date dateСompleted) {
+		this.dateCompleted = dateСompleted;
 	}
 
 	public BigDecimal getSummaryPrice(){
@@ -257,55 +257,4 @@ public class Order {
 		return "Order (id=" + id + ") of " + client.getName() + " in SP " + sp.getId();
 	}
 
-
-	/*
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof Order)) return false;
-
-		Order order = (Order) o;
-
-		if (id != null ? !id.equals(order.id) : order.id != null) return false;
-		if (orderPositions != null){
-			if (order.getOrderPositions() == null) return false;
-			if (order.getOrderPositions() != null && orderPositions.size() != order.getOrderPositions().size()) return false;
-			if (orderPositions.isEmpty() && !order.getOrderPositions().isEmpty()) return false;
-			if (!orderPositions.isEmpty() && order.getOrderPositions().isEmpty()) return false;
-		} else {
-			if (order.getOrderPositions() != null && !order.getOrderPositions().isEmpty())  return false;
-		}
-		if (!client.equals(order.client)) return false;
-		//if (!sp.equals(order.sp)) return false;
-		if (note != null ? !note.equals(order.note) : order.note != null) return false;
-		if (!dateOrdered.equals(order.dateOrdered)) return false;
-		if (status != order.status) return false;
-		if (!prepaid.equals(order.prepaid)) return false;
-		if (!weight.equals(order.weight)) return false;
-		if (deliveryPrice != null ? !deliveryPrice.equals(order.deliveryPrice) : order.deliveryPrice != null)
-			return false;
-		if (place != order.place) return false;
-		return dateCompleted != null ? dateCompleted.equals(order.dateCompleted) : order.dateCompleted == null;
-	}
-	*/
-
-/*
-	@Override
-	public int hashCode() {
-		System.out.println("inside Order-"+id+" hashCode()");
-		int result = id != null ? id.hashCode() : 0;
-		//result = 31 * result + (orderPositions != null ? orderPositions.hashCode() : 0);
-		//result = 31 * result + (client != null ? client.hashCode() : 0);
-		//result = 31 * result + (sp != null ? sp.hashCode() : 0);
-		result = 31 * result + (note != null ? note.hashCode() : 0);
-		result = 31 * result + (dateOrdered != null ? dateOrdered.hashCode() : 0);
-		result = 31 * result + (status != null ? status.hashCode() : 0);
-		result = 31 * result + (prepaid != null ? prepaid.hashCode() : 0);
-		result = 31 * result + (weight != null ? weight.hashCode() : 0);
-		result = 31 * result + (deliveryPrice != null ? deliveryPrice.hashCode() : 0);
-		result = 31 * result + (place != null ? place.hashCode() : 0);
-		result = 31 * result + (dateCompleted != null ? dateCompleted.hashCode() : 0);
-		return result;
-	}
-	*/
 }

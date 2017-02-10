@@ -4,12 +4,10 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicUpdate;
 import sp.data.converters.ProductStatusConverter;
-import sp.data.converters.SpStatusConverter;
 import sp.data.entities.enumerators.ProductStatus;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Arrays;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
@@ -46,7 +44,7 @@ public class Product {
 	@NotNull
 	@Min(0)
 	@Column(name="price")
-	private BigDecimal price;
+	private BigDecimal price = new BigDecimal(0);
 
 	@Min(0)
 	@Column(name="vkid")
@@ -90,7 +88,7 @@ public class Product {
 	}
 
 	public void setPrice(BigDecimal price) {
-		this.price = price != null ? price.setScale(2, RoundingMode.HALF_DOWN) : null;
+		if (price != null) this.price = price.setScale(2, RoundingMode.HALF_DOWN);
 	}
 
 	public String getLink() {
@@ -147,37 +145,4 @@ public class Product {
 		return name;
 	}
 
-	/*
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof Product)) return false;
-
-		Product product = (Product) o;
-
-		if (id != null ? !id.equals(product.id) : product.id != null) return false;
-		if (!name.equals(product.name)) return false;
-		if (!link.equals(product.link)) return false;
-		if (!weight.equals(product.weight)) return false;
-		if (!price.equals(product.price)) return false;
-		if (vkId != null ? !vkId.equals(product.vkId) : product.vkId != null) return false;
-		if (imageLink != null ? !imageLink.equals(product.imageLink) : product.imageLink != null) return false;
-		if (status != null ? !status.equals(product.status) : product.status != null) return false;
-		return vkPhotoId != null ? vkPhotoId.equals(product.vkPhotoId) : product.vkPhotoId == null;
-	}
-
-	@Override
-	public int hashCode() {
-		int result = id != null ? id.hashCode() : 0;
-		result = 31 * result + name.hashCode();
-		result = 31 * result + link.hashCode();
-		result = 31 * result + weight.hashCode();
-		result = 31 * result + price.hashCode();
-		result = 31 * result + (vkId != null ? vkId.hashCode() : 0);
-		result = 31 * result + (imageLink != null ? imageLink.hashCode() : 0);
-		result = 31 * result + (status != null ? status.hashCode() : 0);
-		result = 31 * result + (vkPhotoId != null ? vkPhotoId.hashCode() : 0);
-		return result;
-	}
-	*/
 }

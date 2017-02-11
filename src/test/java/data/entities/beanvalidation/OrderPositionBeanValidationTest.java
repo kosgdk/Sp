@@ -1,4 +1,4 @@
-package data.entities;
+package data.entities.beanvalidation;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;

@@ -1,4 +1,4 @@
-package data.entities;
+package data.entities.beanvalidation;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

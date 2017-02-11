@@ -1,4 +1,4 @@
-package data.entities;
+package data.entities.beanvalidation;
 
 import data.entities.services.DateService;
 import org.apache.commons.lang.StringUtils;

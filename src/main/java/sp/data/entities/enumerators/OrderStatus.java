@@ -17,10 +17,10 @@ public enum OrderStatus {
 
 	OrderStatus(int id) {
 		this.id = id;
+		this.name = toString();
 	}
 
 	public String getName() {
-		name = getById(id).toString();
 		return name;
 	}
 

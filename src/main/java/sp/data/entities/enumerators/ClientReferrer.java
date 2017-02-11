@@ -14,10 +14,10 @@ public enum ClientReferrer {
 
 	ClientReferrer(int id) {
 		this.id = id;
+		this.name = toString();
 	}
 
 	public String getName() {
-		name = getById(id).toString();
 		return name;
 	}
 

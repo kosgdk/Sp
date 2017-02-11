@@ -16,10 +16,10 @@ public enum SpStatus {
 
 	SpStatus(int id) {
 		this.id = id;
+		this.name = toString();
 	}
 
 	public String getName() {
-		name = getById(id).toString();
 		return name;
 	}
 

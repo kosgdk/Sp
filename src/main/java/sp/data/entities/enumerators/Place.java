@@ -5,8 +5,7 @@ import java.util.Map;
 
 public enum Place {
 	YUMASHEVA(1),
-	OKEAN(2),
-	OTHER(3);
+	OKEAN(2);
 
 	private final int id;
 
@@ -14,10 +13,10 @@ public enum Place {
 
 	Place(int id) {
 		this.id = id;
+		this.name = toString();
 	}
 
 	public String getName() {
-		name = getById(id).toString();
 		return name;
 	}
 

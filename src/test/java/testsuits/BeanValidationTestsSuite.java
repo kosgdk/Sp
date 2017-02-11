@@ -1,6 +1,6 @@
 package testsuits;
 
-import data.entities.*;
+import data.entities.beanvalidation.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 

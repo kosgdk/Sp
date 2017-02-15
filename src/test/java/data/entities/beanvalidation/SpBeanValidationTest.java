@@ -32,27 +32,6 @@ public class SpBeanValidationTest extends AbstractJUnit4SpringContextTests {
 
 
     @Test
-    public void numberCanNotBeNull() {
-        sp.setNumber(null);
-        validator.validate(sp, errors);
-        assertEquals("NotNull", errors.getFieldError("number").getCode());
-    }
-
-    @Test
-    public void numberCanNotBeLessThan1() {
-        sp.setNumber(0L);
-        validator.validate(sp, errors);
-        assertEquals("Min", errors.getFieldError("number").getCode());
-    }
-
-    @Test
-    public void numberCanBe1() {
-        sp.setNumber(1L);
-        validator.validate(sp, errors);
-        assertNull(errors.getFieldError("number"));
-    }
-
-    @Test
     public void percentCanNotBeNull() {
         sp.setPercent(null);
         validator.validate(sp, errors);

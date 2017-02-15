@@ -53,11 +53,6 @@ public class SpDbValidationTest {
     @ExpectedDataSet("db_test/dataset/validation/sp/SpDbValidationTest.defaultValuesTest_ExpectedDataSet.xml")
     public void defaultValuesTest() {}
 
-    @Test(expected = IdentifierGenerationException.class)
-    public void number_ShouldNotBeNull_OrThrowException() {
-        sp.setNumber(null);
-        dao.save(sp);
-    }
 
     @Test
     public void percent_ShouldNotBeNull_OrThrowException() throws Throwable{
@@ -140,21 +135,5 @@ public class SpDbValidationTest {
         }
     }
 
-    @Test
-    public void number_ShouldBeUnique_OrThrowException() throws Throwable{
-        Long number = dao.getLastNumber() + 1;
-
-        expectedException.expect(ConstraintViolationException.class);
-        expectedException.expectCause(new CauseExceptionMatcher(MySQLIntegrityConstraintViolationException.class,
-                                                                "Duplicate entry '" + number + "' for key 'PRIMARY'"));
-        sp.setNumber(number);
-        Sp sp2 = service.createTestSp(number);
-        dao.save(sp);
-        try{
-            dao.save(sp2);
-        }catch (DataIntegrityViolationException e){
-            throw e.getCause();
-        }
-    }
 
 }

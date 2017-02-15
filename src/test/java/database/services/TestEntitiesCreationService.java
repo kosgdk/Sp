@@ -109,7 +109,6 @@ public class TestEntitiesCreationService {
 
 	public Sp createTestSp(long seed) {
 		Sp sp = new Sp();
-		sp.setNumber(Math.abs(seed));
 		sp.setPercent(new BigDecimal(0.15));
 		sp.setStatus(SpStatus.COLLECTING);
 		sp.setDateStart(createDate("2016-10-01"));

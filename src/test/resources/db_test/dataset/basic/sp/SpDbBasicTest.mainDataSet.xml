@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
     <dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../xsd/dataset.xsd">
-        <sp id="1" number="1"/>
-        <sp id="2" number="2"/>
-        <sp id="3" number="3"/>
+        <sp id="1"/>
+        <sp id="2"/>
+        <sp id="3"/>
     </dataset>

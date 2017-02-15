@@ -50,9 +50,8 @@ public class SpDbBasicTest {
         Sp sp = service.createTestSp(dao.getLastNumber()+1);
         dao.save(sp);
         Sp spFromDb = dao.getById(sp.getId());
-        assertSelectCount(2);
+        assertSelectCount(3);
         assertEquals("id", sp.getId(), spFromDb.getId());
-        assertEquals("number", sp.getNumber(), spFromDb.getNumber());
         assertEquals("percent", sp.getPercent(), spFromDb.getPercent());
         assertEquals("status", sp.getDateStart(), spFromDb.getDateStart());
         assertEquals("dateStart", sp.getDateStart(), spFromDb.getDateStart());
@@ -93,8 +92,10 @@ public class SpDbBasicTest {
     @Test
     @ExpectedDataSet("db_test/dataset/basic/sp/SpDbBasicTest.save_ShouldWriteToDb_ExpectedDataSet.xml")
     public void save_ShouldWriteToDb(){
-        Sp sp = new Sp(4L);
+        Sp sp = new Sp();
+        sp.setId(4L);
         dao.save(sp);
+        assertSelectCount(1);
         assertInsertCount(1);
     }
 
@@ -127,5 +128,14 @@ public class SpDbBasicTest {
     public void getLastNumber_ShouldReturnNumberOfLastSp() {
         assertEquals(new Long(3L), dao.getLastNumber());
         assertSelectCount(1);
+    }
+
+    @Test
+    @ExpectedDataSet("db_test/dataset/basic/sp/SpDbBasicTest.mainDataSet.xml")
+    public void incrementIdGeneratorShouldReuseFreedIdAfterDelete() {
+        dao.deleteById(3L);
+        assertDeleteCount(1);
+        Sp sp = new Sp();
+        dao.save(sp);
     }
 }

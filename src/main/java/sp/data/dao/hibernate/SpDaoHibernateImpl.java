@@ -23,7 +23,7 @@ public class SpDaoHibernateImpl extends GenericDaoHibernateImpl<Sp,Long> impleme
 	@SuppressWarnings("unchecked")
 	@Override
 	public Long getLastNumber() {
-		Query query = currentSession().createNativeQuery("SELECT max(number) FROM Sp");
+		Query query = currentSession().createNativeQuery("SELECT max(id) FROM Sp");
 		List<Integer> numbers = query.getResultList();
 		return new Long(numbers.get(numbers.size()-1));
 	}

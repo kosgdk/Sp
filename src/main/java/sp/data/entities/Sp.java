@@ -24,19 +24,14 @@ import javax.validation.constraints.*;
 public class Sp {
 
 	@Id
-	@GeneratedValue(generator = "SpIdGenerator")
-	@GenericGenerator(name = "SpIdGenerator", strategy = "sp.data.idgenerators.SpIdGenerator")
+	@GenericGenerator(name="incrementGenerator",strategy="increment")
+	@GeneratedValue(generator="incrementGenerator")
 	@Column(name = "id")
 	private Long id;
 
 	@OneToMany(mappedBy = "sp", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
 	@OrderBy(value = "id")
 	private Set<Order> orders;
-
-	@NotNull
-	@Min(value = 1, message = "{sp.number.min}")
-	@Column(name = "number")
-	private Long number;
 
 	@NotNull
 	@DecimalMin(value = "0", message = "{sp.percent.outOfRange}")
@@ -86,9 +81,6 @@ public class Sp {
 	public Sp() {
 	}
 
-	public Sp(Long number) {
-		this.number = number;
-	}
 
 	private void calculateDateToPay(Date dateEnd){
 		if (dateEnd!=null) {
@@ -116,14 +108,6 @@ public class Sp {
 
 	public void setOrders(Set<Order> orders) {
 		this.orders = orders;
-	}
-
-	public Long getNumber() {
-		return number;
-	}
-
-	public void setNumber(Long number) {
-		this.number = number;
 	}
 
 	public BigDecimal getPercent() {
@@ -204,7 +188,6 @@ public class Sp {
 	public String toString() {
 		return "Sp{" +
 				"id=" + id +
-				", number=" + number +
 				", percent=" + percent +
 				", status=" + status +
 				", dateStart=" + dateStart +

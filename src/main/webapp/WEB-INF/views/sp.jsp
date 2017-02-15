@@ -12,7 +12,7 @@
     <link href="<c:url value="/resources/css/autocomplete.css" />" rel="stylesheet">
     <script src="<c:url value="/resources/js/jquery.autocomplete.min.js" />"></script>
 
-    <title>СП-${sp.number}</title>
+    <title>СП-${sp.id}</title>
 
 </head>
 <body>
@@ -21,7 +21,7 @@
 
 	<div class="container">
 
-        <h2>СП-${sp.number}</h2>
+        <h2>СП-${sp.id}</h2>
 
         <!-- Линейка статусов -->
         <ul class="breadcrumb">
@@ -52,7 +52,6 @@
 
             <input type="hidden" name="action" value="edit_sp"/>
             <input type="hidden" name="id" value="${sp.id}"/>
-            <input type="hidden" name="number" value="${sp.number}"/>
             <c:forEach var="order" items="${sp.orders}" varStatus="i">
                 <input type="hidden" name="orders" value="${order.id}"/>
             </c:forEach>

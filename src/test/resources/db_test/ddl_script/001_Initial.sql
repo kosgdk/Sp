@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.7.12, for Win64 (x86_64)
 --
--- Host: localhost    Database: sp_database
+-- Host: localhost    Database: test_sp_database
 -- ------------------------------------------------------
 -- Server version	5.7.12-log
 
@@ -59,7 +59,7 @@ CREATE TABLE `order_position` (
   KEY `product_idx` (`product_id`),
   CONSTRAINT `order` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `product` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -72,14 +72,14 @@ DROP TABLE IF EXISTS `orders`;
 CREATE TABLE `orders` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `client` int(11) NOT NULL,
-  `sp` int(11) NOT NULL,
+  `sp` int(11) unsigned NOT NULL,
   `weight` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `status` tinyint(3) unsigned NOT NULL DEFAULT '1',
   `prepaid` decimal(7,2) unsigned NOT NULL DEFAULT '0.00',
   `note` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
   `date_ordered` date NOT NULL,
   `date_completed` date DEFAULT NULL,
-  `delivery_price` decimal(7,2) unsigned NOT NULL DEFAULT '0',
+  `delivery_price` decimal(7,2) unsigned NOT NULL DEFAULT '0.00',
   `place` tinyint(3) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `status_idx` (`status`),
@@ -136,8 +136,7 @@ DROP TABLE IF EXISTS `sp`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sp` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `number` int(11) unsigned NOT NULL,
+  `id` int(11) unsigned NOT NULL,
   `percent` decimal(4,2) unsigned NOT NULL DEFAULT '0.15',
   `status` tinyint(3) unsigned NOT NULL DEFAULT '1',
   `date_start` date NOT NULL,
@@ -147,10 +146,24 @@ CREATE TABLE `sp` (
   `date_to_receive` date DEFAULT NULL,
   `date_received` date DEFAULT NULL,
   `date_to_distribute` date DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `number_UNIQUE` (`number`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+
+# CREATE TRIGGER `test_sp_database`.`sp_BEFORE_INSERT` BEFORE INSERT ON `sp` FOR EACH ROW SET NEW.id = IFNULL(((SELECT MAX(id) FROM sp) + 1),1);
+
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -160,5 +173,3 @@ CREATE TABLE `sp` (
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2017-01-23 16:39:50

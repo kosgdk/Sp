@@ -51,7 +51,7 @@ public class IndexController {
 		sp.setStatus(SpStatus.COLLECTING);
 		spService.save(sp);
 		model.addAttribute("sp", sp);
-		return "forward:/sp/" + sp.getNumber();
+		return "forward:/sp/" + sp.getId();
 	}
 	
 	@RequestMapping("/addposition")

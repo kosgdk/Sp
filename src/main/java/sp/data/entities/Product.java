@@ -3,7 +3,7 @@ package sp.data.entities;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicUpdate;
-import sp.data.converters.ProductStatusConverter;
+import sp.data.converters.attributeconverters.ProductStatusConverter;
 import sp.data.entities.enumerators.ProductStatus;
 
 import java.math.BigDecimal;

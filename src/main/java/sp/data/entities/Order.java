@@ -2,8 +2,8 @@ package sp.data.entities;
 
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
-import sp.data.converters.OrderStatusConverter;
-import sp.data.converters.PlaceConverter;
+import sp.data.converters.attributeconverters.OrderStatusConverter;
+import sp.data.converters.attributeconverters.PlaceConverter;
 import sp.data.entities.enumerators.OrderStatus;
 import sp.data.entities.enumerators.Place;
 

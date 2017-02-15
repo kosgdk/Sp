@@ -2,7 +2,7 @@ package sp.data.entities;
 
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
-import sp.data.converters.SpStatusConverter;
+import sp.data.converters.attributeconverters.SpStatusConverter;
 import sp.data.entities.enumerators.SpStatus;
 
 import java.math.BigDecimal;

@@ -1,4 +1,4 @@
-package sp.data.converters;
+package sp.data.converters.attributeconverters;
 
 import sp.data.entities.enumerators.Place;
 

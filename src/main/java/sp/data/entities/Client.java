@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicUpdate;
-import sp.data.converters.ClientReferrerConverter;
+import sp.data.converters.attributeconverters.ClientReferrerConverter;
 import sp.data.entities.enumerators.ClientReferrer;
 
 import java.util.Set;

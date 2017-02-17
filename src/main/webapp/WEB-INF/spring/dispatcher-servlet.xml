@@ -17,20 +17,20 @@
 	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver"
 		p:prefix="/WEB-INF/views/"
 		p:suffix=".jsp"/>
-	
+
+
 	<bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
 		<property name="converters">
 			<set>
-				<bean class="sp.data.converters.IdToSpConverter" />
-				<bean class="sp.data.converters.IdToOrderConverter" />
-				<bean class="sp.data.converters.IdToOrderPositionConverter" />
-				<bean class="sp.data.converters.NameToClientConverter" />
-				<bean class="sp.data.converters.NameToProductConverter" />
-				<bean class="sp.data.converters.StringToDateConverter" />
-				<bean class="sp.data.converters.StringToSpStatusConverter" />
-				<bean class="sp.data.converters.StringToOrderStatusConverter" />
-				<bean class="sp.data.converters.StringToClientReferrerConverter" />
-				<bean class="sp.data.converters.StringToPlaceConverter" />
+				<ref bean="idToSpConverter" />
+				<ref bean="idToOrderPositionConverter" />
+				<ref bean="nameToClientConverter" />
+				<ref bean="nameToProductConverter" />
+				<ref bean="stringToDateConverter" />
+				<ref bean="stringToSpStatusConverter" />
+				<ref bean="stringToOrderStatusConverter" />
+				<ref bean="stringToClientReferrerConverter" />
+				<ref bean="stringToPlaceConverter" />
 			</set>
 		</property>
 	</bean>

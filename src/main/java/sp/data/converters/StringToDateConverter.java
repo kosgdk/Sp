@@ -6,7 +6,9 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 
+@Component
 public class StringToDateConverter implements Converter<String, Date> {
 
 	@Override
@@ -19,6 +21,7 @@ public class StringToDateConverter implements Converter<String, Date> {
 	    try {
 			date = sdf.parse(source);
 		} catch (ParseException e) {
+			//TODO: Throw exception
             e.printStackTrace();
 		}
 

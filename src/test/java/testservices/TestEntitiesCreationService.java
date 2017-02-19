@@ -1,4 +1,4 @@
-package database.services;
+package testservices;
 
 import org.apache.commons.lang.StringUtils;
 import sp.data.entities.*;

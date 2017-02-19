@@ -1,6 +1,6 @@
 package data.entities.beanvalidation;
 
-import data.entities.services.DateService;
+import testservices.DateService;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;

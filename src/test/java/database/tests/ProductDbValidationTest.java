@@ -20,10 +20,9 @@ import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 import sp.data.dao.interfaces.ProductDao;
-import sp.data.entities.OrderPosition;
 import sp.data.entities.Product;
-import database.services.CauseExceptionMatcher;
-import database.services.TestEntitiesCreationService;
+import testservices.CauseExceptionMatcher;
+import testservices.TestEntitiesCreationService;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;

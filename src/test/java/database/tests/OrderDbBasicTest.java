@@ -15,7 +15,7 @@ import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 import sp.data.dao.interfaces.OrderDao;
 import sp.data.entities.Order;
-import database.services.TestEntitiesCreationService;
+import testservices.TestEntitiesCreationService;
 
 import javax.persistence.NoResultException;
 import java.util.List;

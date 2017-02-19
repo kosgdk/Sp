@@ -20,8 +20,8 @@ import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 import sp.data.dao.interfaces.ClientDao;
 import sp.data.entities.Client;
-import database.services.CauseExceptionMatcher;
-import database.services.TestEntitiesCreationService;
+import testservices.CauseExceptionMatcher;
+import testservices.TestEntitiesCreationService;
 
 
 @RunWith(UnitilsBlockJUnit4ClassRunner.class)

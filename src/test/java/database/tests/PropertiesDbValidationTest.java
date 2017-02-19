@@ -17,9 +17,8 @@ import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 import sp.data.dao.interfaces.PropertiesDao;
 import sp.data.entities.Properties;
-import database.services.CauseExceptionMatcher;
-import database.services.TestEntitiesCreationService;
-import sp.data.entities.Sp;
+import testservices.CauseExceptionMatcher;
+import testservices.TestEntitiesCreationService;
 
 import java.lang.reflect.Field;
 

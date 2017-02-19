@@ -15,7 +15,7 @@ import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 import sp.data.dao.interfaces.PropertiesDao;
 import sp.data.entities.Properties;
-import database.services.TestEntitiesCreationService;
+import testservices.TestEntitiesCreationService;
 
 import java.math.BigDecimal;
 

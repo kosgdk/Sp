@@ -24,7 +24,7 @@ import sp.data.entities.Client;
 import sp.data.entities.Order;
 import sp.data.entities.OrderPosition;
 import sp.data.entities.Sp;
-import database.services.CauseExceptionMatcher;
+import testservices.CauseExceptionMatcher;
 
 import javax.persistence.NoResultException;
 import java.util.List;

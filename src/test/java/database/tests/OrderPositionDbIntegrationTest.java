@@ -21,7 +21,7 @@ import sp.data.dao.interfaces.ProductDao;
 import sp.data.entities.Order;
 import sp.data.entities.OrderPosition;
 import sp.data.entities.Product;
-import database.services.CauseExceptionMatcher;
+import testservices.CauseExceptionMatcher;
 
 import static org.junit.Assert.*;
 import static com.vladmihalcea.sql.SQLStatementCountValidator.*;

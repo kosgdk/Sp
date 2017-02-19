@@ -20,8 +20,8 @@ import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 import sp.data.dao.interfaces.OrderPositionDao;
 import sp.data.entities.OrderPosition;
-import database.services.CauseExceptionMatcher;
-import database.services.TestEntitiesCreationService;
+import testservices.CauseExceptionMatcher;
+import testservices.TestEntitiesCreationService;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;

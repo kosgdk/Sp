@@ -30,7 +30,7 @@ public class ClientValidator implements Validator {
         // Unique name validation
         String name = client.getName();
         if (clientService.getByName(name) != null){
-            errors.rejectValue("name", "client.name.notUnique", "Клиент с таким ником уже существует");
+            errors.rejectValue("name", "client.name.notUnique");
         }
 
     }

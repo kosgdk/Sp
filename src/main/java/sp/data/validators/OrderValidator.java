@@ -36,7 +36,7 @@ public class OrderValidator implements Validator {
         if (order.getSp().getId() != persistedOrder.getSp().getId()) {
             List<SpStatus> spStatusCheck = Arrays.asList(SpStatus.COLLECTING, SpStatus.CHECKOUT);
             if (!spStatusCheck.contains(order.getSp().getStatus())) {
-                errors.rejectValue("sp", "order.sp.notAllowed", "в данное СП нельзя поместить заказ");
+                errors.rejectValue("sp", "order.sp.notAllowed");
             }
         }
 

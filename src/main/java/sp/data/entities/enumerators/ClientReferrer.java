@@ -35,8 +35,8 @@ public enum ClientReferrer {
 	}
 
 	public static ClientReferrer getByName(String name){
-		for (ClientReferrer status : ClientReferrer.values()) {
-			if (status.toString().equals(name)) return status;
+		for (ClientReferrer clientReferrer : ClientReferrer.values()) {
+			if (clientReferrer.toString().equals(name)) return clientReferrer;
 		}
 		return null;
 	}

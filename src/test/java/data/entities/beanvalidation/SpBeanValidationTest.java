@@ -15,7 +15,7 @@ import sp.data.entities.enumerators.SpStatus;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import static data.entities.services.DateService.*;
+import static testservices.DateService.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 

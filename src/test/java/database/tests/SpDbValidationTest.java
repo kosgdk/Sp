@@ -4,7 +4,6 @@ import com.mysql.jdbc.MysqlDataTruncation;
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.hibernate.exception.DataException;
-import org.hibernate.id.IdentifierGenerationException;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
@@ -19,8 +18,8 @@ import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 import sp.data.dao.interfaces.SpDao;
 import sp.data.entities.Sp;
-import database.services.CauseExceptionMatcher;
-import database.services.TestEntitiesCreationService;
+import testservices.CauseExceptionMatcher;
+import testservices.TestEntitiesCreationService;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;

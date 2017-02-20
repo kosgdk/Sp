@@ -46,7 +46,7 @@ public class PropertiesDbBasicTest {
         TestEntitiesCreationService service = new TestEntitiesCreationService();
         Properties properties = service.createTestProperties();
         dao.save(properties);
-        Properties propertiesFromDb = dao.get();
+        Properties propertiesFromDb = dao.getProperties();
         assertSelectCount(1);
         assertEquals("id", properties.getId(), propertiesFromDb.getId());
         assertEquals("percentSp", properties.getPercentSp(), propertiesFromDb.getPercentSp());
@@ -65,7 +65,7 @@ public class PropertiesDbBasicTest {
     @Test
     @ExpectedDataSet("db_test/dataset/basic/properties/ProductDbBasicTest.update_ShouldUpdateDb_ExpectedDataSet.xml")
     public void update_ShouldUpdateDb(){
-        Properties properties = dao.get();
+        Properties properties = dao.getProperties();
         properties.setPercentSp(new BigDecimal(0.11));
         dao.update(properties);
         assertUpdateCount(1);

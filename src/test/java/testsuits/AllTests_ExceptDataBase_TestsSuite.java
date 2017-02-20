@@ -10,7 +10,8 @@ import org.junit.runners.Suite;
         BeanValidationTestsSuite.class,
         EnumTestsSuite.class,
         ConvertersTestsSuite.class,
-        ValidatorTestsSuite.class
+        ValidatorTestsSuite.class,
+        ServiceTestsSuite.class
 })
 public class AllTests_ExceptDataBase_TestsSuite {
 

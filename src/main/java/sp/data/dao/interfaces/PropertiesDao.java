@@ -7,7 +7,7 @@ public interface PropertiesDao{
 
 	void save(Properties properties);
 
-	Properties get();
+	Properties getProperties();
 
 	void update(Properties properties);
 }

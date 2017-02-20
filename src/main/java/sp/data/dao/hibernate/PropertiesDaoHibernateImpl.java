@@ -26,7 +26,7 @@ public class PropertiesDaoHibernateImpl implements PropertiesDao {
 	}
 
 	@Override
-	public Properties get() {
+	public Properties getProperties() {
 		Query query = sessionFactory.getCurrentSession().createQuery("from Properties order by id DESC");
 		query.setMaxResults(1);
 		Properties properties = (Properties) query.getSingleResult();

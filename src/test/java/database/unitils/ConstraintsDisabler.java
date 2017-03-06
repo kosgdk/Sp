@@ -6,7 +6,7 @@ import org.unitils.database.DatabaseUnitils;
 public class ConstraintsDisabler {
 
     public enum ConstraintType{
-        VALUE, REFERENTIAL, ALL
+        VALUE, REFERENTIAL, ALL, NONE
     }
 
     private static ConstraintType constraintType = ConstraintType.ALL;

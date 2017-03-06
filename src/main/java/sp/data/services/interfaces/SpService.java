@@ -4,7 +4,7 @@ import sp.data.entities.Sp;
 import sp.data.entities.enumerators.SpStatus;
 import sp.data.services.generic.GenericService;
 
-import java.util.SortedSet;
+import java.util.List;
 
 public interface SpService extends GenericService<Sp, Long> {
 	
@@ -14,7 +14,7 @@ public interface SpService extends GenericService<Sp, Long> {
 
 	Sp getByIdWithAllChildren(Long number);
 
-    SortedSet<Long> getIdsByStatus(SpStatus... statuses);
+    List<Long> getIdsByStatus(SpStatus... statuses);
 
 	public void setOrdersStatuses(Sp sp);
 	

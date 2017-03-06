@@ -69,8 +69,9 @@ public class OrderController {
 			model.addAttribute("order", orderService.getByIdWithAllChildren(orderId));
 		}
 
-		SortedSet<Long> availableSpIds = spService.getIdsByStatus(SpStatus.COLLECTING, SpStatus.CHECKOUT, SpStatus.PACKING);
-		availableSpIds.add(orderService.getById(orderId).getSp().getId());
+		List<Long> availableSpIds = spService.getIdsByStatus(SpStatus.COLLECTING, SpStatus.CHECKOUT);
+		Long spId = orderService.getById(orderId).getSp().getId();
+		if (!availableSpIds.contains(spId)) availableSpIds.add(spId);
 		model.addAttribute("availableSpIds", availableSpIds);
 
 		if(!model.containsAttribute("orderPosition")){
@@ -129,6 +130,7 @@ public class OrderController {
 		if (errors.hasErrors()){
 			redirectAttributes.addFlashAttribute("orderPosition", orderPosition);
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.orderPosition", errors);
+			System.out.println(errors);
 			return "redirect:/order/" + orderId;
 		}
 

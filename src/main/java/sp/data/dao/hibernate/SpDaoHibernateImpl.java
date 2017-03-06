@@ -59,14 +59,11 @@ public class SpDaoHibernateImpl extends GenericDaoHibernateImpl<Sp,Long> impleme
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public SortedSet<Long> getIdsByStatus(SpStatus... statuses) {
-		String hql = "select id from Sp where status in (:statuses) order by id desc";
+	public List<Long> getIdsByStatus(SpStatus... statuses) {
+		String hql = "select id from Sp where status in (:statuses) order by id asc";
 		Query query = currentSession().createQuery(hql);
 		query.setParameter("statuses", Arrays.asList(statuses));
-		SortedSet<Long> result = new TreeSet<>(Collections.reverseOrder());
-		result.addAll(query.getResultList());
-
-		return result;
+		return query.getResultList();
 	}
 
 	@Override

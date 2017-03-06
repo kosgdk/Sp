@@ -5,7 +5,7 @@ import sp.data.entities.Sp;
 import sp.data.entities.enumerators.SpStatus;
 
 import javax.persistence.NoResultException;
-import java.util.SortedSet;
+import java.util.List;
 
 public interface SpDao extends GenericDao<Sp,Long> {
 	
@@ -15,6 +15,6 @@ public interface SpDao extends GenericDao<Sp,Long> {
 
 	Sp getByIdWithAllChildren(Long number) throws NoResultException;
 
-	SortedSet<Long> getIdsByStatus(SpStatus... statuses);
+	List<Long> getIdsByStatus(SpStatus... statuses);
 
 }

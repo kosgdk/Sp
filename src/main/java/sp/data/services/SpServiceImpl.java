@@ -11,10 +11,7 @@ import sp.data.entities.enumerators.SpStatus;
 import sp.data.services.generic.GenericServiceImpl;
 import sp.data.services.interfaces.SpService;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.SortedSet;
+import java.util.*;
 
 
 @Service("SpService")
@@ -39,7 +36,7 @@ public class SpServiceImpl extends GenericServiceImpl<Sp, Long> implements SpSer
 	}
 
 	@Override
-	public SortedSet<Long> getIdsByStatus(SpStatus... statuses) {
+	public List<Long> getIdsByStatus(SpStatus... statuses) {
 		return spDao.getIdsByStatus(statuses);
 	}
 

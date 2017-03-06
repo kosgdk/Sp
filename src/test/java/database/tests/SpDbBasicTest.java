@@ -15,15 +15,16 @@ import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 import sp.data.dao.interfaces.SpDao;
 import sp.data.entities.Sp;
+import sp.data.entities.enumerators.SpStatus;
 import testservices.TestEntitiesCreationService;
 
 import javax.persistence.NoResultException;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.SortedSet;
 
 import static com.vladmihalcea.sql.SQLStatementCountValidator.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 
 @RunWith(UnitilsBlockJUnit4ClassRunner.class)
@@ -138,4 +139,18 @@ public class SpDbBasicTest {
         Sp sp = new Sp();
         dao.save(sp);
     }
+
+    @Test
+    @DataSet("db_test/dataset/basic/sp/SpDbBasicTest.getIdsByStatus_ShouldReturnSetOfIds.xml")
+    public void getIdsByStatus_ShouldReturnSetOfIds() {
+        List<Long> ids = dao.getIdsByStatus(SpStatus.COLLECTING, SpStatus.PACKING, SpStatus.SENT, SpStatus.DISTRIBUTING);
+
+        assertNotNull(ids);
+        assertEquals(3, ids.size());
+        assertEquals(new Long(1), ids.get(0));
+        assertEquals(new Long(3), ids.get(1));
+        assertEquals(new Long(5), ids.get(2));
+
+    }
+
 }

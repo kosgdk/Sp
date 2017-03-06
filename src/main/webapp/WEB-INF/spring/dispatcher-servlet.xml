@@ -18,11 +18,11 @@
 		p:prefix="/WEB-INF/views/"
 		p:suffix=".jsp"/>
 
-
 	<bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
 		<property name="converters">
 			<set>
 				<ref bean="idToSpConverter" />
+				<ref bean="idToOrderConverter" />
 				<ref bean="idToOrderPositionConverter" />
 				<ref bean="nameToClientConverter" />
 				<ref bean="nameToProductConverter" />

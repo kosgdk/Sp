@@ -186,18 +186,7 @@ public class Sp {
 
 	@Override
 	public String toString() {
-		return "Sp{" +
-				"id=" + id +
-				", percent=" + percent +
-				", status=" + status +
-				", dateStart=" + dateStart +
-				", dateEnd=" + dateEnd +
-				", dateToPay=" + dateToPay +
-				", dateSent=" + dateSent +
-				", dateToReceive=" + dateToReceive +
-				", dateReceived=" + dateReceived +
-				", dateToDistribute=" + dateToDistribute +
-				'}';
+		return id.toString();
 	}
 
 }

@@ -15,6 +15,8 @@ import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 import sp.data.dao.interfaces.OrderDao;
 import sp.data.entities.Order;
+import sp.data.entities.Sp;
+import sp.data.entities.enumerators.OrderStatus;
 import testservices.TestEntitiesCreationService;
 
 import javax.persistence.NoResultException;
@@ -23,6 +25,8 @@ import java.util.List;
 import static com.vladmihalcea.sql.SQLStatementCountValidator.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 @RunWith(UnitilsBlockJUnit4ClassRunner.class)
@@ -141,5 +145,33 @@ public class OrderDbBasicTest {
     @Test(expected = NoResultException.class)
     public void deleteById_InputNull_ShouldThrowException(){
         dao.deleteById(null);
+    }
+
+    @Test
+    @DataSet("db_test/dataset/basic/order/OrderDbBasicTest.updateStatuses_shouldUpdateStatusesOfOrdersInSp.xml")
+    @ExpectedDataSet("db_test/dataset/basic/order/OrderDbBasicTest.updateStatuses_shouldUpdateStatusesOfOrdersInSp_ExpectedDataSet.xml")
+    public void updateStatuses_ShouldUpdateStatusesOfOrdersInSp() {
+        Sp sp = mock(Sp.class);
+        when(sp.getId()).thenReturn(1L);
+        dao.updateStatuses(sp, OrderStatus.PACKING);
+        assertUpdateCount(1);
+    }
+
+    @Test
+    public void updateStatuses_InputNullSp_ShouldDoNothing() {
+        dao.updateStatuses(null, OrderStatus.PACKING);
+        assertUpdateCount(0);
+    }
+
+    @Test
+    public void updateStatuses_InputNullOrderStatus_ShouldDoNothing() {
+        dao.updateStatuses(null, OrderStatus.PACKING);
+        assertUpdateCount(0);
+    }
+
+    @Test
+    public void updateStatuses_InputNullSpAndNullOrderStatus_ShouldDoNothing() {
+        dao.updateStatuses(null, OrderStatus.PACKING);
+        assertUpdateCount(0);
     }
 }

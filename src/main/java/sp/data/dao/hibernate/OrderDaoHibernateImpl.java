@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import sp.data.dao.generic.GenericDaoHibernateImpl;
 import sp.data.dao.interfaces.OrderDao;
 import sp.data.entities.Order;
+import sp.data.entities.Sp;
+import sp.data.entities.enumerators.OrderStatus;
 
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
@@ -36,15 +38,14 @@ public class OrderDaoHibernateImpl extends GenericDaoHibernateImpl<Order,Long> i
     }
 
     @Override
-    public void delete(Order order) {
-        /*
-        if(order.getId() != null) {
-            String hql = "delete from OrderPosition where order=:order";
-            Query query = currentSession().createQuery(hql);
-            query.setParameter("order", order);
+    public void updateStatuses(Sp sp, OrderStatus orderStatus) {
+        if (sp != null & orderStatus != null) {
+            String hql = "update Order set status=:orderStatus where sp.id=:sp";
+            Query query = currentSession().createQuery(hql)
+                            .setParameter("orderStatus", orderStatus)
+                            .setParameter("sp", sp.getId());
             query.executeUpdate();
         }
-        */
-            super.delete(order);
     }
+
 }

@@ -52,9 +52,6 @@
 
             <input type="hidden" name="action" value="edit_sp"/>
             <input type="hidden" name="id" value="${sp.id}"/>
-            <c:forEach var="order" items="${sp.orders}" varStatus="i">
-                <input type="hidden" name="orders" value="${order.id}"/>
-            </c:forEach>
 
             <c:set var="field" value="status"/>
             <spring:bind path="${field}">

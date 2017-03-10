@@ -32,6 +32,7 @@ public class Client {
 	@JsonIgnore
 	@OneToMany(mappedBy="client", fetch=FetchType.LAZY)
 	@OrderBy(value = "id desc")
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	private Set<Order> orders;
 
 	@NotNull(message = "{client.name.isEmpty}")

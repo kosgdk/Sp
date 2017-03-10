@@ -24,14 +24,6 @@ import java.util.*;
 public class OrderController {
 
 	@Autowired
-	PropertiesService propertiesService;
-
-	@ModelAttribute("properties")
-	public Properties getProperties(){
-		return propertiesService.getProperties();
-	}
-
-	@Autowired
 	Validator validator;
 
 	@Autowired
@@ -47,6 +39,9 @@ public class OrderController {
 	ProductService productService;
 
 	@Autowired
+	PropertiesService propertiesService;
+
+	@Autowired
 	OrderPositionService orderPositionService;
 
 	@InitBinder
@@ -55,13 +50,17 @@ public class OrderController {
 		binder.registerCustomEditor(String.class, new StringTrimmerEditor(true)); // Converts empty strings into null when a form is submitted
 	}
 
+	@ModelAttribute("properties")
+	public Properties getProperties(){
+		return propertiesService.getProperties();
+	}
+
 
 	// Переход на страницу заказа
 	@RequestMapping(value = "/order/{orderId}", method = RequestMethod.GET)
-	public String orderPage(@PathVariable("orderId") Long orderId,
+	public String pageOrder(@PathVariable("orderId") Long orderId,
 							Model model){
-
-		System.out.println("inside orderPage()");
+		System.out.println("inside pageOrder()");
 
         model.addAttribute("orderStatuses", Arrays.asList(OrderStatus.values()));
 
@@ -70,7 +69,10 @@ public class OrderController {
 		}
 
 		List<Long> availableSpIds = spService.getIdsByStatus(SpStatus.COLLECTING, SpStatus.CHECKOUT);
-		Long spId = orderService.getById(orderId).getSp().getId();
+
+		Order order = (Order) model.asMap().get("order");
+		Long spId = order.getSp().getId();
+
 		if (!availableSpIds.contains(spId)) availableSpIds.add(spId);
 		model.addAttribute("availableSpIds", availableSpIds);
 
@@ -86,11 +88,12 @@ public class OrderController {
 	@RequestMapping(value = "/order/{orderId}", params = {"action=delete"})
 	public String deleteOrder(@PathVariable("orderId") Long orderId,
 							  @RequestParam(name = "from", required = false) Long spId){
-
 		System.out.println("inside deleteOrder()");
+
 		if (spId == null){
 			spId = orderService.getById(orderId).getSp().getId();
 		}
+
 		orderService.deleteById(orderId);
 
 		return "redirect:/sp/" + spId;
@@ -102,7 +105,6 @@ public class OrderController {
 	public String updateOrder(@Valid @ModelAttribute Order order,
 							  Errors errors,
 							  RedirectAttributes redirectAttributes){
-
 		System.out.println("inside updateOrder()");
 
 		if (errors.hasErrors()){
@@ -110,8 +112,6 @@ public class OrderController {
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.order", errors);
 			return "redirect:/order/" + order.getId();
 		}
-
-		Order order2 = orderService.getById(order.getId());
 
 		orderService.update(order);
 		return "redirect:/order/" + order.getId();
@@ -136,10 +136,7 @@ public class OrderController {
 
 		orderPositionService.save(orderPosition);
 
-		// TODO: implement duplicate OrderPosition merging
-        //Order order = orderService.getById(orderId);
-        //order = orderService.addOrderPosition(order, orderPosition);
-        //orderService.save(order);
+		// TODO: implement merging of OrderPositions with same Product
 
 		System.out.println("SUCCESS");
 		return "redirect:/order/" + orderPosition.getOrder().getId();

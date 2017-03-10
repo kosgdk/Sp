@@ -1,5 +1,6 @@
 package sp.data.dao.generic;
 
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,8 +41,8 @@ public abstract class GenericDaoForNamedEntitiesHibernateImpl<E, I extends Seria
 
 		criteriaQuery.where(predicates.toArray(new Predicate[]{}));
 
-		TypedQuery<E> typedQuery = currentSession().createQuery(criteriaQuery);
-		typedQuery.setMaxResults(30);
+		TypedQuery<E> typedQuery = currentSession().createQuery(criteriaQuery)
+									.setMaxResults(30);
 		return typedQuery.getResultList();
 	}
 
@@ -56,10 +57,10 @@ public abstract class GenericDaoForNamedEntitiesHibernateImpl<E, I extends Seria
 
 		criteriaQuery.where(criteriaBuilder.equal(root.get("name"), name));
 
-		TypedQuery<E> typedQuery = currentSession().createQuery(criteriaQuery);
-		List<E> entities = typedQuery.getResultList();
-
-		return entities.isEmpty() ? null : entities.get(0);
+		Query<E> query = currentSession().createQuery(criteriaQuery)
+						.setMaxResults(1)
+						.setCacheable(true);
+		return query.getSingleResult();
 	}
 
 }

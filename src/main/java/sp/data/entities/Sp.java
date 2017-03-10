@@ -31,6 +31,7 @@ public class Sp {
 
 	@OneToMany(mappedBy = "sp", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
 	@OrderBy(value = "id")
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	private Set<Order> orders;
 
 	@NotNull

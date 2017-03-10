@@ -48,12 +48,12 @@
 		<spring:url value="/order/${order.id}" var="formUrl" />
 		<form:form action="${formUrl}" method="POST" modelAttribute="order" cssClass="form-horizontal">
 
-			<input type="hidden" name="action" value="update"/>
-			<input type="hidden" name="id" value="${order.id}"/>
-			<input type="hidden" name="client" value="${order.client.name}"/>
-			<input type="hidden" name="weight" value="${order.weight}"/>
+			<input type="hidden" id="action" name="action" value="update"/>
+			<input type="hidden" id="id" name="id" value="${order.id}"/>
+			<input type="hidden" id="client" name="client" value="${order.client.name}"/>
+			<input type="hidden" id="weight" name="weight" value="${order.weight}"/>
 			<c:forEach var="orderPositionFromList" items="${order.orderPositions}" varStatus="i">
-			    <input type="hidden" name="orderPositions[${i.count-1}]" value="${orderPositionFromList.id}"/>
+			    <input type="hidden" id="orderPositions[${i.count-1}]" name="orderPositions[${i.count-1}]" value="${orderPositionFromList.id}"/>
 			</c:forEach>
 
 			<fieldset>

@@ -4,9 +4,10 @@ import sp.data.entities.enumerators.SpStatus;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
+import java.io.Serializable;
 
 @Converter
-public class SpStatusConverter implements AttributeConverter<SpStatus, Integer> {
+public class SpStatusConverter implements AttributeConverter<SpStatus, Integer>, Serializable {
 
 	@Override
 	public Integer convertToDatabaseColumn(SpStatus status) {

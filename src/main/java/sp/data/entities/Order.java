@@ -30,6 +30,7 @@ public class Order {
 	private Long id;
 	
 	@OneToMany(mappedBy = "order", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	private List<OrderPosition> orderPositions;
 	
 	@NotNull(message = "{order.client.noSuchClient}")

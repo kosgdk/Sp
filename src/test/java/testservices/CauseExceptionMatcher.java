@@ -14,7 +14,7 @@ public class CauseExceptionMatcher extends TypeSafeMatcher<Throwable> {
         }
 
         @Override
-        protected boolean matchesSafely(Throwable item) {
+        public boolean matchesSafely(Throwable item) {
             return item.getClass().isAssignableFrom(type)
                     && item.getMessage().contains(expectedMessage);
         }

@@ -1,6 +1,5 @@
 package sp.data.dao.interfaces;
 
-import sp.data.dao.generic.GenericDao;
 import sp.data.entities.Properties;
 
 public interface PropertiesDao{
@@ -10,4 +9,5 @@ public interface PropertiesDao{
 	Properties getProperties();
 
 	void update(Properties properties);
+
 }

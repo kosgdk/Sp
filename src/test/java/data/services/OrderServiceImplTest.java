@@ -9,11 +9,8 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import sp.data.dao.interfaces.ClientDao;
 import sp.data.dao.interfaces.OrderDao;
-import sp.data.entities.Client;
 import sp.data.entities.Order;
-import sp.data.services.interfaces.ClientService;
 import sp.data.services.interfaces.OrderService;
 
 import javax.annotation.Resource;
@@ -46,7 +43,5 @@ public class OrderServiceImplTest extends AbstractJUnit4SpringContextTests {
         service.getByIdWithAllChildren(1L);
         verify(dao, times(1)).getByIdWithAllChildren(1L);
     }
-
-   
 
 }

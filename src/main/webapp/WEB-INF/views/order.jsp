@@ -63,7 +63,7 @@
 						<label for="${field}" class="col-lg-2 control-label">Статус</label>
 						<div class="col-lg-2">
 							<form:select path="${field}" items="${orderStatuses}" itemValue="id" itemLabel="name" onchange="enableDisableOrderFields()" id="${field}" cssClass="form-control"/>
-							<span class="help-block nowrap"><form:errors path="${field}"/></span>
+							<span class="help-block nowrap"><form:errors htmlEscape="false" path="${field}"/></span>
 						</div>
 					</div>
 				</spring:bind>

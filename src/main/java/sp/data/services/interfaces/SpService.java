@@ -16,6 +16,6 @@ public interface SpService extends GenericService<Sp, Long> {
 
     List<Long> getIdsByStatus(SpStatus... statuses);
 
-	public void setOrdersStatuses(Sp sp);
+	void processOrdersStatuses(Sp sp);
 	
 }

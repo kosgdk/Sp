@@ -15,6 +15,7 @@ import sp.data.entities.Properties;
 import sp.data.entities.enumerators.OrderStatus;
 import sp.data.entities.enumerators.SpStatus;
 import sp.data.services.interfaces.*;
+import sp.data.validators.OrderValidator;
 
 import javax.validation.Valid;
 import java.util.*;
@@ -25,6 +26,9 @@ public class OrderController {
 
 	@Autowired
 	Validator validator;
+
+	@Autowired
+	OrderValidator orderValidator;
 
 	@Autowired
 	SpService spService;
@@ -89,6 +93,7 @@ public class OrderController {
 	public String deleteOrder(@PathVariable("orderId") Long orderId,
 							  @RequestParam(name = "from", required = false) Long spId){
 		System.out.println("inside deleteOrder()");
+		// TODO: 15.03.2017 Check if status of Order is suitable for Order delete
 
 		if (spId == null){
 			spId = orderService.getById(orderId).getSp().getId();
@@ -106,14 +111,18 @@ public class OrderController {
 							  Errors errors,
 							  RedirectAttributes redirectAttributes){
 		System.out.println("inside updateOrder()");
+		// TODO: 15.03.2017 Check if status of Order is suitable for editing some of Order fields
 
+		orderValidator.validate(order, errors);
 		if (errors.hasErrors()){
 			redirectAttributes.addFlashAttribute("order", order);
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.order", errors);
 			return "redirect:/order/" + order.getId();
 		}
 
+		orderService.processSpStatus(order);
 		orderService.update(order);
+
 		return "redirect:/order/" + order.getId();
 	}
 
@@ -126,6 +135,7 @@ public class OrderController {
 									  RedirectAttributes redirectAttributes){
 
 		System.out.println("inside createOrderPosition()");
+		// TODO: 15.03.2017 Check if status of Order is suitable for OrderPosition add
 
 		if (errors.hasErrors()){
 			redirectAttributes.addFlashAttribute("orderPosition", orderPosition);
@@ -149,7 +159,10 @@ public class OrderController {
 					method = RequestMethod.GET)
 	public String deleteOrderPosition(@PathVariable("orderId") Integer orderId,
 									  @RequestParam("order_position_id") Long orderPositionId){
+
 		System.out.println("inside deleteOrderPosition()");
+		// TODO: 15.03.2017 Check if status of Order is suitable  for OrderPosition delete
+
 		orderPositionService.deleteById(orderPositionId);
 		return "redirect:/order/" + orderId;
 	}
@@ -163,6 +176,7 @@ public class OrderController {
 							Model model){
 
 		System.out.println("inside editOrderPositionPage()");
+		// TODO: 15.03.2017 Check if status of Order is suitable for OrderPosition edit
 
 		model.addAttribute("order", orderService.getById(orderId));
 		model.addAttribute("orderStatuses", Arrays.asList(OrderStatus.values()));

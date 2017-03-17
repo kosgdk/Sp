@@ -11,6 +11,8 @@ public interface OrderService extends GenericService<Order, Long> {
 
     void updateStatuses(Sp sp, OrderStatus orderStatus);
 
+    void processSpStatus(Order order);
+
     // TODO: add deleteById(List<Integer> ids)
 
 }

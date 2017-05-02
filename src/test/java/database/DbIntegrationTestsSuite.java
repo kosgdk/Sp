@@ -1,9 +1,6 @@
 package database;
 
-import database.tests.ClientDbIntegrationTest;
-import database.tests.OrderDbIntegrationTest;
-import database.tests.OrderPositionDbIntegrationTest;
-import database.tests.SpDbIntegrationTest;
+import database.tests.*;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -17,7 +14,8 @@ import static database.unitils.ConstraintsDisabler.ConstraintType;
         OrderPositionDbIntegrationTest.class,
         ClientDbIntegrationTest.class,
         OrderDbIntegrationTest.class,
-        SpDbIntegrationTest.class
+        SpDbIntegrationTest.class,
+        ProductDbIntegrationTest.class
 })
 public class DbIntegrationTestsSuite {
 

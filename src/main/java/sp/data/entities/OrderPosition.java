@@ -32,7 +32,7 @@ public class OrderPosition {
 	private Order order;
 
 	@NotNull(message = "{orderPosition.product.isEmpty}")
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.EAGER/*, cascade = CascadeType.ALL*/)
 	@Fetch(FetchMode.JOIN)
 	@JoinColumn(name="product_id")
 	private Product product;
@@ -61,6 +61,11 @@ public class OrderPosition {
 	@Column(name="note")
 	private String note;
 
+	@NotNull(message = "{order.weight.isEmpty}")
+	@Min(value = 0, message = "{order.weight.negative}")
+	@Column(name = "product_weight")
+	private Integer productWeight = 0;
+
 	@Transient
 	private BigDecimal priceSpSummary = new BigDecimal(0);
 	
@@ -88,9 +93,7 @@ public class OrderPosition {
 	}
 
 	private void calculateWeight() {
-		if (product != null){
-			weight = product.getWeight() * quantity;
-		}
+		weight = productWeight * quantity;
 	}
 
 
@@ -156,6 +159,14 @@ public class OrderPosition {
 
 	public void setNote(String note) {
 		this.note = note;
+	}
+
+	public Integer getProductWeight() {
+		return productWeight;
+	}
+
+	public void setProductWeight(Integer productWeight) {
+		this.productWeight = productWeight;
 	}
 
 	public BigDecimal getIncome() {

@@ -54,6 +54,7 @@ CREATE TABLE `order_position` (
   `price_vendor` decimal(7,2) unsigned NOT NULL,
   `quantity` smallint(5) unsigned NOT NULL DEFAULT '1',
   `note` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `product_weight` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `order_id_idx` (`order_id`),
   KEY `product_idx` (`product_id`),
@@ -146,6 +147,7 @@ CREATE TABLE `sp` (
   `date_to_receive` date DEFAULT NULL,
   `date_received` date DEFAULT NULL,
   `date_to_distribute` date DEFAULT NULL,
+  `delivery_price` DECIMAL(4) UNSIGNED NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;

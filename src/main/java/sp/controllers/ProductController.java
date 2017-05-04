@@ -9,8 +9,10 @@ import org.springframework.validation.Validator;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import sp.data.entities.OrderPosition;
 import sp.data.entities.Product;
-import sp.data.entities.formscontainers.ZeroWeightProductsForm;
+import sp.data.entities.formscontainers.ZeroWeightOrderPositionsForm;
+import sp.data.services.interfaces.OrderPositionService;
 import sp.data.services.interfaces.ProductService;
 import sp.data.validators.ZeroWeightProductsFormValidator;
 
@@ -21,12 +23,12 @@ import java.util.ListIterator;
 public class ProductController {
 
 	// TODO: 02.05.2017 Create @ConstructorAdvice class
+	// TODO: 03.05.2017 При изменении веса Product'a обновлять OrderPosition.productWeight в СП со статусом "Сбор" и "Оплата"
 
-	@Autowired
-	Validator validator;
-
-	@Autowired
-	ZeroWeightProductsFormValidator zeroWeightProductsFormValidator;
+	@Autowired ProductService productService;
+	@Autowired OrderPositionService orderPositionService;
+	@Autowired Validator validator;
+	@Autowired ZeroWeightProductsFormValidator zeroWeightOrderPositionsFormValidator;
 
 
 	@InitBinder
@@ -35,55 +37,58 @@ public class ProductController {
 		binder.setDisallowedFields("id");
 		binder.registerCustomEditor(String.class, new StringTrimmerEditor(true)); // Converts empty strings into null when a form is submitted
 	}
+	
 
-	@Autowired
-	ProductService productService;
-
-	// Переход на страницу продуктов с неуказанным весом
-	@RequestMapping(value = "/zeroweightproducts")
-	public String PageZeroWeightProducts(@RequestParam(name = "sp") Long spId,
-										 Model model){
+	// Переход на страницу позиций с неуказанным весом
+	@RequestMapping(value = "/zeroweightorderpositions")
+	public String PageZeroWeightOrderPositions(@RequestParam(name = "sp") Long spId,
+										 		Model model){
 
 		// TODO: 02.05.2017 Check if Sp with given id exists
 
-		if (!model.containsAttribute("zeroWeightProductsForm")) {
-			ZeroWeightProductsForm zeroWeightProductsForm = new ZeroWeightProductsForm(productService.getZeroWeightProducts(spId));
-			model.addAttribute("zeroWeightProductsForm", zeroWeightProductsForm);
+		if (!model.containsAttribute("zeroWeightOrderPositionsForm")) {
+			ZeroWeightOrderPositionsForm zeroWeightOrderPositionsForm = new ZeroWeightOrderPositionsForm(orderPositionService.getZeroWeightOrderPositions(spId));
+			model.addAttribute("zeroWeightOrderPositionsForm", zeroWeightOrderPositionsForm);
 		}
 
 		model.addAttribute("spId", spId);
 
-		return "zeroweightproducts";
+		return "zeroweightorderpositions";
 	}
 
 	// Обработка запроса на сохранение нового веса продуктов с неуказанным весом
-	@RequestMapping(value = "/zeroweightproducts", params = {"action=save"}, method = RequestMethod.POST)
+	@RequestMapping(value = "/zeroweightorderpositions", params = {"action=save"}, method = RequestMethod.POST)
 	public String SaveZeroWeightProducts(@RequestParam(name = "sp") Long spId,
-										 @ModelAttribute ZeroWeightProductsForm zeroWeightProductsForm,
+										 @ModelAttribute ZeroWeightOrderPositionsForm zeroWeightOrderPositionsForm,
 										 RedirectAttributes redirectAttributes,
 										 Errors errors, Model model){
 
 		// TODO: 02.05.2017 Perform security checks of products list (id, neme, etc.)
-		zeroWeightProductsFormValidator.validate(zeroWeightProductsForm, errors);
-		List<Product> newZeroWeightProducts = zeroWeightProductsForm.getProducts();
+		// TODO: 03.05.2017 Обновить OrderPosition.productWeight в текущем СП
 
-		for (final ListIterator<Product> iterator = newZeroWeightProducts.listIterator(); iterator.hasNext();){
-			Product productFromForm = iterator.next();
-			Product product = productService.getById(productFromForm.getId());
-			product.setWeight(productFromForm.getWeight());
-			iterator.set(product);
-			if (!errors.hasFieldErrors("products["+ (iterator.nextIndex() - 1) +"].weight") && product.getWeight() > 0) {
+		zeroWeightOrderPositionsFormValidator.validate(zeroWeightOrderPositionsForm, errors);
+		List<OrderPosition> newZeroWeightOrderPositions = zeroWeightOrderPositionsForm.getOrderPositions();
+
+		for (final ListIterator<OrderPosition> iterator = newZeroWeightOrderPositions.listIterator(); iterator.hasNext();){
+			OrderPosition formOrderPosition = iterator.next();
+			OrderPosition orderPosition = orderPositionService.getById(formOrderPosition.getId());
+			orderPosition.setProductWeight(formOrderPosition.getProductWeight());
+			iterator.set(orderPosition);
+			if (!errors.hasFieldErrors("orderPositions["+ (iterator.nextIndex() - 1) +"].productWeight") && orderPosition.getProductWeight() > 0) {
+				orderPositionService.update(orderPosition);
+				Product product = orderPosition.getProduct();
+				product.setWeight(orderPosition.getProductWeight());
 				productService.update(product);
 				iterator.remove();
 			}
 		}
 
 		if (errors.hasErrors()) {
-			redirectAttributes.addFlashAttribute("zeroWeightProductsForm", zeroWeightProductsForm);
-			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.zeroWeightProductsForm", errors);
+			redirectAttributes.addFlashAttribute("zeroWeightOrderPositionsForm", zeroWeightOrderPositionsForm);
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.zeroWeightOrderPositionsForm", errors);
 		}
 
-		return "redirect:/zeroweightproducts?sp=" + spId;
+		return "redirect:/zeroweightorderpositions?sp=" + spId;
 	}
 
 

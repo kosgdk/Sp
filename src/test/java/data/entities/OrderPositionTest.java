@@ -60,11 +60,8 @@ public class OrderPositionTest {
 
     @Test
     public void getWeight_ShouldReturnCalculatedWeight() {
-        Product product = mock(Product.class);
-        when(product.getWeight()).thenReturn(100);
-
-        orderPosition.setProduct(product);
         orderPosition.setQuantity(2);
+        orderPosition.setProductWeight(100);
         assertEquals("", 200, orderPosition.getWeight());
     }
 

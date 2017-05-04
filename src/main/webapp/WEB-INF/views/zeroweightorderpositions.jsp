@@ -22,14 +22,14 @@
 			Продукты с неуказанным весом в <a href='<spring:url value="/sp/${spId}"/>'>СП-${spId}</a>
 		</legend>
 
-		<c:if test="${zeroWeightProductsForm.products.size() == 0}">
+		<c:if test="${zeroWeightOrderPositionsForm.orderPositions.size() == 0}">
 			Ура - все продукты в данном СП имеют свой вес!
 		</c:if>
 
-		<c:if test="${zeroWeightProductsForm.products.size() != 0}">
+		<c:if test="${zeroWeightOrderPositionsForm.orderPositions.size() != 0}">
 
-			<spring:url value="/zeroweightproducts" var="formUrl" />
-			<form:form action="${formUrl}" method="POST" modelAttribute="zeroWeightProductsForm">
+			<spring:url value="/zeroweightorderpositions" var="formUrl" />
+			<form:form action="${formUrl}" method="POST" modelAttribute="zeroWeightOrderPositionsForm">
 				<input type="hidden" name="action" value="save"/>
 				<input type="hidden" name="sp" value="${spId}"/>
 
@@ -41,17 +41,17 @@
 							<th>Вес, г</th></tr>
 					</thead>
 					<tbody>
-						<c:forEach var="product" items="${zeroWeightProductsForm.products}" varStatus="counter">
-							<input type="hidden" name="products[${counter.index}].id" value="${product.id}"/>
+						<c:forEach var="orderPosition" items="${zeroWeightOrderPositionsForm.orderPositions}" varStatus="counter">
+							<input type="hidden" name="orderPositions[${counter.index}].id" value="${orderPosition.id}"/>
 							<tr>
 								<td align="center">${counter.count}</td>
-								<td>${product.name}</td>
+								<td>${orderPosition.product.name}</td>
 								<td align="center">
-									<c:set var="field" value="products[${counter.index}].weight"/>
+									<c:set var="field" value="orderPositions[${counter.index}].productWeight"/>
 									<spring:bind path="${field}">
 										<c:set var="errorMessage" value="${status.errorMessage}"/>
 										<div class="form-group no-vmargin <c:if test='${status.errors.hasFieldErrors(field)}'>has-error</c:if>" style="width:80px;">
-											<form:input path="${field}" id="${field}" cssClass="form-control decimal red-tooltip" type="number" min="-2" data-toggle="tooltip" title="${errorMessage}" data-placement="right"/>
+											<form:input path="${field}" id="${field}" cssClass="form-control decimal red-tooltip" type="number" min="-1" data-toggle="tooltip" title="${errorMessage}" data-placement="right"/>
 										</div>
 									</spring:bind>
 								</td>
@@ -74,7 +74,7 @@
 
 	</div>
 
-	<spring:hasBindErrors name="zeroWeightProductsForm">
+	<spring:hasBindErrors name="zeroWeightOrderPositionsForm">
 		<!-- Show validation error tooltips -->
 		<script type="text/javascript">
 			$('input').tooltip({trigger: 'manual'})

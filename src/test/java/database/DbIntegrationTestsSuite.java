@@ -14,8 +14,7 @@ import static database.unitils.ConstraintsDisabler.ConstraintType;
         OrderPositionDbIntegrationTest.class,
         ClientDbIntegrationTest.class,
         OrderDbIntegrationTest.class,
-        SpDbIntegrationTest.class,
-        ProductDbIntegrationTest.class
+        SpDbIntegrationTest.class
 })
 public class DbIntegrationTestsSuite {
 

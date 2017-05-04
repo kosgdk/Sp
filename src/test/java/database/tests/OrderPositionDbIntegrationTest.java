@@ -23,6 +23,8 @@ import sp.data.entities.OrderPosition;
 import sp.data.entities.Product;
 import testservices.CauseExceptionMatcher;
 
+import java.util.List;
+
 import static org.junit.Assert.*;
 import static com.vladmihalcea.sql.SQLStatementCountValidator.*;
 
@@ -34,7 +36,7 @@ import static com.vladmihalcea.sql.SQLStatementCountValidator.*;
 public class OrderPositionDbIntegrationTest {
 
     @SpringBeanByType
-    OrderPositionDao dao;
+    OrderPositionDao orderPositionDao;
 
     @SpringBeanByType
     ProductDao productDao;
@@ -56,7 +58,7 @@ public class OrderPositionDbIntegrationTest {
     //ORM test
     @Test
     public void getById_ProductShouldBeLoadedEagerly(){
-        OrderPosition orderPosition = dao.getById(1L);
+        OrderPosition orderPosition = orderPositionDao.getById(1L);
         assertNotNull(orderPosition.getProduct());
         assertEquals(new Long(1), orderPosition.getProduct().getId());
         assertSelectCount(1);
@@ -65,7 +67,7 @@ public class OrderPositionDbIntegrationTest {
     //ORM test
     @Test
     public void getById_OrderShouldBeLoadedLazily(){
-        OrderPosition orderPosition = dao.getById(1L);
+        OrderPosition orderPosition = orderPositionDao.getById(1L);
         assertNotNull(orderPosition.getOrder());
         assertEquals(new Long(1), orderPosition.getOrder().getId());
         assertSelectCount(2);
@@ -81,7 +83,7 @@ public class OrderPositionDbIntegrationTest {
         order.setId(3L);
         OrderPosition orderPosition = new OrderPosition();
         orderPosition.setOrder(order);
-        dao.save(orderPosition);
+        orderPositionDao.save(orderPosition);
     }
 
     //DB test
@@ -102,7 +104,7 @@ public class OrderPositionDbIntegrationTest {
         product.setId(3L);
         OrderPosition orderPosition = new OrderPosition();
         orderPosition.setProduct(product);
-        dao.save(orderPosition);
+        orderPositionDao.save(orderPosition);
     }
 
     //DB test
@@ -116,6 +118,36 @@ public class OrderPositionDbIntegrationTest {
         }catch (DataIntegrityViolationException e){
             throw e.getCause();
         }
+    }
+
+    //DAO test
+    @Test
+    @DataSet("db_test/dataset/integration/orderPosition/OrderPositionDbIntegrationTest.getZeroWeightOrderPositions_ShouldReturnOrderPositionsList.xml")
+    public void getZeroWeightOrderPositions_ShouldReturnOrderPositionsList(){
+        List<OrderPosition> zeroWeightOrderPositions = orderPositionDao.getZeroWeightOrderPositions(1L);
+        assertSelectCount(1);
+        assertNotNull(zeroWeightOrderPositions);
+        assertEquals(2, zeroWeightOrderPositions.size());
+        assertEquals(new Long(1), zeroWeightOrderPositions.get(0).getId());
+        assertEquals(new Long(3), zeroWeightOrderPositions.get(1).getId());
+    }
+
+    @Test
+    @DataSet("db_test/dataset/integration/orderPosition/OrderPositionDbIntegrationTest.getZeroWeightOrderPositions_ShouldReturnOrderPositionsList.xml")
+    public void getZeroWeightOrderPositions_InputNull_ShouldReturnEmptyList(){
+        List<OrderPosition> zeroWeightOrderPositions = orderPositionDao.getZeroWeightOrderPositions(null);
+        assertSelectCount(0);
+        assertNotNull(zeroWeightOrderPositions);
+        assertTrue(zeroWeightOrderPositions.isEmpty());
+    }
+
+    @Test
+    @DataSet("db_test/dataset/integration/orderPosition/OrderPositionDbIntegrationTest.getZeroWeightOrderPositions_ShouldReturnOrderPositionsList.xml")
+    public void getZeroWeightOrderPositions_InputNonexistentSpId_ShouldReturnEmptyList(){
+        List<OrderPosition> zeroWeightOrderPositions = orderPositionDao.getZeroWeightOrderPositions(2L);
+        assertSelectCount(1);
+        assertNotNull(zeroWeightOrderPositions);
+        assertTrue(zeroWeightOrderPositions.isEmpty());
     }
 
 }

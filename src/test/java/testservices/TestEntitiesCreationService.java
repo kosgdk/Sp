@@ -61,6 +61,7 @@ public class TestEntitiesCreationService {
 		orderPosition.setPriceVendor(new BigDecimal(350.15 + seed));
 		orderPosition.setQuantity(Math.abs(seed) + 1);
 		orderPosition.setNote(StringUtils.leftPad("Test note " + seed, 500, "a"));
+		orderPosition.setProductWeight(100);
 
 		return orderPosition;
 	}

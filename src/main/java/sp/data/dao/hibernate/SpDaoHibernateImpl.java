@@ -19,11 +19,10 @@ public class SpDaoHibernateImpl extends GenericDaoHibernateImpl<Sp,Long> impleme
 
 	@Override
 	public Long getLastNumber() {
-		String sql = "SELECT max(id) FROM Sp";
-
-		Query query = currentSession().createNativeQuery(sql)
+		String hql = "SELECT max(id) FROM Sp";
+		Query query = currentSession().createQuery(hql)
 						.setCacheable(true);
-		return new Long((Integer)query.getSingleResult());
+		return (Long) query.getSingleResult();
 	}
 
 	@Override

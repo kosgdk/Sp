@@ -24,29 +24,14 @@ import java.util.*;
 @SessionAttributes(value = {"properties"})
 public class OrderController {
 
-	@Autowired
-	Validator validator;
-
-	@Autowired
-	OrderValidator orderValidator;
-
-	@Autowired
-	SpService spService;
-
-	@Autowired
-	OrderService orderService;
-
-	@Autowired
-	ClientService clientService;
-
-	@Autowired
-	ProductService productService;
-
-	@Autowired
-	PropertiesService propertiesService;
-
-	@Autowired
-	OrderPositionService orderPositionService;
+	@Autowired Validator validator;
+	@Autowired OrderValidator orderValidator;
+	@Autowired SpService spService;
+	@Autowired OrderService orderService;
+	@Autowired ClientService clientService;
+	@Autowired ProductService productService;
+	@Autowired PropertiesService propertiesService;
+	@Autowired OrderPositionService orderPositionService;
 
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
@@ -61,7 +46,8 @@ public class OrderController {
 
 
 	// Переход на страницу заказа
-	@RequestMapping(value = "/order/{orderId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/order/{orderId}",
+					method = RequestMethod.GET)
 	public String pageOrder(@PathVariable("orderId") Long orderId,
 							Model model){
 		System.out.println("inside pageOrder()");
@@ -87,17 +73,40 @@ public class OrderController {
 		return "order";
 	}
 
+	// Обработка запроса на создание заказа
+	@RequestMapping(value="/sp/{spId}",
+					params = {"action=add_order"},
+					method = RequestMethod.POST)
+	public String createOrder(@PathVariable("spId") Long spId,
+							  @Valid @ModelAttribute Order order, Errors errors,
+							  RedirectAttributes redirectAttributes) {
+		System.out.println("inside addOrder()");
+
+		if (errors.hasErrors()){
+			redirectAttributes.addFlashAttribute("order", order);
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.order", errors);
+			return "redirect:/sp/" + spId;
+		}
+
+		orderService.save(order);
+
+		Sp sp = spService.getById(spId);
+		sp.getOrders().add(order);
+
+		return "redirect:/order/" + order.getId();
+	}
 
 	// Обработка запроса на удаление заказа
-	@RequestMapping(value = "/order/{orderId}", params = {"action=delete"})
+	@RequestMapping(value = "/order/{orderId}",
+					params = {"action=delete"})
 	public String deleteOrder(@PathVariable("orderId") Long orderId,
 							  @RequestParam(name = "from", required = false) Long spId){
 		System.out.println("inside deleteOrder()");
-		// TODO: 15.03.2017 Check if status of Order is suitable for Order delete
+		// TODO: 15.03.2017 Check if status of Order and Sp is suitable for Order delete
 
-		if (spId == null){
-			spId = orderService.getById(orderId).getSp().getId();
-		}
+		Order order = orderService.getById(orderId);
+		Sp sp = order.getSp();
+		if (spId == null) spId = sp.getId();
 
 		orderService.deleteById(orderId);
 
@@ -106,7 +115,8 @@ public class OrderController {
 
 
 	// Обработка запроса на обновление заказа
-	@RequestMapping(value = "/order/{orderId}", params = {"action=update"})
+	@RequestMapping(value = "/order/{orderId}",
+					params = {"action=update"})
 	public String updateOrder(@Valid @ModelAttribute Order order,
 							  Errors errors,
 							  RedirectAttributes redirectAttributes){
@@ -128,14 +138,19 @@ public class OrderController {
 
 
 	// Обработка запроса на добавление позиции
-	@RequestMapping(value = "/order/{orderId}", params = {"action=add_position"}, method = RequestMethod.POST)
-	public String createOrderPosition(@PathVariable("orderId") Integer orderId,
+	@RequestMapping(value = "/order/{orderId}",
+					params = {"action=add_position"},
+					method = RequestMethod.POST)
+	public String createOrderPosition(@PathVariable("orderId") Long orderId,
                                       @Valid @ModelAttribute OrderPosition orderPosition,
 									  Errors errors,
 									  RedirectAttributes redirectAttributes){
 
 		System.out.println("inside createOrderPosition()");
 		// TODO: 15.03.2017 Check if status of Order is suitable for OrderPosition add
+		// TODO: 21.03.2017 Recalculate deliveryPrice for all orders in Sp if OrderPosition weight changed
+
+		orderPosition.setProductWeight(orderPosition.getProduct().getWeight());
 
 		if (errors.hasErrors()){
 			redirectAttributes.addFlashAttribute("orderPosition", orderPosition);
@@ -144,11 +159,12 @@ public class OrderController {
 			return "redirect:/order/" + orderId;
 		}
 
+		Order order = orderService.getById(orderId);
+		order.getOrderPositions().add(orderPosition);
 		orderPositionService.save(orderPosition);
 
 		// TODO: implement merging of OrderPositions with same Product
 
-		System.out.println("SUCCESS");
 		return "redirect:/order/" + orderPosition.getOrder().getId();
 	}
 
@@ -157,19 +173,37 @@ public class OrderController {
 	@RequestMapping(value = "/order/{orderId}",
 					params = {"action=delete_position", "order_position_id"},
 					method = RequestMethod.GET)
-	public String deleteOrderPosition(@PathVariable("orderId") Integer orderId,
+	public String deleteOrderPosition(@PathVariable("orderId") Long orderId,
 									  @RequestParam("order_position_id") Long orderPositionId){
 
 		System.out.println("inside deleteOrderPosition()");
-		// TODO: 15.03.2017 Check if status of Order is suitable  for OrderPosition delete
+		// TODO: 15.03.2017 Check if status of Order is suitable for OrderPosition delete
+
+		Order order = orderService.getById(orderId);
+		List<OrderPosition> orderPositions = order.getOrderPositions();
+
+		orderPositions.remove(orderPositionService.getById(orderPositionId));
+
+//		for (OrderPosition orderPosition : orderPositions) {
+//			if (orderPosition.getId().equals(orderPositionId)) {
+//				orderPositions.remove(orderPosition);
+//				break;
+//			}
+//		}
+//		orderService.update(order);
 
 		orderPositionService.deleteById(orderPositionId);
+
 		return "redirect:/order/" + orderId;
 	}
 
+	// TODO: 25.04.2017 Implement batch delete of order_positions
+
 
 	// Переход на страницу редактирования позиции
-	@RequestMapping(value = "/order/{orderId}", params = {"action=edit_position", "order_position_id"}, method = RequestMethod.GET)
+	@RequestMapping(value = "/order/{orderId}",
+					params = {"action=edit_position", "order_position_id"},
+					method = RequestMethod.GET)
 	public String editOrderPositionPage(@PathVariable("orderId") Long orderId,
 							@RequestParam("order_position_id") Long orderPositionId,
 							@RequestParam("action") String action,
@@ -178,7 +212,9 @@ public class OrderController {
 		System.out.println("inside editOrderPositionPage()");
 		// TODO: 15.03.2017 Check if status of Order is suitable for OrderPosition edit
 
-		model.addAttribute("order", orderService.getById(orderId));
+		Order order = orderService.getByIdWithAllChildren(orderId);
+
+		model.addAttribute("order", order);
 		model.addAttribute("orderStatuses", Arrays.asList(OrderStatus.values()));
 		model.addAttribute("action", action);
 
@@ -190,13 +226,16 @@ public class OrderController {
 
 
 	// Обработка запроса на обновление позиции
-	@RequestMapping(value = "/order/{orderId}", params = {"action=edit_position"}, method = RequestMethod.POST)
+	@RequestMapping(value = "/order/{orderId}",
+					params = {"action=edit_position"},
+					method = RequestMethod.POST)
 	public String updateOrderPosition(@PathVariable("orderId") Integer orderId,
 									  @Valid @ModelAttribute OrderPosition orderPosition,
 									  Errors errors,
 									  RedirectAttributes redirectAttributes){
 
 		System.out.println("inside updateOrderPosition()");
+		orderPosition.setProductWeight(orderPositionService.getById(orderPosition.getId()).getProductWeight());
 
 		if (errors.hasErrors()){
 			System.out.println("ERRORS!");
@@ -216,7 +255,8 @@ public class OrderController {
 
 
 	// Autocomplete выбора продукта
-	@RequestMapping(value = "/getProducts", method = RequestMethod.GET)
+	@RequestMapping(value = "/getProducts",
+					method = RequestMethod.GET)
 	@ResponseBody
 	public List<Product> getProducts(@RequestParam("query") String productName) {
 		return productService.searchByName(productName);

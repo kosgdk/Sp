@@ -185,4 +185,11 @@ public class SpBeanValidationTest extends AbstractJUnit4SpringContextTests {
         assertNull(errors.getFieldError("dateToDistribute"));
     }
 
+    @Test
+    public void deliveryPriceCanNotBeNegative() {
+        sp.setDeliveryPrice(new BigDecimal(-1));
+        validator.validate(sp, errors);
+        assertEquals("DecimalMin", errors.getFieldError("deliveryPrice").getCode());
+    }
+
 }

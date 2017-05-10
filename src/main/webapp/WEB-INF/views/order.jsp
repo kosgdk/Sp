@@ -197,12 +197,12 @@
 						<td>${orderPositionFromList.priceSpSummary}</td>
 						<td>${orderPositionFromList.income}</td>
                         <c:set var="danger" value=""/>
-                        <c:if test="${orderPositionFromList.product.weight == 0}">
+                        <c:if test="${orderPositionFromList.weight == 0}">
                             <c:set var="danger" value="danger"/>
                             <c:set var="incompleteWeight" value="true"/>
                         </c:if>
 						<td class="${danger}">
-							${orderPositionFromList.weight}
+							${orderPositionFromList.productWeight*orderPositionFromList.quantity}
 						</td>
 
 					</tr>
@@ -295,10 +295,13 @@
                                 </div>
 							</td>
 
+							<%-- TODO: Помечать вес позиции, если он отличается от веса продукта --%>
+							<%-- TODO: Добавить кнопку обновления веса позиций в заказе --%>
+
 							<td>
 								<c:set var="field" value="weight"/>
                                 <div class="form-group no-vmargin <c:if test='${status.errors.hasFieldErrors(field)}'>has-error</c:if>" style="width:60px;">
-                                    <form:input path="${field}" id="orderPosition-${field}" readonly="true" cssClass="form-control decimal"/>
+                                    <form:input path="${field}" id="orderPosition-productWeight" readonly="true" cssClass="form-control decimal"/>
                                 </div>
 							</td>
 						</form:form>
@@ -395,7 +398,7 @@
 						</td>
 
 						<td>
-							<c:set var="field" value="weight"/>
+							<c:set var="field" value="productWeight"/>
 							<div class="form-group no-vmargin" style="width:60px;">
 								<form:input path="${field}" id="orderPosition-${field}" readonly="true" cssClass="form-control"/>
 							</div>
@@ -481,7 +484,7 @@
 	<script type="text/javascript">
 		$(document).ready(function () {
 			$('#product').autocomplete({
-				serviceUrl: '${pageContext.request.contextPath}/getProducts',
+				serviceUrl: '${pageContext.request.contextPath}/getOrderPositions',
 				paramName: "query",
 				minChars: "3",
 				orientation: "auto",
@@ -542,7 +545,7 @@
             incomeField = document.getElementById("income");
 			orderPositionNoteField = document.getElementById("orderPosition-note");
 			orderPositionNoteFieldDiv = document.getElementById("orderPosition-note-div");
-			weightField = document.getElementById("orderPosition-weight");
+			weightField = document.getElementById("orderPosition-productWeight");
 			action = "${action}";
 			if(action == "edit_position"){
 				priceVendor = priceVendorField.value;

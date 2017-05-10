@@ -85,7 +85,6 @@ public class TestEntitiesCreationService {
 		order.setNote(StringUtils.rightPad("Test note " + seed, 500, "_"));
 		order.setStatus(OrderStatus.UNPAID);
 		order.setPrepaid(new BigDecimal(200.15 + seed));
-		order.setWeight(150 + Math.abs(seed));
 		order.setDeliveryPrice(new BigDecimal(20.15 + Math.abs(seed)));
 		order.setPlace(Place.OKEAN);
 		order.setDateOrdered(createDate("2016-10-05"));
@@ -108,7 +107,7 @@ public class TestEntitiesCreationService {
 		return order;
 	}
 
-	public Sp createTestSp(long seed) {
+	public Sp createTestSp() {
 		Sp sp = new Sp();
 		sp.setPercent(new BigDecimal(0.15));
 		sp.setStatus(SpStatus.COLLECTING);
@@ -119,6 +118,7 @@ public class TestEntitiesCreationService {
 		sp.setDateToReceive(createDate("2016-10-23"));
 		sp.setDateReceived(createDate("2016-10-22"));
 		sp.setDateToDistribute(createDate("2016-10-25"));
+		sp.setDeliveryPrice(new BigDecimal(450));
 		return sp;
 	}
 }

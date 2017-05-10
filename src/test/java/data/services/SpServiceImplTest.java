@@ -15,15 +15,20 @@ import org.springframework.test.context.TestContextManager;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import sp.data.dao.interfaces.SpDao;
 import sp.data.entities.Order;
+import sp.data.entities.OrderPosition;
 import sp.data.entities.Sp;
 import sp.data.entities.enumerators.OrderStatus;
 import sp.data.entities.enumerators.SpStatus;
+import sp.data.services.interfaces.OrderPositionService;
 import sp.data.services.interfaces.OrderService;
 import sp.data.services.interfaces.SpService;
 import testservices.FaultTolerantTheoriesRunner;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 
 import static org.junit.Assume.assumeFalse;
@@ -90,6 +95,51 @@ public class SpServiceImplTest extends AbstractJUnit4SpringContextTests {
 
     }
 
+    @RunWith(BlockJUnit4ClassRunner.class)
+    public static class CalculateDeliveryPriceForOrdersTests extends SpServiceImplTest{
+
+        @Mock
+        Order order1;
+
+        @Mock
+        Order order2;
+
+        @Mock
+        OrderPositionService orderPositionService
+                ;
+
+        @Override
+        public void setUp() throws Exception {
+            super.setUp();
+
+            when(sp.getDeliveryPrice()).thenReturn(new BigDecimal(490));
+            when(sp.getOrders()).thenReturn(new HashSet<>(Arrays.asList(order1, order2)));
+            when(order1.getWeight()).thenReturn(42);
+            when(order2.getWeight()).thenReturn(1075);
+        }
+
+        @Test
+        public void calculateDeliveryPriceForOrders_SpHasOrderPositionsWithZeroWeight_ShouldNotCalculateDeliveryPrice() {
+            when(orderPositionService.getZeroWeightOrderPositions(anyLong())).thenReturn(new ArrayList<>(Collections.singletonList(mock(OrderPosition.class))));
+
+            spService.calculateDeliveryPriceForOrders(sp);
+
+            verifyZeroInteractions(order1);
+            verifyZeroInteractions(order2);
+        }
+
+        @Test
+        public void calculateDeliveryPriceForOrders_SpHasNoOrderPositionsWithZeroWeight_ShouldCalculateDeliveryPrice() {
+            when(orderPositionService.getZeroWeightOrderPositions(anyLong())).thenReturn(new ArrayList<>());
+
+            spService.calculateDeliveryPriceForOrders(sp);
+
+            verify(order1).setDeliveryPrice(new BigDecimal(19));
+            verify(order2).setDeliveryPrice(new BigDecimal(472));
+
+        }
+
+    }
 
     @RunWith(FaultTolerantTheoriesRunner.class)
     public static class ProcessOrdersStatusesTests extends SpServiceImplTest{

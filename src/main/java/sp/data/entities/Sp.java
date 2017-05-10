@@ -29,7 +29,7 @@ public class Sp {
 	@Column(name = "id")
 	private Long id;
 
-	@OneToMany(mappedBy = "sp", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "sp", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY/*, orphanRemoval = true*/)
 	@OrderBy(value = "id")
 	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	private Set<Order> orders;
@@ -78,7 +78,14 @@ public class Sp {
 	@Column(name = "date_to_distribute")
 	private Date dateToDistribute;
 
-	
+	@DecimalMin(value = "0", message = "{sp.deliveryPrice.outOfRange}")
+	@Column(name = "delivery_price")
+	private BigDecimal deliveryPrice;
+
+	@Transient
+	private int weight;
+
+
 	public Sp() {
 	}
 
@@ -94,6 +101,20 @@ public class Sp {
 		}
 	}
 
+	private int calculateWeight() {
+		int weight = 0;
+		if (orders != null && !orders.isEmpty()) {
+			for (Order order : orders) {
+				if (order != null && order.getWeight() > 0) {
+					weight += order.getWeight();
+				}
+				else {
+					return 0;
+				}
+			}
+		}
+		return weight;
+	}
 
 	public Long getId() {
 		return id;
@@ -184,10 +205,21 @@ public class Sp {
 		this.dateToDistribute = dateToDistribute;
 	}
 
+	public BigDecimal getDeliveryPrice() {
+		return deliveryPrice;
+	}
+
+	public void setDeliveryPrice(BigDecimal deliveryPrice) {
+		this.deliveryPrice = deliveryPrice;
+	}
+
+	public int getWeight() {
+		return calculateWeight();
+	}
+
 
 	@Override
 	public String toString() {
 		return id.toString();
 	}
-
 }

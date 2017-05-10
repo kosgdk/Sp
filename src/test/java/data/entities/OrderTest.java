@@ -101,29 +101,35 @@ public class OrderTest {
         when(orderPosition2.getWeight()).thenReturn(100);
 
         order.setOrderPositions(getOrderPositionsMocksList());
-        assertEquals("", new Integer(132), order.getWeight());
+        assertEquals("", 132, order.getWeight());
     }
 
     @Test
-    public void getWeight_ShouldReturnCalculatedWeight_IfOneOfOrderPositionsIsNull() {
+    public void getWeight_OneOfOrderPositionsIsNull_ShouldReturn0() {
         when(orderPosition1.getWeight()).thenReturn(32);
         when(orderPosition2.getWeight()).thenReturn(100);
 
         order.setOrderPositions(getOrderPositionsMocksList());
         order.getOrderPositions().add(null);
-        assertEquals("", new Integer(132), order.getWeight());
+        assertEquals("", 0, order.getWeight());
     }
 
     @Test
-    public void getWeight_ShouldReturn0_IfOrderPositionsListIsNull() {
+    public void getWeight_OrderPositionsListIsNull_ShouldReturn0() {
         order.setOrderPositions(null);
-        assertEquals("", new Integer(0), order.getWeight());
+        assertEquals("", 0, order.getWeight());
+    }
+
+    @Test
+    public void getWeight_OrderPositionsListIsEmpty_ShouldReturn0() {
+        order.setOrderPositions(new ArrayList<>());
+        assertEquals("", 0, order.getWeight());
     }
 
     @Test
     public void setPrepaid_ShouldSetScaledValue() throws Exception {
         order.setPrepaid(new BigDecimal(100));
-        assertEquals("",  new BigDecimal(100).setScale(2, BigDecimal.ROUND_HALF_DOWN), order.getPrepaid());
+        assertEquals("", new BigDecimal(100).setScale(2, BigDecimal.ROUND_HALF_DOWN), order.getPrepaid());
     }
 
     @Test

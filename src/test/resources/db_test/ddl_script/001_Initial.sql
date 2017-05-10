@@ -74,7 +74,6 @@ CREATE TABLE `orders` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `client` int(11) NOT NULL,
   `sp` int(11) unsigned NOT NULL,
-  `weight` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `status` tinyint(3) unsigned NOT NULL DEFAULT '1',
   `prepaid` decimal(7,2) unsigned NOT NULL DEFAULT '0.00',
   `note` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,

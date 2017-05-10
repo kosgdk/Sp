@@ -34,7 +34,7 @@ public class SpDbValidationTest {
     SpDao dao;
 
     TestEntitiesCreationService service = new TestEntitiesCreationService();
-    Sp sp = service.createTestSp(1);
+    Sp sp = service.createTestSp();
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
@@ -125,7 +125,7 @@ public class SpDbValidationTest {
         expectedException.expect(DataException.class);
         expectedException.expectCause(new CauseExceptionMatcher(MysqlDataTruncation.class, "Out of range value for column 'percent'"));
 
-        Sp sp = service.createTestSp(1);
+        Sp sp = service.createTestSp();
         sp.setPercent(new BigDecimal(-1));
         try {
             dao.save(sp);
@@ -133,6 +133,21 @@ public class SpDbValidationTest {
             throw e.getCause();
         }
     }
+
+    @Test
+    public void deliveryPrice_ShouldBeNonNegative_OrThrowException() throws Throwable {
+        expectedException.expect(DataException.class);
+        expectedException.expectCause(new CauseExceptionMatcher(MysqlDataTruncation.class, "Out of range value for column 'delivery_price'"));
+
+        Sp sp = service.createTestSp();
+        sp.setDeliveryPrice(new BigDecimal(-1));
+        try {
+            dao.save(sp);
+        } catch (DataIntegrityViolationException e){
+            throw e.getCause();
+        }
+    }
+
 
 
 }

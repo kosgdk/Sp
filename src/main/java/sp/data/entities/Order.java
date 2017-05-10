@@ -29,7 +29,7 @@ public class Order {
 	@Column(name = "id")
 	private Long id;
 	
-	@OneToMany(mappedBy = "order", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "order", cascade = CascadeType.MERGE, fetch = FetchType.LAZY/*, orphanRemoval = true*/)
 	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	private List<OrderPosition> orderPositions;
 	
@@ -63,11 +63,6 @@ public class Order {
 	@Min(value = 0, message = "{order.prePaid.negative}")
 	@Column(name = "prepaid", precision=7, scale=2)
 	private BigDecimal prepaid = new BigDecimal(0);
-
-	@NotNull(message = "{order.weight.isEmpty}")
-	@Min(value = 0, message = "{order.weight.negative}")
-	@Column(name = "weight")
-	private Integer weight = 0;
 	
 	@Column(name = "delivery_price", precision=7, scale=2)
 	private BigDecimal deliveryPrice = new BigDecimal(0);
@@ -93,6 +88,9 @@ public class Order {
 	@Transient
 	private BigDecimal total = new BigDecimal(0);
 
+	@Transient
+	private int weight = 0;
+
 	
 	public Order() {}
 
@@ -108,9 +106,15 @@ public class Order {
 
 	private void calculateWeight(){
 		weight = 0;
-		if (orderPositions != null) {
+		if (orderPositions != null && !orderPositions.isEmpty()) {
 			for (OrderPosition orderPosition : orderPositions) {
-				weight += orderPosition != null ? orderPosition.getWeight() : 0;
+				if(orderPosition!=null && orderPosition.getWeight() > 0){
+					weight += orderPosition.getWeight();
+				}
+				else {
+					weight = 0;
+					return;
+				}
 			}
 		}
 	}
@@ -199,12 +203,12 @@ public class Order {
 		if(prepaid != null) this.prepaid = prepaid.setScale(2, RoundingMode.HALF_DOWN);
 	}
 
-	public Integer getWeight() {
+	public int getWeight() {
 		calculateWeight();
 		return weight;
 	}
 
-	public void setWeight(Integer weight) {
+	public void setWeight(int weight) {
 		this.weight = weight;
 	}
 

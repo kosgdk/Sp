@@ -139,27 +139,6 @@ public class OrderBeanValidationTest extends AbstractJUnit4SpringContextTests {
     }
 
     @Test
-    public void weightCanNotBeNull() {
-        order.setWeight(null);
-        validator.validate(order, errors);
-        assertEquals("NotNull", errors.getFieldError("weight").getCode());
-    }
-
-    @Test
-    public void weightCanNotBeNegative() {
-        order.setWeight(-1);
-        validator.validate(order, errors);
-        assertEquals("Min", errors.getFieldError("weight").getCode());
-    }
-
-    @Test
-    public void validWeightValueTest() {
-        order.setWeight(0);
-        validator.validate(order, errors);
-        assertNull(errors.getFieldError("weight"));
-    }
-
-    @Test
     public void placeCanBeNull() {
         order.setPlace(null);
         validator.validate(order, errors);

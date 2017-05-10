@@ -48,10 +48,10 @@ public class SpDbBasicTest {
     @Test
     public void allColumnsCanBeWrittenAndRead(){
         TestEntitiesCreationService service = new TestEntitiesCreationService();
-        Sp sp = service.createTestSp(dao.getLastNumber()+1);
+        Sp sp = service.createTestSp();
         dao.save(sp);
         Sp spFromDb = dao.getById(sp.getId());
-        assertSelectCount(3);
+        assertSelectCount(2);
         assertEquals("id", sp.getId(), spFromDb.getId());
         assertEquals("percent", sp.getPercent(), spFromDb.getPercent());
         assertEquals("status", sp.getDateStart(), spFromDb.getDateStart());
@@ -62,6 +62,7 @@ public class SpDbBasicTest {
         assertEquals("dateToReceive", sp.getDateToReceive(), spFromDb.getDateToReceive());
         assertEquals("dateReceived", sp.getDateReceived(), spFromDb.getDateReceived());
         assertEquals("dateToDistribute", sp.getDateToDistribute(), spFromDb.getDateToDistribute());
+        assertEquals("deliveryPrice", sp.getDeliveryPrice(), spFromDb.getDeliveryPrice());
     }
     
     @Test

@@ -63,6 +63,7 @@ public class SpController {
 		System.out.println("Inside pageCreateSp()");
 
 		Long nextSpNumber = spService.getLastNumber() + 1;
+		System.out.println(nextSpNumber);
 		model.addAttribute("nextSpNumber", nextSpNumber);
 		return "createsp";
 	}
@@ -125,29 +126,11 @@ public class SpController {
 			return "redirect:/sp/" + spId;
 		}
 
-        spService.update(sp);
         spService.processOrdersStatuses(sp);
+        spService.update(sp);
 
 		return "redirect:/sp/" + spId;
 	}
-
-	// Обработка запроса на создание заказа
-	@RequestMapping(value="/sp/{spId}", params = {"action=add_order"}, method = RequestMethod.POST)
-	public String createOrder(@PathVariable("spId") Integer spId,
-							  @Valid @ModelAttribute Order order, Errors errors,
-							  RedirectAttributes redirectAttributes) {
-		System.out.println("inside addOrder()");
-
-		if (errors.hasErrors()){
-			redirectAttributes.addFlashAttribute("order", order);
-			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.order", errors);
-			return "redirect:/sp/" + spId;
-		}
-
-		orderService.save(order);
-		return "redirect:/order/" + order.getId();
-	}
-
 
 	// Autocomplete выбора клиента
 	@RequestMapping(value = "/getClients", method = RequestMethod.GET)

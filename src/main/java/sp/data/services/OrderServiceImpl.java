@@ -35,6 +35,7 @@ public class OrderServiceImpl extends GenericServiceImpl<Order, Long> implements
 
     @Override
     public void processSpStatus(Order order) {
+        System.out.println("inside OrderService -> processSpStatus()");
         Sp sp = order.getSp();
         if (sp == null) return;
 

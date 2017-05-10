@@ -5,24 +5,26 @@ import org.springframework.stereotype.Service;
 
 import sp.data.dao.interfaces.SpDao;
 import sp.data.entities.Order;
+import sp.data.entities.OrderPosition;
 import sp.data.entities.Sp;
 import sp.data.entities.enumerators.OrderStatus;
 import sp.data.entities.enumerators.SpStatus;
 import sp.data.services.generic.GenericServiceImpl;
+import sp.data.services.interfaces.OrderPositionService;
 import sp.data.services.interfaces.OrderService;
+import sp.data.services.interfaces.ProductService;
 import sp.data.services.interfaces.SpService;
 
+import java.math.BigDecimal;
 import java.util.*;
-
 
 @Service("SpService")
 public class SpServiceImpl extends GenericServiceImpl<Sp, Long> implements SpService {
 
-	@Autowired
-	SpDao spDao;
-
-    @Autowired
-    OrderService orderService;
+	@Autowired SpDao spDao;
+    @Autowired OrderService orderService;
+    @Autowired ProductService productService;
+    @Autowired OrderPositionService orderPositionService;
 	
 	@Override
 	public Long getLastNumber() {
@@ -44,6 +46,7 @@ public class SpServiceImpl extends GenericServiceImpl<Sp, Long> implements SpSer
 		return spDao.getIdsByStatus(statuses);
 	}
 
+	@Override
 	public void processOrdersStatuses(Sp sp){
 		System.out.println("inside processOrdersStatuses()");
 
@@ -69,16 +72,43 @@ public class SpServiceImpl extends GenericServiceImpl<Sp, Long> implements SpSer
                     }
                     break;
 
-                case ARRIVED: //Получен
+                case ARRIVED: //Прибыл
                     System.out.println("case: ARRIVED");
                     if (ordersStatuses.size() == 1 && ordersStatuses.contains(OrderStatus.SENT)) {
-                        orderService.updateStatuses(sp, OrderStatus.ARRIVED);
+						System.out.println("updateStatuses()");
+						orderService.updateStatuses(sp, OrderStatus.ARRIVED);
+                    }
+                    if (sp.getDeliveryPrice() != null && sp.getDeliveryPrice().compareTo(BigDecimal.ZERO) > 0){
+						System.out.println("calculateDeliveryPriceForOrders()");
+						calculateDeliveryPriceForOrders(sp);
                     }
                     break;
             }
         }
 
 	}
+
+    @Override
+    public void calculateDeliveryPriceForOrders(Sp sp) {
+        // Return if Sp has OrderPositions with zero weight
+        if (!orderPositionService.getZeroWeightOrderPositions(sp.getId()).isEmpty()) return;
+
+        BigDecimal spWeight = new BigDecimal(0);
+        Set<Order> orders = sp.getOrders();
+
+        // Calculate summary Sp weight
+        for (Order order : orders) {
+            spWeight = spWeight.add(new BigDecimal(order.getWeight()));
+        }
+
+        // Calculate and set deliveryPrice for each order
+        for (Order order : orders) {
+            BigDecimal orderWeight = new BigDecimal(order.getWeight());
+            order.setDeliveryPrice((orderWeight.multiply(sp.getDeliveryPrice())).divide(spWeight, BigDecimal.ROUND_HALF_UP));
+            orderService.update(order);
+        }
+
+    }
 
 
 }

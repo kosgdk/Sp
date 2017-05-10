@@ -111,6 +111,17 @@
                 </div>
             </spring:bind>
 
+            <c:set var="field" value="deliveryPrice"/>
+            <spring:bind path="${field}">
+                <div class="form-group <c:if test='${status.errors.hasFieldErrors(field)}'>has-error</c:if>">
+                    <label for="${field}" class="col-lg-2 control-label">Доставка, р.</label>
+                    <div class="col-lg-1">
+                        <form:input path="${field}" id="${field}" cssClass="form-control decimal" type="number" min="0"/>
+                        <span class="help-block nowrap"><form:errors htmlEscape="false" path="${field}"/></span>
+                    </div>
+                </div>
+            </spring:bind>
+
             <div class="form-group">
                 <div class="col-lg-10 col-lg-offset-2">
                     <button type="submit" class="btn btn-primary">Сохранить</button>

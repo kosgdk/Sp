@@ -17,5 +17,7 @@ public interface SpService extends GenericService<Sp, Long> {
     List<Long> getIdsByStatus(SpStatus... statuses);
 
 	void processOrdersStatuses(Sp sp);
-	
+
+	void calculateDeliveryPriceForOrders(Sp sp);
+
 }

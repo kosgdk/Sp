@@ -72,14 +72,6 @@ public class OrderDbValidationTest {
         dao.save(order);
     }
 
-    @Test
-    public void weight_ShouldNotBeNull_OrThrowException() {
-        expectedException.expect(ConstraintViolationException.class);
-        expectedException.expectCause(new CauseExceptionMatcher(MySQLIntegrityConstraintViolationException.class,
-                                                                "Column 'weight' cannot be null"));
-        order.setWeight(null);
-        dao.save(order);
-    }
 
     @Test
     public void status_ShouldNotBeNull_OrThrowException() {
@@ -131,15 +123,6 @@ public class OrderDbValidationTest {
         expectedException.expectCause(new CauseExceptionMatcher(MysqlDataTruncation.class, "Data too long for column 'note'"));
 
         order.setNote(StringUtils.leftPad("", 501, "a"));
-        dao.save(order);
-    }
-
-    @Test
-    public void weight_ShouldBeNonNegative_OrThrowException() throws Exception {
-        expectedException.expect(DataException.class);
-        expectedException.expectCause(new CauseExceptionMatcher(MysqlDataTruncation.class, "Out of range value for column 'weight'"));
-        
-        order.setWeight(-1);
         dao.save(order);
     }
 

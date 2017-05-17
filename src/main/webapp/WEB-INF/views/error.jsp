@@ -4,22 +4,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-
 	<jsp:include page="../views/fragments/styles.jsp"/>
-
-	<title>Страница не найдена</title>
-
+	<title>Ошибка</title>
 </head>
 <body>
 	<jsp:include page="../views/fragments/header.jsp"/>
 	<div class="container">
-
-		<div class="alert alert-dismissible alert-danger">
-			${message}
-		</div>
-	
-	
-
+		<%-- Сообщения об ошибках --%>
+		<jsp:include page="../views/fragments/error_alert.jsp"/>
 	</div>
 </body>
 </html> 

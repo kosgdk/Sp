@@ -19,12 +19,10 @@ import sp.data.entities.Sp;
 import sp.data.entities.enumerators.OrderStatus;
 import testservices.TestEntitiesCreationService;
 
-import javax.persistence.NoResultException;
 import java.util.List;
 
 import static com.vladmihalcea.sql.SQLStatementCountValidator.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -73,16 +71,18 @@ public class OrderDbBasicTest {
         assertEquals("", new Long(2), order.getId());
     }
 
-    @Test(expected = NoResultException.class)
-    public void getById_InputNonexistentId_ShouldThrowException(){
-        dao.getById(4L);
+    @Test
+    public void getById_InputNonexistentId_ShouldReturnNull(){
+        Order order = dao.getById(4L);
         assertSelectCount(1);
+        assertNull(order);
     }
 
-    @Test(expected = NoResultException.class)
-    public void getById_InputNull_ShouldThrowException(){
-        dao.getById(null);
+    @Test
+    public void getById_InputNull_ShouldReturnNull(){
+        Order order = dao.getById(null);
         assertSelectCount(0);
+        assertNull(order);
     }
 
     @Test
@@ -137,14 +137,18 @@ public class OrderDbBasicTest {
         assertDeleteCount(1);
     }
 
-    @Test(expected = NoResultException.class)
-    public void deleteById_InputNonExistentId_ShouldThrowException(){
+    @Test
+    public void deleteById_InputNonExistentId_ShouldNotDeleteAnything(){
         dao.deleteById(4L);
+        assertSelectCount(1);
+        assertDeleteCount(0);
     }
 
-    @Test(expected = NoResultException.class)
-    public void deleteById_InputNull_ShouldThrowException(){
+    @Test
+    public void deleteById_InputNull_ShouldNotDeleteAnything(){
         dao.deleteById(null);
+        assertSelectCount(0);
+        assertDeleteCount(0);
     }
 
     @Test

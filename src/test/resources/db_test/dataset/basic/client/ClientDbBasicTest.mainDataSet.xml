@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
     <dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../xsd/dataset.xsd">
-        <clients id="1"/>
-        <clients id="2"/>
-        <clients id="3"/>
+        <clients id="1" name="Client1"/>
+        <clients id="2" name="Alex"/>
+        <clients id="3" name="Client2"/>
     </dataset>

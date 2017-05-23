@@ -36,11 +36,9 @@ public abstract class GenericDaoHibernateImpl <E, I extends Serializable> implem
 
 
 	@Override
-	public E getById(I id) throws NoResultException{
-		if(id == null) throw new NoResultException();
-		E entity = currentSession().get(daoType, id);
-		if (entity == null) throw new NoResultException();
-		return entity;
+	public E getById(I id){
+		if(id == null) return null;
+		return currentSession().get(daoType, id);
 	}
 
 	@Override
@@ -69,8 +67,7 @@ public abstract class GenericDaoHibernateImpl <E, I extends Serializable> implem
 	}
 
 	@Override
-	public void deleteById(I id) throws NoResultException{
-		if (id == null) throw new NoResultException();
+	public void deleteById(I id){
 		delete(getById(id));
 	}
 

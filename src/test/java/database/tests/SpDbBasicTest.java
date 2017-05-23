@@ -18,10 +18,8 @@ import sp.data.entities.Sp;
 import sp.data.entities.enumerators.SpStatus;
 import testservices.TestEntitiesCreationService;
 
-import javax.persistence.NoResultException;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.SortedSet;
 
 import static com.vladmihalcea.sql.SQLStatementCountValidator.*;
 import static org.junit.Assert.*;
@@ -73,10 +71,18 @@ public class SpDbBasicTest {
         assertEquals("", new Long(2), sp.getId());
     }
 
-    @Test(expected = NoResultException.class)
-    public void getById_InputNonexistentId_ShouldThrowException(){
-        dao.getById(4L);
+    @Test
+    public void getById_InputNonexistentId_ShouldReturnNull(){
+        Sp sp = dao.getById(4L);
         assertSelectCount(1);
+        assertNull(sp);
+    }
+
+    @Test
+    public void getById_InputNull_ShouldReturnNull(){
+        Sp sp = dao.getById(null);
+        assertSelectCount(0);
+        assertNull(sp);
     }
 
     @Test
@@ -127,6 +133,20 @@ public class SpDbBasicTest {
     }
 
     @Test
+    public void deleteById_InputNonexistentId_ShouldNotDeleteAnything(){
+        dao.deleteById(4L);
+        assertSelectCount(1);
+        assertDeleteCount(0);
+    }
+
+    @Test
+    public void deleteById_InputNull_ShouldNotDeleteAnything(){
+        dao.deleteById(null);
+        assertSelectCount(0);
+        assertDeleteCount(0);
+    }
+
+    @Test
     public void getLastNumber_ShouldReturnNumberOfLastSp() {
         assertEquals(new Long(3L), dao.getLastNumber());
         assertSelectCount(1);
@@ -151,7 +171,6 @@ public class SpDbBasicTest {
         assertEquals(new Long(1), ids.get(0));
         assertEquals(new Long(3), ids.get(1));
         assertEquals(new Long(5), ids.get(2));
-
     }
 
 }

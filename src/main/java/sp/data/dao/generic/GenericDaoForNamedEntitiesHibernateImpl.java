@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -60,7 +61,12 @@ public abstract class GenericDaoForNamedEntitiesHibernateImpl<E, I extends Seria
 		Query<E> query = currentSession().createQuery(criteriaQuery)
 						.setMaxResults(1)
 						.setCacheable(true);
-		return query.getSingleResult();
+		try {
+			return query.getSingleResult();
+		}catch (PersistenceException e){
+			return null;
+		}
+
 	}
 
 }

@@ -17,12 +17,10 @@ import sp.data.dao.interfaces.ClientDao;
 import sp.data.entities.Client;
 import testservices.TestEntitiesCreationService;
 
-import javax.persistence.NoResultException;
 import java.util.List;
 
 import static com.vladmihalcea.sql.SQLStatementCountValidator.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 
 @RunWith(UnitilsBlockJUnit4ClassRunner.class)
@@ -66,16 +64,18 @@ public class ClientDbBasicTest {
         assertEquals("", new Long(2), client.getId());
     }
 
-    @Test(expected = NoResultException.class)
-    public void getById_InputNonexistentId_ShouldThrowException(){
-        dao.getById(4L);
+    @Test
+    public void getById_InputNonexistentId_ShouldReturnNull(){
+        Client client = dao.getById(4L);
         assertSelectCount(1);
+        assertNull(client);
     }
 
-    @Test(expected = NoResultException.class)
-    public void getById_InputNull_ShouldThrowException(){
-        dao.getById(null);
+    @Test
+    public void getById_InputNull_ShouldReturnNull(){
+        Client client = dao.getById(null);
         assertSelectCount(0);
+        assertNull(client);
     }
 
     @Test
@@ -130,13 +130,82 @@ public class ClientDbBasicTest {
         assertDeleteCount(1);
     }
 
-    @Test(expected = NoResultException.class)
-    public void deleteById_InputNonExistentId_ShouldThrowException(){
+    @Test
+    public void deleteById_InputNonExistentId_ShouldNotDeleteAnything(){
         dao.deleteById(4L);
+        assertSelectCount(1);
+        assertDeleteCount(0);
     }
 
-    @Test(expected = NoResultException.class)
-    public void deleteById_InputNull_ShouldThrowException(){
+    @Test
+    public void deleteById_InputNull_ShouldNotDeleteAnything(){
         dao.deleteById(null);
+        assertSelectCount(0);
+        assertDeleteCount(0);
+    }
+
+    @Test
+    public void getByName_ShouldReturnClient(){
+        String name = "Client2";
+        Client client = dao.getByName(name);
+        assertSelectCount(1);
+        assertNotNull(client);
+        assertEquals(name, client.getName());
+    }
+
+    @Test
+    public void getByName_CaseInsensitiveName_ShouldReturnNull(){
+        Client client = dao.getByName("client2");
+        assertSelectCount(1);
+        assertNull(client);
+    }
+
+    @Test
+    public void getByName_NullName_ShouldReturnNull(){
+        Client client = dao.getByName(null);
+        assertSelectCount(0);
+        assertNull(client);
+    }
+
+    @Test
+    public void getByName_NonexistentName_ShouldReturnNull(){
+        String name = "Client3";
+        Client client = dao.getByName(name);
+        assertSelectCount(1);
+        assertNull(client);
+    }
+
+    @Test
+    public void searchByName_ShouldReturnListOfClients(){
+        List<Client> clients = dao.searchByName("lient");
+        assertSelectCount(1);
+        assertNotNull(clients);
+        assertEquals(2, clients.size());
+        assertEquals("Client1", clients.get(0).getName());
+        assertEquals("Client2", clients.get(1).getName());
+    }
+
+    @Test
+    public void searchByName_CaseInsensitiveName_ShouldReturnListOfClients(){
+        List<Client> clients = dao.searchByName("LieNt");
+        assertSelectCount(1);
+        assertNotNull(clients);
+        assertEquals(2, clients.size());
+        assertEquals("Client1", clients.get(0).getName());
+        assertEquals("Client2", clients.get(1).getName());
+    }
+
+    @Test
+    public void searchByName_NullName_ShouldReturnNull(){
+        List<Client> clients = dao.searchByName(null);
+        assertSelectCount(0);
+        assertNull(clients);
+    }
+
+    @Test
+    public void searchByName_NonexistentName_ShouldReturnEmptyListOfClients(){
+        List<Client> clients = dao.searchByName("Mark");
+        assertSelectCount(1);
+        assertEquals(0, clients.size());
     }
 }

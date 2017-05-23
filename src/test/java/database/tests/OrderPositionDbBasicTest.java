@@ -17,7 +17,6 @@ import sp.data.dao.interfaces.OrderPositionDao;
 import sp.data.entities.OrderPosition;
 import testservices.TestEntitiesCreationService;
 
-import javax.persistence.NoResultException;
 import java.util.List;
 
 import static com.vladmihalcea.sql.SQLStatementCountValidator.*;
@@ -66,16 +65,18 @@ public class OrderPositionDbBasicTest {
         assertEquals("", new Long(2), orderPosition.getId());
     }
 
-    @Test(expected = NoResultException.class)
-    public void getById_InputNonexistentId_ShouldThrowException(){
-        dao.getById(4L);
+    @Test
+    public void getById_InputNonexistentId_ShouldReturnNull(){
+        OrderPosition orderPosition = dao.getById(4L);
         assertSelectCount(1);
+        assertNull(orderPosition);
     }
 
-    @Test(expected = NoResultException.class)
-    public void getById_InputNull_ShouldThrowException(){
-        dao.getById(null);
+    @Test
+    public void getById_InputNull_ShouldReturnNull(){
+        OrderPosition orderPosition = dao.getById(null);
         assertSelectCount(0);
+        assertNull(orderPosition);
     }
 
     @Test
@@ -130,13 +131,16 @@ public class OrderPositionDbBasicTest {
         assertDeleteCount(1);
     }
 
-    @Test(expected = NoResultException.class)
-    public void deleteById_InputNonExistentId_ShouldThrowException(){
+    @Test
+    public void deleteById_InputNonExistentId_ShouldNotDeleteAnything(){
         dao.deleteById(4L);
+        assertSelectCount(1);
+        assertDeleteCount(0);
     }
 
-    @Test(expected = NoResultException.class)
-    public void deleteById_InputNull_ShouldThrowException(){
+    @Test
+    public void deleteById_InputNull_ShouldNotDeleteAnything(){
         dao.deleteById(null);
+        assertDeleteCount(0);
     }
 }

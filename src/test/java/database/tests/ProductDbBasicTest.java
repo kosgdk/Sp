@@ -17,7 +17,6 @@ import sp.data.dao.interfaces.ProductDao;
 import sp.data.entities.Product;
 import testservices.TestEntitiesCreationService;
 
-import javax.persistence.NoResultException;
 import java.util.List;
 
 import static com.vladmihalcea.sql.SQLStatementCountValidator.*;
@@ -68,16 +67,18 @@ public class ProductDbBasicTest {
         assertEquals(new Long(2), product.getId());
     }
 
-    @Test(expected = NoResultException.class)
-    public void getById_InputNonexistentId_ShouldThrowException(){
-        dao.getById(4L);
+    @Test
+    public void getById_InputNonexistentId_ShouldReturnNull(){
+        Product product = dao.getById(4L);
         assertSelectCount(1);
+        assertNull(product);
     }
 
-    @Test(expected = NoResultException.class)
-    public void getById_InputNull_ShouldThrowException(){
-        dao.getById(null);
+    @Test
+    public void getById_InputNull_ShouldReturnNull(){
+        Product product = dao.getById(null);
         assertSelectCount(0);
+        assertNull(product);
     }
 
     @Test
@@ -104,7 +105,7 @@ public class ProductDbBasicTest {
     @ExpectedDataSet("db_test/dataset/basic/product/ProductDbBasicTest.update_ShouldUpdateDb_ExpectedDataSet.xml")
     public void update_ShouldUpdateDb(){
         Product product = dao.getById(2L);
-        product.setName("TestName");
+        product.setName("NewTestName");
         dao.update(product);
         assertUpdateCount(1);
     }
@@ -132,13 +133,83 @@ public class ProductDbBasicTest {
         assertDeleteCount(1);
     }
 
-    @Test(expected = NoResultException.class)
-    public void deleteById_InputNonExistentId_ShouldThrowException(){
+    @Test
+    public void deleteById_InputNonExistentId_ShouldNotDeleteAnything(){
         dao.deleteById(4L);
+        assertSelectCount(1);
+        assertDeleteCount(0);
     }
 
-    @Test(expected = NoResultException.class)
-    public void deleteById_InputNull_ShouldThrowException(){
+    @Test
+    public void deleteById_InputNull_ShouldNotDeleteAnything(){
         dao.deleteById(null);
+        assertSelectCount(0);
+        assertDeleteCount(0);
+    }
+
+    @Test
+    public void getByName_ShouldReturnProduct(){
+        String name = "Product2";
+        Product product = dao.getByName(name);
+        assertSelectCount(1);
+        assertNotNull(product);
+        assertEquals(name, product.getName());
+    }
+
+    @Test
+    public void getByName_CaseInsensitiveName_ShouldReturnProduct(){
+        Product product = dao.getByName("product2");
+        assertSelectCount(1);
+        assertNotNull(product);
+        assertEquals("Product2", product.getName());
+    }
+
+    @Test
+    public void getByName_NullName_ShouldReturnNull(){
+        Product product = dao.getByName(null);
+        assertSelectCount(0);
+        assertNull(product);
+    }
+
+    @Test
+    public void getByName_NonexistentName_ShouldReturnNull(){
+        String name = "Product3";
+        Product product = dao.getByName(name);
+        assertSelectCount(1);
+        assertNull(product);
+    }
+
+    @Test
+    public void searchByName_ShouldReturnListOfProducts(){
+        List<Product> products = dao.searchByName("roduc");
+        assertSelectCount(1);
+        assertNotNull(products);
+        assertEquals(2, products.size());
+        assertEquals("Product1", products.get(0).getName());
+        assertEquals("Product2", products.get(1).getName());
+    }
+
+    @Test
+    public void searchByName_CaseInsensitiveName_ShouldReturnListOfProducts(){
+        List<Product> products = dao.searchByName("RodUc");
+        assertSelectCount(1);
+        assertNotNull(products);
+        assertEquals(2, products.size());
+        assertEquals("Product1", products.get(0).getName());
+        assertEquals("Product2", products.get(1).getName());
+    }
+
+    @Test
+    public void searchByName_NullName_ShouldReturnNull(){
+        List<Product> products = dao.searchByName(null);
+        assertSelectCount(0);
+        assertNull(products);
+    }
+
+    @Test
+    public void searchByName_NonexistentName_ShouldReturnEmptyListOfProducts(){
+        List<Product> products = dao.searchByName("foo");
+        assertSelectCount(1);
+        assertEquals(0, products.size());
     }
 }

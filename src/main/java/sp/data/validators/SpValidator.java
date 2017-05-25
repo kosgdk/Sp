@@ -6,7 +6,6 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import sp.data.entities.Order;
 import sp.data.entities.OrderPosition;
-import sp.data.entities.Product;
 import sp.data.entities.Sp;
 import sp.data.entities.enumerators.OrderStatus;
 import sp.data.entities.enumerators.SpStatus;
@@ -47,12 +46,9 @@ public class SpValidator implements Validator {
     public void validateSpStatus(Sp sp, Errors errors) {
         System.out.println("validateSpStatus()");
         Set<Order> orders = sp.getOrders();
-
         ArrayList<OrderStatus> ordersStatuses = new ArrayList<>();
         if (orders != null && !orders.isEmpty()) {
-            for (Order order : orders) {
-                ordersStatuses.add(order.getStatus());
-            }
+            orders.forEach(order -> ordersStatuses.add(order.getStatus()));
         } else{
             if (sp.getStatus() != SpStatus.COLLECTING)
                 errors.rejectValue("status", "sp.status.noOrders");

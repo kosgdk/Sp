@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import sp.data.dao.interfaces.PropertiesDao;
 import sp.data.entities.Properties;
 
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
 import java.math.BigDecimal;
 
 @Repository("PropertiesDaoHibernateImpl")
@@ -29,9 +31,11 @@ public class PropertiesDaoHibernateImpl implements PropertiesDao {
 		Query<Properties> query = sessionFactory.getCurrentSession().createQuery(hql, Properties.class)
 									.setMaxResults(1)
 									.setCacheable(true);
-		Properties properties = query.getSingleResult();
-
-		if (properties == null) {
+		Properties properties;
+		try{
+			properties = query.getSingleResult();
+		}catch (PersistenceException e){
+			System.out.println(e.getMessage());
 			properties = new Properties();
 			properties.setPercentSp(new BigDecimal(0.15));
 			properties.setPercentDiscount(new BigDecimal(0.03));

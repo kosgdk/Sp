@@ -16,7 +16,6 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.validation.Errors;
 import sp.data.entities.Order;
 import sp.data.entities.OrderPosition;
-import sp.data.entities.Product;
 import sp.data.entities.Sp;
 import sp.data.entities.enumerators.OrderStatus;
 import sp.data.entities.enumerators.SpStatus;
@@ -29,8 +28,10 @@ import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.*;
 
-import static org.junit.Assert.*;
-import static org.junit.Assume.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeFalse;
+import static org.junit.Assume.assumeTrue;
 import static org.mockito.Mockito.*;
 
 
@@ -38,17 +39,10 @@ import static org.mockito.Mockito.*;
 @ContextConfiguration("classpath:applicationContext_ForTests.xml")
 public class SpValidatorTest extends AbstractJUnit4SpringContextTests {
 
-    @Mock
-    Sp sp;
-
-    @Mock
-    Order order1;
-
-    @Mock
-    Order order2;
-
-    @Mock
-    Errors errors;
+    @Mock Sp sp;
+    @Mock Order order1;
+    @Mock Order order2;
+    @Mock Errors errors;
 
     @InjectMocks
     @Resource(name = "SpValidator")
@@ -56,14 +50,11 @@ public class SpValidatorTest extends AbstractJUnit4SpringContextTests {
 
     @Before
     public void setUp() throws Exception {
-        // Initialize Spring context
         TestContextManager testContextManager = new TestContextManager(getClass());
         testContextManager.prepareTestInstance(this);
 
-        // Initialize mocks
         MockitoAnnotations.initMocks(this);
 
-        // Prepare mocks behavior
         when(sp.getOrders()).thenReturn(new HashSet<>(Arrays.asList(order1, order2)));
     }
 

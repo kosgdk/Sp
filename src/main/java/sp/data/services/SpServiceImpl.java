@@ -2,10 +2,8 @@ package sp.data.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import sp.data.dao.interfaces.SpDao;
 import sp.data.entities.Order;
-import sp.data.entities.OrderPosition;
 import sp.data.entities.Sp;
 import sp.data.entities.enumerators.OrderStatus;
 import sp.data.entities.enumerators.SpStatus;
@@ -16,7 +14,9 @@ import sp.data.services.interfaces.ProductService;
 import sp.data.services.interfaces.SpService;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service("SpService")
 public class SpServiceImpl extends GenericServiceImpl<Sp, Long> implements SpService {
@@ -78,7 +78,7 @@ public class SpServiceImpl extends GenericServiceImpl<Sp, Long> implements SpSer
 						System.out.println("updateStatuses()");
 						orderService.updateStatuses(sp, OrderStatus.ARRIVED);
                     }
-                    if (sp.getDeliveryPrice() != null && sp.getDeliveryPrice().compareTo(BigDecimal.ZERO) > 0){
+                    if (sp.getDeliveryPrice() != null && sp.getDeliveryPrice().compareTo(BigDecimal.ZERO) >= 0){
 						System.out.println("calculateDeliveryPriceForOrders()");
 						calculateDeliveryPriceForOrders(sp);
                     }
@@ -109,6 +109,5 @@ public class SpServiceImpl extends GenericServiceImpl<Sp, Long> implements SpSer
         }
 
     }
-
 
 }

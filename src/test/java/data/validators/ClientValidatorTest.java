@@ -11,11 +11,14 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.validation.Errors;
 import sp.data.entities.Client;
+import sp.data.entities.Order;
 import sp.data.services.interfaces.ClientService;
 import sp.data.validators.ClientValidator;
 
 import javax.annotation.Resource;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 
@@ -34,7 +37,7 @@ public class ClientValidatorTest extends AbstractJUnit4SpringContextTests {
 
     @InjectMocks
     @Resource(name = "ClientValidator")
-    ClientValidator validator;
+    ClientValidator clientValidator;
 
     @Before
     public void setUp() {
@@ -46,7 +49,7 @@ public class ClientValidatorTest extends AbstractJUnit4SpringContextTests {
     public void validate_InputUniqueName_ShouldNotCauseErrors() {
         when(client.getName()).thenReturn("UniqueName");
         when(service.getByName("UniqueName")).thenReturn(null);
-        validator.validate(client, errors);
+        clientValidator.validate(client, errors);
         verify(errors, never()).rejectValue("name", "client.name.notUnique");
     }
 
@@ -54,8 +57,23 @@ public class ClientValidatorTest extends AbstractJUnit4SpringContextTests {
     public void validate_InputNonUniqueName_ShouldCauseErrors() {
         when(client.getName()).thenReturn("NonUniqueName");
         when(service.getByName("NonUniqueName")).thenReturn(new Client());
-        validator.validate(client, errors);
+        clientValidator.validate(client, errors);
         verify(errors, times(1)).rejectValue("name", "client.name.notUnique");
+    }
+
+    @Test
+    public void supports_UnsupportedClass_ShouldReturnFalse() throws Exception {
+        assertFalse(clientValidator.supports(Order.class));
+    }
+
+    @Test
+    public void supports_null_ShouldReturnFalse() throws Exception {
+        assertFalse(clientValidator.supports(null));
+    }
+
+    @Test
+    public void supports_SupportedClass_ShouldReturnTrue() throws Exception {
+        assertTrue(clientValidator.supports(Client.class));
     }
 
 }

@@ -1,6 +1,5 @@
 package data.converters;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +29,8 @@ public class StringToDateConverterTest extends AbstractJUnit4SpringContextTests 
     }
 
     @Test
-    @Ignore
-    public void convert_InputInvalidValue_ShouldThrowException() {
-        //TODO: write test convert_InputInvalidValue_ShouldThrowException
+    public void convert_InputInvalidValue_ShouldReturnNull() {
+        assertEquals(null, converter.convert("2017a-02-50"));
     }
 
 }

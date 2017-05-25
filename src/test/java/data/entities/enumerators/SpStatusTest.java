@@ -6,6 +6,7 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import sp.data.entities.enumerators.SpStatus;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 
 @RunWith(BlockJUnit4ClassRunner.class)
@@ -41,10 +42,27 @@ public class SpStatusTest {
     }
 
     @Test
+    public void getById_NonexistentId_ShouldReturnNull(){
+        SpStatus spStatus = SpStatus.getById(20);
+        assertNull(spStatus);
+    }
+
+    @Test
     public void getByName_ShouldReturnAppropriateInstance(){
         for (int i = 0; i < spStatuses.length; i++) {
             assertEquals("i = " + i, SpStatus.getByName(names[i]), spStatuses[i]);
         }
     }
 
+    @Test
+    public void getByName_NullName_ShouldReturnNull(){
+        SpStatus spStatus = SpStatus.getByName(null);
+        assertNull(spStatus);
+    }
+
+    @Test
+    public void getByName_NonexistentName_ShouldReturnNull(){
+        SpStatus spStatus = SpStatus.getByName("InvalidName");
+        assertNull(spStatus);
+    }
 }

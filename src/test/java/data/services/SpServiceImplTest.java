@@ -10,6 +10,7 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContextManager;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
@@ -105,8 +106,7 @@ public class SpServiceImplTest extends AbstractJUnit4SpringContextTests {
         Order order2;
 
         @Mock
-        OrderPositionService orderPositionService
-                ;
+        OrderPositionService orderPositionService;
 
         @Override
         public void setUp() throws Exception {
@@ -134,7 +134,7 @@ public class SpServiceImplTest extends AbstractJUnit4SpringContextTests {
 
             spService.calculateDeliveryPriceForOrders(sp);
 
-            verify(order1).setDeliveryPrice(new BigDecimal(19));
+            verify(order1).setDeliveryPrice(new BigDecimal(18));
             verify(order2).setDeliveryPrice(new BigDecimal(472));
 
         }
@@ -144,14 +144,14 @@ public class SpServiceImplTest extends AbstractJUnit4SpringContextTests {
     @RunWith(FaultTolerantTheoriesRunner.class)
     public static class ProcessOrdersStatusesTests extends SpServiceImplTest{
 
-        @Mock
-        Order order1;
+        @Mock Order order1;
+        @Mock Order order2;
+        @Mock OrderService orderService;
 
-        @Mock
-        Order order2;
-
-        @Mock
-        OrderService orderService;
+        @Spy
+        @InjectMocks
+        @Resource(name = "SpService")
+        SpService spService;
 
         @Before
         public void setUp() throws Exception {
@@ -225,7 +225,7 @@ public class SpServiceImplTest extends AbstractJUnit4SpringContextTests {
         }
 
         @Theory
-        public void processOrdersStatuses_SpStatusArrived_OrdersHasSuitableStatuses_ShouldUpdateStatuses(OrderStatus orderStatus1, OrderStatus orderStatus2) {
+        public void processOrdersStatuses_SpStatusIsARRIVED_OrdersHasSuitableStatuses_ShouldUpdateStatuses(OrderStatus orderStatus1, OrderStatus orderStatus2) {
             assumeTrue(orderStatus1 == OrderStatus.SENT && orderStatus2 == OrderStatus.SENT);
             printTestParameters(orderStatus1, orderStatus2);
 
@@ -239,7 +239,7 @@ public class SpServiceImplTest extends AbstractJUnit4SpringContextTests {
         }
 
         @Theory
-        public void processOrdersStatuses_SpStatusArrived_OrdersHasUnsuitableStatuses(OrderStatus orderStatus1, OrderStatus orderStatus2) {
+        public void processOrdersStatuses_SpStatusIsARRIVED_OrdersHasUnsuitableStatuses(OrderStatus orderStatus1, OrderStatus orderStatus2) {
             assumeFalse(orderStatus1 == OrderStatus.SENT && orderStatus2 == OrderStatus.SENT);
             printTestParameters(orderStatus1, orderStatus2);
 
@@ -250,6 +250,26 @@ public class SpServiceImplTest extends AbstractJUnit4SpringContextTests {
             spService.processOrdersStatuses(sp);
 
             verify(orderService, never()).updateStatuses(eq(sp), any(OrderStatus.class));
+        }
+
+        @Test
+        public void processOrdersStatuses_SpStatusIsARRIVED_DeliveryPriseIsNull_ShouldNotCalculateDeliveryPriceForOrder() {
+            when(sp.getStatus()).thenReturn(SpStatus.ARRIVED);
+            when(sp.getDeliveryPrice()).thenReturn(null);
+            doNothing().when(spService).calculateDeliveryPriceForOrders(sp);
+            spService.processOrdersStatuses(sp);
+
+            verify(spService, never()).calculateDeliveryPriceForOrders(sp);
+        }
+
+        @Test
+        public void processOrdersStatuses_SpStatusIsARRIVED_DeliveryPriseIsNotNull_ShouldCalculateDeliveryPriceForOrder() {
+            when(sp.getStatus()).thenReturn(SpStatus.ARRIVED);
+            when(sp.getDeliveryPrice()).thenReturn(new BigDecimal(100));
+            doNothing().when(spService).calculateDeliveryPriceForOrders(sp);
+            spService.processOrdersStatuses(sp);
+
+            verify(spService, times(1)).calculateDeliveryPriceForOrders(sp);
         }
 
         @Test

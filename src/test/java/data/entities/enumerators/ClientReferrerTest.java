@@ -5,7 +5,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import sp.data.entities.enumerators.ClientReferrer;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 
 @RunWith(BlockJUnit4ClassRunner.class)
@@ -41,10 +42,27 @@ public class ClientReferrerTest {
     }
 
     @Test
+    public void getById_NonexistentId_ShouldReturnNull(){
+        ClientReferrer clientReferrer = ClientReferrer.getById(20);
+        assertNull(clientReferrer);
+    }
+
+    @Test
     public void getByName_ShouldReturnAppropriateInstance(){
         for (int i = 0; i < clientReferrers.length; i++) {
             assertEquals("i = " + i, ClientReferrer.getByName(names[i]), clientReferrers[i]);
         }
     }
 
+    @Test
+    public void getByName_NullName_ShouldReturnNull(){
+        ClientReferrer clientReferrer = ClientReferrer.getByName(null);
+        assertNull(clientReferrer);
+    }
+
+    @Test
+    public void getByName_NonexistentName_ShouldReturnNull(){
+        ClientReferrer clientReferrer = ClientReferrer.getByName("InvalidName");
+        assertNull(clientReferrer);
+    }
 }

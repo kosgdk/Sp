@@ -1,13 +1,8 @@
 package testsuits;
 
-import data.services.ClientServiceImplTest;
-import data.services.OrderServiceImplTest;
-import data.services.PropertiesServiceImplTest;
-import data.services.SpServiceImplTest;
+import data.services.*;
 import data.services.generic.GenericServiceForNamedEntitiesImplTest;
 import data.services.generic.GenericServiceImplTest;
-import data.validators.ClientValidatorTest;
-import data.validators.OrderValidatorTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -18,6 +13,7 @@ import org.junit.runners.Suite;
         GenericServiceImplTest.class,
         ClientServiceImplTest.class,
         OrderServiceImplTest.class,
+		OrderPositionServiceImplTest.class,
         PropertiesServiceImplTest.class,
         SpServiceImplTest.class
 })

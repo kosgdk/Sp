@@ -26,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(UnitilsBlockJUnit4ClassRunner.class)
 @SpringApplicationContext("applicationContext_ForTests_DisabledBeanValidation.xml")
 @Transactional(value=TransactionMode.DISABLED)
-@DataSet("db_test/dataset/basic/properties/ProductDbBasicTest.mainDataSet.xml")
+@DataSet("db_test/dataset/basic/properties/PropertiesDbBasicTest.mainDataSet.xml")
 public class PropertiesDbBasicTest {
 
     @SpringBeanByType
@@ -40,6 +40,18 @@ public class PropertiesDbBasicTest {
         DatabaseUnitils.updateSequences();
     }
 
+    @Test
+    @DataSet("db_test/dataset/basic/properties/PropertiesDbBasicTest.getProperties_NoPropertiesInDatabase_ShouldReturnDefaultProperties.xml")
+    @ExpectedDataSet("db_test/dataset/basic/properties/PropertiesDbBasicTest.getProperties_NoPropertiesInDatabase_ShouldReturnDefaultProperties_ExpectedDataset.xml")
+    public void getProperties_PersistenceException_ShouldReturnDefaultPropertiesAndSaveThem(){
+        Properties properties = dao.getProperties();
+        assertSelectCount(1);
+        assertInsertCount(1);
+        assertEquals("percentSp", new BigDecimal(0.15).setScale(2, BigDecimal.ROUND_HALF_UP), properties.getPercentSp());
+        assertEquals("percentDiscount", new BigDecimal(0.03).setScale(2, BigDecimal.ROUND_HALF_UP), properties.getPercentDiscount());
+        assertEquals("percentBankCommission", new BigDecimal(0.01).setScale(2, BigDecimal.ROUND_HALF_UP), properties.getPercentBankCommission());
+
+    }
 
     @Test
     public void allColumnsCanBeWrittenAndRead() {
@@ -55,7 +67,7 @@ public class PropertiesDbBasicTest {
     }
 
     @Test
-    @ExpectedDataSet("db_test/dataset/basic/properties/ProductDbBasicTest.save_ShouldWriteToDb_ExpectedDataSet.xml")
+    @ExpectedDataSet("db_test/dataset/basic/properties/PropertiesDbBasicTest.save_ShouldWriteToDb_ExpectedDataSet.xml")
     public void save_ShouldWriteToDb(){
         Properties properties = new Properties();
         dao.save(properties);
@@ -63,7 +75,7 @@ public class PropertiesDbBasicTest {
     }
 
     @Test
-    @ExpectedDataSet("db_test/dataset/basic/properties/ProductDbBasicTest.update_ShouldUpdateDb_ExpectedDataSet.xml")
+    @ExpectedDataSet("db_test/dataset/basic/properties/PropertiesDbBasicTest.update_ShouldUpdateDb_ExpectedDataSet.xml")
     public void update_ShouldUpdateDb(){
         Properties properties = dao.getProperties();
         properties.setPercentSp(new BigDecimal(0.11));

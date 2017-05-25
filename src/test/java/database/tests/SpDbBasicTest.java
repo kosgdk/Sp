@@ -162,6 +162,14 @@ public class SpDbBasicTest {
     }
 
     @Test
+    public void getLastSp_ShouldReturnLastSp(){
+        Sp sp = dao.getLastSp();
+        assertNotNull(sp);
+        assertEquals(new Long(3), sp.getId());
+
+    }
+
+    @Test
     @DataSet("db_test/dataset/basic/sp/SpDbBasicTest.getIdsByStatus_ShouldReturnSetOfIds.xml")
     public void getIdsByStatus_ShouldReturnSetOfIds() {
         List<Long> ids = dao.getIdsByStatus(SpStatus.COLLECTING, SpStatus.PACKING, SpStatus.SENT, SpStatus.DISTRIBUTING);

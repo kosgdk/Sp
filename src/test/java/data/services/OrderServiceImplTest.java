@@ -23,6 +23,7 @@ import sp.data.services.interfaces.SpService;
 import testservices.FaultTolerantTheoriesRunner;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -55,11 +56,6 @@ public class OrderServiceImplTest extends AbstractJUnit4SpringContextTests {
     @RunWith(BlockJUnit4ClassRunner.class)
     public static class OtherTests extends OrderServiceImplTest{
 
-        @Before
-        public void setUp() throws Exception {
-            super.setUp();
-        }
-
         @Test
         public void getByIdWithAllChildren_ShouldCallCorrespondingMethodInDao(){
             orderService.getByIdWithAllChildren(1L);
@@ -72,24 +68,51 @@ public class OrderServiceImplTest extends AbstractJUnit4SpringContextTests {
             orderService.updateStatuses(sp, OrderStatus.COMPLETED);
             verify(orderDao, times(1)).updateStatuses(sp, OrderStatus.COMPLETED);
         }
-
     }
 
-
     @RunWith(FaultTolerantTheoriesRunner.class)
-    public static class processSpStatusTests extends OrderServiceImplTest{
+    public static class processStatusTests extends OrderServiceImplTest{
 
         @Mock
         Order order;
 
-        @Mock
-        Order order2;
+        @DataPoints
+        public static OrderStatus[] orderStatuses() {
+            return OrderStatus.values();
+        }
 
-        @Mock
-        Sp sp;
+        @Test
+        public void processStatus_OrderStatusIsUNPAID_PrepaidIsGreaterThan0_ShouldChangeOrderStatus(){
+            when(order.getStatus()).thenReturn(OrderStatus.UNPAID);
+            when(order.getPrepaid()).thenReturn(BigDecimal.ONE);
+            orderService.processStatus(order);
+            verify(order, times(1)).setStatus(OrderStatus.PAID);
+        }
 
-        @Mock
-        SpService spService;
+        @Test
+        public void processStatus_OrderStatusIsUNPAID_PrepaidEquals0_ShouldNotChangeOrderStatus(){
+            when(order.getStatus()).thenReturn(OrderStatus.UNPAID);
+            when(order.getPrepaid()).thenReturn(BigDecimal.ZERO);
+            orderService.processStatus(order);
+            verify(order, never()).setStatus(any());
+        }
+
+        @Theory
+        public void processStatus_OrderHasUnsuitableStatus_ShouldNotChangeOrderStatus(OrderStatus orderStatus){
+            assumeFalse(orderStatus.equals(OrderStatus.UNPAID));
+            when(order.getStatus()).thenReturn(orderStatus);
+            orderService.processStatus(order);
+            verify(order, never()).setStatus(any());
+        }
+    }
+
+    @RunWith(FaultTolerantTheoriesRunner.class)
+    public static class processSpStatusTests extends OrderServiceImplTest{
+
+        @Mock Order order;
+        @Mock Order order2;
+        @Mock Sp sp;
+        @Mock SpService spService;
 
         @DataPoints
         public static OrderStatus[] orderStatuses() {

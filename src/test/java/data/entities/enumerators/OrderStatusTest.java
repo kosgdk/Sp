@@ -5,7 +5,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import sp.data.entities.enumerators.OrderStatus;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 
 @RunWith(BlockJUnit4ClassRunner.class)
@@ -41,10 +42,29 @@ public class OrderStatusTest {
     }
 
     @Test
+    public void getById_NonexistentId_ShouldReturnNull(){
+        OrderStatus orderStatus = OrderStatus.getById(20);
+        assertNull(orderStatus);
+    }
+
+    @Test
     public void getByName_ShouldReturnAppropriateInstance(){
         for (int i = 0; i < orderStatuses.length; i++) {
             assertEquals("i = " + i, OrderStatus.getByName(names[i]), orderStatuses[i]);
         }
     }
+
+    @Test
+    public void getByName_NullName_ShouldReturnNull(){
+        OrderStatus orderStatus = OrderStatus.getByName(null);
+        assertNull(orderStatus);
+    }
+
+    @Test
+    public void getByName_NonexistentName_ShouldReturnNull(){
+        OrderStatus orderStatus = OrderStatus.getByName("InvalidName");
+        assertNull(orderStatus);
+    }
+
 
 }

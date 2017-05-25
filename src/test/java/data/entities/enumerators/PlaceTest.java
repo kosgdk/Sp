@@ -6,6 +6,7 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import sp.data.entities.enumerators.Place;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 
 @RunWith(BlockJUnit4ClassRunner.class)
@@ -41,10 +42,27 @@ public class PlaceTest {
     }
 
     @Test
+    public void getById_NonexistentId_ShouldReturnNull(){
+        Place place = Place.getById(20);
+        assertNull(place);
+    }
+
+    @Test
     public void getByName_ShouldReturnAppropriateInstance(){
         for (int i = 0; i < places.length; i++) {
             assertEquals("i = " + i, Place.getByName(names[i]), places[i]);
         }
     }
 
+    @Test
+    public void getByName_NullName_ShouldReturnNull(){
+        Place place = Place.getByName(null);
+        assertNull(place);
+    }
+
+    @Test
+    public void getByName_NonexistentName_ShouldReturnNull(){
+        Place place = Place.getByName("InvalidName");
+        assertNull(place);
+    }
 }

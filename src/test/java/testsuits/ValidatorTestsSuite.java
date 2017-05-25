@@ -1,8 +1,6 @@
 package testsuits;
 
-import data.validators.ClientValidatorTest;
-import data.validators.OrderValidatorTest;
-import data.validators.SpValidatorTest;
+import data.validators.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -11,7 +9,9 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
         ClientValidatorTest.class,
         OrderValidatorTest.class,
-        SpValidatorTest.class
+        SpValidatorTest.class,
+		OrderPositionValidatorTest.class,
+		ZeroWeightOrderPositionsFormValidatorTest.class
 })
 public class ValidatorTestsSuite {
 

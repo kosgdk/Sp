@@ -1,8 +1,5 @@
 package sp.data.entities.enumerators;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 public enum OrderStatus {
 	UNPAID(1),
 	PAID(2),
@@ -45,14 +42,6 @@ public enum OrderStatus {
 			if (status.toString().equals(name)) return status;
 		}
 		return null;
-	}
-
-	public static Map<Integer, String> getAllAsMap(){
-		Map<Integer, String> statuses = new LinkedHashMap<>();
-		for (OrderStatus status : OrderStatus.values()) {
-			statuses.put(status.getId(), status.toString());
-		}
-		return statuses;
 	}
 
 	@Override

@@ -1,8 +1,5 @@
 package sp.data.entities.enumerators;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 public enum ClientReferrer {
 	FORUM(1),
 	VK(2),
@@ -39,14 +36,6 @@ public enum ClientReferrer {
 			if (clientReferrer.toString().equals(name)) return clientReferrer;
 		}
 		return null;
-	}
-
-	public static Map<Integer, String> getAllAsMap(){
-		Map<Integer, String> statuses = new LinkedHashMap<>();
-		for (ClientReferrer status : ClientReferrer.values()) {
-			statuses.put(status.getId(), status.toString());
-		}
-		return statuses;
 	}
 
 	@Override

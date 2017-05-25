@@ -13,6 +13,8 @@ public interface OrderService extends GenericService<Order, Long> {
 
     void processSpStatus(Order order);
 
-    // TODO: add deleteById(List<Integer> ids)
+	void processStatus(Order order);
+
+	// TODO: add deleteById(List<Integer> ids)
 
 }

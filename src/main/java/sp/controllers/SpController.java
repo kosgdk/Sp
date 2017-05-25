@@ -2,8 +2,10 @@ package sp.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.WebDataBinder;
@@ -19,21 +21,22 @@ import sp.data.validators.SpValidator;
 import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 @Controller
 @SessionAttributes(value = {"spStatuses"})
 public class SpController {
 
-	@ModelAttribute("spStatuses")
-	public List<SpStatus> getSpStatusesEnum(){
-		return Arrays.asList(SpStatus.values());
-	}
+	@Autowired SpService spService;
+	@Autowired OrderService orderService;
+	@Autowired ClientService clientService;
+	@Autowired ProductService productService;
+	@Autowired OrderPositionService orderPositionService;
 
-	@Autowired
-	Validator validator;
+	@Autowired Validator validator;
+	@Autowired SpValidator spValidator;
 
-	@Autowired
-	SpValidator spValidator;
+	@Autowired private MessageSource messageSource;
 
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
@@ -41,21 +44,10 @@ public class SpController {
 		binder.registerCustomEditor(String.class, new StringTrimmerEditor(true)); // Converts empty strings into null when a form is submitted
 	}
 
-	@Autowired
-	ProductService productService;
-
-	@Autowired
-	ClientService clientService;
-
-	@Autowired
-	SpService spService;
-
-	@Autowired
-	OrderService orderService;
-
-	@Autowired
-	OrderPositionService orderPositionService;
-
+	@ModelAttribute("spStatuses")
+	public List<SpStatus> getSpStatusesEnum(){
+		return Arrays.asList(SpStatus.values());
+	}
 
 	// Переход на страницу создания СП
 	@RequestMapping("/createsp")
@@ -76,11 +68,11 @@ public class SpController {
 		sp.setStatus(SpStatus.COLLECTING);
 		spService.save(sp);
 		model.addAttribute("sp", sp);
-		return "forward:/sp/" + sp.getId();
+		return "redirect:/sp/" + sp.getId();
 	}
 
 	// Переход на страницу СП
-	@RequestMapping(value="/sp/{spId}")
+	@RequestMapping(value="/sp/{spId}", method = RequestMethod.GET)
 	public String pageSp(@PathVariable Long spId,
 						 @RequestParam(name = "newClientName", required = false) String newClientName,
 						 Model model) {
@@ -90,18 +82,16 @@ public class SpController {
 			Sp sp = spService.getByIdWithAllChildren(spId);
 			if (sp == null){
 				model.addAttribute("message", "СП не найдено.");
-				return "404";
+				return "error";
 			}
 			model.addAttribute("sp", sp);
 		}
-		Sp sp = (Sp) model.asMap().get("sp");
 
 		if(!model.containsAttribute("order")){
 			model.addAttribute("order", new Order());
 		}
 
 		model.addAttribute("SpStatuses", Arrays.asList(SpStatus.values()));
-		model.addAttribute("currentSpStatus", sp.getStatus());
 
 		if (newClientName != null){
 			model.addAttribute("newClientName", newClientName);
@@ -119,6 +109,8 @@ public class SpController {
 
 		sp.setOrders(spService.getById(spId).getOrders());
 
+		System.out.println("spStatus = " + sp.getStatus());
+
 		spValidator.validate(sp, errors);
 		if (errors.hasErrors()){
 			redirectAttributes.addFlashAttribute("sp", sp);
@@ -126,8 +118,37 @@ public class SpController {
 			return "redirect:/sp/" + spId;
 		}
 
-        spService.processOrdersStatuses(sp);
         spService.update(sp);
+        spService.processOrdersStatuses(sp);
+
+		return "redirect:/sp/" + spId;
+	}
+
+	// Обработка запроса на смену статуса СП
+	@RequestMapping(value="/sp/{spId}", params = {"action=change_status"}, method = RequestMethod.GET)
+	public String changeSpStatus(@PathVariable("spId") Long spId,
+								 RedirectAttributes redirectAttributes,
+								 Locale locale) {
+		System.out.println("Inside changeSpStatus()");
+
+		Sp sp = spService.getById(spId);
+
+		SpStatus spStatus = sp.getStatus();
+		if (!spStatus.equals(SpStatus.COMPLETED)) sp.setStatus(SpStatus.getById(spStatus.getId() + 1));
+		else return "redirect:/sp/" + spId;
+
+		Errors errors = new BeanPropertyBindingResult(sp, "sp");
+		spValidator.validateSpStatus(sp, errors);
+
+		if (errors.hasFieldErrors("status")){
+//			redirectAttributes.addFlashAttribute("sp", sp);
+			String errorMessage = messageSource.getMessage(errors.getFieldError("status").getCode(), null, null, locale);
+			redirectAttributes.addFlashAttribute("statusError", errorMessage);
+			return "redirect:/sp/" + spId;
+		}
+
+		spService.update(sp);
+		spService.processOrdersStatuses(sp);
 
 		return "redirect:/sp/" + spId;
 	}

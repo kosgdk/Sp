@@ -51,7 +51,7 @@
 									<spring:bind path="${field}">
 										<c:set var="errorMessage" value="${status.errorMessage}"/>
 										<div class="form-group no-vmargin <c:if test='${status.errors.hasFieldErrors(field)}'>has-error</c:if>" style="width:80px;">
-											<form:input path="${field}" id="${field}" cssClass="form-control decimal red-tooltip" type="number" min="-1" data-toggle="tooltip" title="${errorMessage}" data-placement="right"/>
+											<form:input path="${field}" id="${field}" cssClass="form-control decimal red-tooltip" type="number" min="0" data-toggle="tooltip" title="${errorMessage}" data-placement="right"/>
 										</div>
 									</spring:bind>
 								</td>

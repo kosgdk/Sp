@@ -1,19 +1,16 @@
 package sp.data.entities;
 
-import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Entity
 @Table(name="order_position")
@@ -26,58 +23,62 @@ public class OrderPosition {
 	@Column(name="id")
 	private Long id;
 
-	@NotNull
+	@NotNull(message = "{orderPosition.order.isNull}")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="order_id")
 	private Order order;
 
-	@NotNull(message = "{orderPosition.product.isEmpty}")
-	@ManyToOne(fetch = FetchType.EAGER/*, cascade = CascadeType.ALL*/)
+	@NotNull(message = "{orderPosition.product.isNull}")
+	@ManyToOne(fetch = FetchType.EAGER)
 	@Fetch(FetchMode.JOIN)
 	@JoinColumn(name="product_id")
 	private Product product;
 
-	@NotNull
-	@Min(0)
+	@NotNull(message = "{orderPosition.priceOrdered.isNull}")
+	@Min(value = 0, message = "{orderPosition.priceOrdered.outOfBounds}")
 	@Column(name="price_ordered")
 	private BigDecimal priceOrdered;
 
-	@NotNull
-	@Min(0)
+	@NotNull(message = "{orderPosition.priceVendor.isNull}")
+	@Min(value = 0, message = "{orderPosition.priceVendor.outOfBounds}")
 	@Column(name="price_vendor")
 	private BigDecimal priceVendor;
 
-	@NotNull(message = "{orderPosition.priceSp.invalid}")
-	@Min(value = 0, message = "{orderPosition.priceSp.invalid}")
+	@NotNull(message = "{orderPosition.priceSp.isNull}")
+	@Min(value = 0, message = "{orderPosition.priceSp.outOfBounds}")
 	@Column(name="price_sp")
 	private BigDecimal priceSp;
 
-	@NotNull
-	@Min(1)
+	@NotNull(message = "{orderPosition.quantity.isNull}")
+	@Min(value = 1, message = "{orderPosition.quantity.outOfBounds}")
 	@Column(name="quantity")
 	private Integer quantity = 1;
 
-	@Size(max = 500)
+	@Size(max = 500, message = "{orderPosition.note.outOfBounds}")
 	@Column(name="note")
 	private String note;
 
-	@NotNull(message = "{order.weight.isEmpty}")
-	@Min(value = 0, message = "{order.weight.negative}")
+	@NotNull(message = "{orderPosition.productWeight.isNull}")
+	@Min(value = 0, message = "{orderPosition.productWeight.outOfBounds}")
 	@Column(name = "product_weight")
 	private Integer productWeight = 0;
 
+
 	@Transient
+	@NotNull(message = "{orderPosition.priceSpSummary.isNull}")
+	@Min(value = 0, message = "{orderPosition.priceSpSummary.outOfBounds}")
 	private BigDecimal priceSpSummary = new BigDecimal(0);
-	
+
 	@Transient
+	@NotNull(message = "{orderPosition.income.isNull}")
 	private BigDecimal income = new BigDecimal(0);
 
 	@Transient
+	@NotNull(message = "{orderPosition.weight.isNull}")
 	private int weight = 0;
 
 
-	public OrderPosition() {
-	}
+	public OrderPosition() {}
 
 
 	private void calculateIncome(){
@@ -93,7 +94,7 @@ public class OrderPosition {
 	}
 
 	private void calculateWeight() {
-		weight = productWeight * quantity;
+		if (productWeight != null && quantity != null) weight = productWeight * quantity;
 	}
 
 
@@ -195,7 +196,7 @@ public class OrderPosition {
 				", priceSpSummary=" + priceSpSummary +
 				", income=" + income +
 				", weight=" + weight +
-				", note='" + note +
+				", note=" + note +
 				'}';
 	}
 }

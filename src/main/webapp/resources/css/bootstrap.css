@@ -1835,6 +1835,11 @@ table td[class*="col-"], table th[class*="col-"] {
     }
 }
 
+/*kos.gdk*/
+td.wrapable {
+    word-break: break-all;
+}
+
 fieldset {
     padding: 0;
     margin: 0;
@@ -5283,7 +5288,7 @@ button.close {
     top: 0;
     right: 0;
     bottom: 0;
-    left: 0;
+    left: 50%;
     z-index: 1050;
     -webkit-overflow-scrolling: touch;
     outline: 0
@@ -5315,12 +5320,6 @@ button.close {
     position: relative;
     width: auto;
     margin: 10px;
-
-    /* kos.gdk */
-    display: table;
-    overflow-y: auto;
-    overflow-x: auto;
-    min-width: 300px;
 }
 
 .modal-content {
@@ -5334,6 +5333,31 @@ button.close {
     -webkit-background-clip: padding-box;
     background-clip: padding-box;
     outline: 0
+}
+
+/*kos.gdk*/
+.vertical-alignment-helper {
+    display:table;
+    height: 100%;
+    width: 100%;
+    pointer-events:none;
+}
+
+/*kos.gdk*/
+.vertical-align-center {
+    display: table-cell;
+    vertical-align: middle;
+    pointer-events:none;
+}
+
+/*kos.gdk*/
+.modal-content {
+    /* Bootstrap sets the size of the modal in the modal-dialog class, we need to inherit it */
+    width:inherit;
+    height:inherit;
+    /* To center horizontally */
+    margin: 0 auto;
+    pointer-events: all;
 }
 
 .modal-backdrop {
@@ -5404,6 +5428,7 @@ button.close {
 
 @media (min-width: 768px) {
     .modal-dialog {
+        vertical-align: middle;
         width: auto;
         margin: 100px auto;
 
@@ -5415,7 +5440,8 @@ button.close {
     }
 
     .modal-sm {
-        width: 300px
+        width: 400px;
+        margin-left: -200px;
     }
 }
 
@@ -5545,7 +5571,9 @@ button.close {
 
 /*kos.gdk*/
 .red-tooltip + .tooltip > .tooltip-inner {background-color: #f00;}
-.red-tooltip + .tooltip > .tooltip-arrow {border-right-color:#f00;}
+.red-tooltip + .tooltip.right > .tooltip-arrow {border-right-color:#f00;}
+.red-tooltip + .tooltip.bottom > .tooltip-arrow {border-bottom-color:#f00;}
+.red-tooltip + .tooltip.top > .tooltip-arrow {border-top-color:#f00;}
 
 .popover {
     position: absolute;

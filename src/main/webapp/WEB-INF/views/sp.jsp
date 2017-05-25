@@ -6,26 +6,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-
     <jsp:include page="../views/fragments/styles.jsp"/>
-
     <link href="<c:url value="/resources/css/autocomplete.css" />" rel="stylesheet">
     <script src="<c:url value="/resources/js/jquery.autocomplete.min.js" />"></script>
-
     <title>СП-${sp.id}</title>
-
 </head>
 <body>
-
+    <%--TODO: заменить сообщения о валидационных ошибках на tooltip'ы--%>
 	<jsp:include page="../views/fragments/header.jsp"/>
 
 	<div class="container">
 
         <h2>СП-${sp.id}</h2>
 
-        <!-- Линейка статусов -->
+        <%-- Сообщения об ошибках --%>
+        <jsp:include page="../views/fragments/error_alert.jsp"/>
+
+        <%-- Линейка статусов --%>
         <ul class="breadcrumb">
-            <c:set var="currentStatus" value="${currentSpStatus}"/>
+            <c:set var="currentStatus" value="${sp.status}"/>
             <c:set var="i" value="0"/>
             <c:forEach var="status" items="${spStatuses}">
                 <c:if test="${currentStatus != status and i == 0}">
@@ -39,31 +38,29 @@
                     <li>${status.toString()}</li>
                 </c:if>
                 <c:if test="${currentStatus != status and i == 1}">
-                    <!-- TODO: link? -->
-                    <li>${status.toString()}</li>
+                    <c:choose>
+                        <c:when test="${status.id != 8}">
+                            <spring:url value="/sp/${sp.id}" var="changeStatusUrl"><spring:param name="action" value="change_status"/></spring:url>
+                            <li><a href="${changeStatusUrl}" class="red-tooltip" data-toggle="tooltip" data-html="true" title="${statusError}" data-placement="top">${status.toString()}</a></li>
+                        </c:when>
+                        <c:otherwise>
+                            <li>${status.toString()}</li>
+                        </c:otherwise>
+                    </c:choose>
                     <c:set var="i" value="2"/>
                 </c:if>
             </c:forEach>
         </ul>
 
-        <!-- Форма СП -->
+        <%-- Форма СП --%>
         <spring:url value="/sp/${sp.id}" var="formUrl" />
         <form:form action="${formUrl}" method="POST" modelAttribute="sp" cssClass="form-horizontal">
 
             <input type="hidden" name="action" value="edit_sp"/>
             <input type="hidden" name="id" value="${sp.id}"/>
+            <input type="hidden" name="status" value="${sp.status.id}"/>
 
-            <c:set var="field" value="status"/>
-            <spring:bind path="${field}">
-                <div class="form-group <c:if test='${status.errors.hasFieldErrors(field)}'>has-error</c:if>">
-                    <label for="${field}" class="col-lg-2 control-label">Статус</label>
-                    <div class="col-lg-2">
-                        <form:select path="${field}" items="${SpStatuses}" itemValue="id" itemLabel="name" id="${field}" cssClass="form-control"/>
-                        <span class="help-block nowrap"><form:errors htmlEscape="false" path="${field}"/></span>
-                    </div>
-                </div>
-            </spring:bind>
-
+            <%-- percent --%>
             <c:set var="field" value="percent"/>
             <spring:bind path="${field}">
                 <div class="form-group <c:if test='${status.errors.hasFieldErrors(field)}'>has-error</c:if>">
@@ -75,6 +72,7 @@
                 </div>
             </spring:bind>
 
+            <%-- dateStart --%>
             <c:set var="dateStart"><fmt:formatDate pattern="yyyy-MM-dd" value="${sp.dateStart}"/></c:set>
             <c:set var="field" value="dateStart"/>
             <spring:bind path="${field}">
@@ -87,6 +85,7 @@
                 </div>
             </spring:bind>
 
+            <%-- dateEnd --%>
             <c:set var="dateEnd"><fmt:formatDate pattern="yyyy-MM-dd" value="${sp.dateEnd}"/></c:set>
             <c:set var="field" value="dateEnd"/>
             <spring:bind path="${field}">
@@ -99,6 +98,7 @@
                 </div>
             </spring:bind>
 
+            <%-- dateToPay --%>
             <c:set var="dateToPay"><fmt:formatDate pattern="yyyy-MM-dd" value="${sp.dateToPay}"/></c:set>
             <c:set var="field" value="dateToPay"/>
             <spring:bind path="${field}">
@@ -111,12 +111,13 @@
                 </div>
             </spring:bind>
 
+            <%-- deliveryPrice --%>
             <c:set var="field" value="deliveryPrice"/>
             <spring:bind path="${field}">
                 <div class="form-group <c:if test='${status.errors.hasFieldErrors(field)}'>has-error</c:if>">
                     <label for="${field}" class="col-lg-2 control-label">Доставка, р.</label>
                     <div class="col-lg-1">
-                        <form:input path="${field}" id="${field}" cssClass="form-control decimal" type="number" min="0"/>
+                        <form:input path="${field}" id="${field}" cssClass="form-control decimal" type="number" min="0" readonly="true"/>
                         <span class="help-block nowrap"><form:errors htmlEscape="false" path="${field}"/></span>
                     </div>
                 </div>
@@ -130,14 +131,17 @@
 
         </form:form>
 
-        <!-- Форма добавления нового заказа -->
-        <spring:url value="/sp/${sp.id}" var="formUrl" />
-        <form:form action="${formUrl}" method="POST" modelAttribute="order" cssClass="form-horizontal">
+        <%-- Форма добавления нового заказа --%>
+        <c:if test="${sp.status.id <= 3}">
+            <spring:url value="/sp/${sp.id}" var="formUrl" />
+            <form:form action="${formUrl}" method="POST" modelAttribute="order" cssClass="form-horizontal">
             <fieldset>
                 <legend>Добавить заказ</legend>
 
                 <input type="hidden" name="action" value="add_order">
 
+                <%-- client --%>
+                <%-- TODO: Добавить checkbox "новый клиент" для автоматического создания клиента--%>
                 <spring:bind path="client">
                     <c:if test='${status.errors.hasFieldErrors("client")}'>
                         <c:set var="errorClass" value="has-error"/>
@@ -155,6 +159,7 @@
                     </div>
                 </spring:bind>
 
+                <%-- dateOrdered --%>
                 <spring:bind path="dateOrdered">
                     <div class="form-group <c:if test='${status.errors.hasFieldErrors("dateOrdered")}'>has-error</c:if>">
                         <label for="date-picker" class="col-lg-2 control-label">Дата заказа</label>
@@ -168,7 +173,6 @@
                 </spring:bind>
 
                 <input type="hidden" name="sp" value="${sp.id}">
-                <input type="hidden" name="orderStatus" value="1">
 
                 <div class="form-group">
                     <div class="col-lg-10 col-lg-offset-2">
@@ -178,16 +182,17 @@
 
             </fieldset>
         </form:form>
+        </c:if>
 
         <legend>Заказы</legend>
 
-        <!-- Отображение заказов -->
+        <%-- Отображение заказов --%>
         <c:if test="${sp.orders.size() > 0}">
             <c:forEach var="order" items="${sp.orders}" varStatus="counter">
-                <!-- Панель заказа -->
+                <%-- Панель заказа --%>
                 <div class="panel panel-default" style="width: 800px">
 
-                    <!-- Заголовок -->
+                    <%-- Заголовок с информацией о заказе --%>
                     <div class="panel-heading min-vpadding">
                         <c:if test='${order.status == "UNPAID"}'>
                             <c:set var="labelType" value="label-default"/>
@@ -212,7 +217,9 @@
                         <c:if test='${order.status == "ARRIVED"}'>
                             <c:set var="labelType" value="label-primary"/>
                             <c:set var="orderInfoBlock1_class" value=""/>
-                            <c:set var="orderInfoBlock2_class" value=""/>
+                            <c:if test='${sp.deliveryPrice == null}'>
+                                <c:set var="orderInfoBlock2_class" value='class="hidden"'/>
+                            </c:if>
                         </c:if>
                         <c:if test='${order.status == "COMPLETED"}'>
                             <c:set var="labelType" value="label-success"/>
@@ -238,7 +245,7 @@
                         </c:if>
                     </div>
 
-                    <!-- Содержание -->
+                    <%-- Позиции заказа --%>
                     <div class="panel-body">
                         <c:if test="${order.orderPositions.size() > 0}">
                             <table class="table table-ultra-condensed table-hover">
@@ -255,7 +262,7 @@
                                         <td class="text-right" style="width: 85px">${orderPosition.priceSpSummary} р.</td>
                                     </tr>
                                 </c:forEach>
-                                <!-- Итоговая строка -->
+                                <%-- Строка с итоговой информацией по заказу --%>
                                 <tr class="border_top">
                                     <td colspan="3">
                                         Прибыль:&nbsp;${order.income} р.&nbsp;|
@@ -273,21 +280,19 @@
                 </div>
             </c:forEach>
         </c:if>
-
         <c:if test="${sp.orders.size() == 0}">
             В этом СП пока нет заказов.
         </c:if>
 
-
     </div>
 
 
-    <!-- Автозаполнение текущей даты -->
+    <%-- Автозаполнение текущей даты --%>
     <script type="text/javascript">
         document.getElementById('date-picker').valueAsDate = new Date();
     </script>
 
-	<!-- Client autocomplete script -->
+	<%-- Автозаполнение имени клиента --%>
     <script type="text/javascript">
 		$(document).ready(function () {
                 $('#client-search').autocomplete({
@@ -306,6 +311,33 @@
 		});
 
 	</script>
+
+    <%-- Отображение полей СП --%>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var percentField = document.getElementById("percent");
+            var dateStartField = document.getElementById("dateStart");
+            var dateEndField = document.getElementById("dateEnd");
+            var dateToPayField = document.getElementById("dateToPay");
+            var deliveryPriceField = document.getElementById("deliveryPrice");
+
+            var currentSpStatus = ${currentStatus.id};
+
+            if (currentSpStatus == 6) {
+                deliveryPriceField.removeAttribute("readonly")
+            }
+        });
+    </script>
+
+    <%-- Показать валидационные tooltip'ы --%>
+    <script type="text/javascript">
+        $('.red-tooltip').tooltip()
+            .tooltip({container: 'body'})
+            .tooltip('show');
+        $(window).on('resize', function () {
+            $('.red-tooltip').tooltip('show')
+        });
+    </script>
 
 </body>
 </html> 

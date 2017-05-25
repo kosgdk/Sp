@@ -14,7 +14,7 @@ import sp.data.entities.Product;
 import sp.data.entities.formscontainers.ZeroWeightOrderPositionsForm;
 import sp.data.services.interfaces.OrderPositionService;
 import sp.data.services.interfaces.ProductService;
-import sp.data.validators.ZeroWeightProductsFormValidator;
+import sp.data.validators.ZeroWeightOrderPositionsFormValidator;
 
 import java.util.List;
 import java.util.ListIterator;
@@ -28,7 +28,8 @@ public class ProductController {
 	@Autowired ProductService productService;
 	@Autowired OrderPositionService orderPositionService;
 	@Autowired Validator validator;
-	@Autowired ZeroWeightProductsFormValidator zeroWeightOrderPositionsFormValidator;
+	@Autowired
+	ZeroWeightOrderPositionsFormValidator zeroWeightOrderPositionsFormValidator;
 
 
 	@InitBinder

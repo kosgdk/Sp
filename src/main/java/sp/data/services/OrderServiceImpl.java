@@ -11,6 +11,7 @@ import sp.data.services.generic.GenericServiceImpl;
 import sp.data.services.interfaces.OrderService;
 import sp.data.services.interfaces.SpService;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -66,6 +67,18 @@ public class OrderServiceImpl extends GenericServiceImpl<Order, Long> implements
                 break;
         }
 
+    }
+
+    @Override
+    public void processStatus(Order order){
+
+        switch (order.getStatus()){
+            case UNPAID: // Не оплачен
+                if (order.getPrepaid().compareTo(BigDecimal.ZERO) > 0) {
+                    order.setStatus(OrderStatus.PAID);
+                }
+                break;
+        }
     }
 
 }
